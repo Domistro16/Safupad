@@ -38,7 +38,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
             borderRadius: "medium",
             overlayBlur: "small",
           })}
-          initialChain={bscTestnet}
+          initialChain={bsc}
         >
           {children}
         </RainbowKitProvider>

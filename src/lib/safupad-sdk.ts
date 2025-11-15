@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FallbackProvider, JsonRpcProvider } from "ethers";
+import type { Chain, Client, Transport } from "viem";
+import { type Config, useClient, useWalletClient } from "wagmi";
 import { SafuPadSDK } from "@safupad/sdk";
-import { ethers } from "ethers";
-import { useWalletClient } from "wagmi";
 
 export type UseSafuPadSDKResult = {
   sdk: SafuPadSDK | null;
@@ -16,10 +17,6 @@ export type UseSafuPadSDKResult = {
  * Gets the appropriate provider for BSC Mainnet (chainId 56)
  * Falls back to JsonRpcProvider if wallet is not connected
  */
-import { FallbackProvider, JsonRpcProvider } from 'ethers'
-import { useMemo } from 'react'
-import type { Chain, Client, Transport } from 'viem'
-import { type Config, useClient } from 'wagmi'
 
 function clientToProvider(client: Client<Transport, Chain>) {
   const { chain, transport } = client
@@ -50,8 +47,8 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [isInitializing, setIsInitializing] = useState(false);
   const [error, setError] = useState<unknown | null>(null);
   const initAttempted = useRef(false);
-         const client = useClient<Config>({ chainId: 56 })
-  
+  const client = useClient<Config>({ chainId: 56 });
+
   // Get wallet client from wagmi (connected wallet)
   const { data: walletClient } = useWalletClient();
 
@@ -121,7 +118,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
     return () => {
       cancelled = true;
     };
-  }, [walletClient]); // Re-initialize when wallet connection changes
+  }, [walletClient, client]); // Re-initialize when wallet connection changes
 
   const connect = async () => {
     console.log("🔗 SafuPad SDK: Connect called");

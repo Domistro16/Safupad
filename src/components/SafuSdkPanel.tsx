@@ -209,8 +209,8 @@ export const SafuSdkPanel = () => {
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold tracking-wide text-accent/90">SafuPad SDK</p>
-          {/* Network is locked to BSC Testnet */}
-          <p className="text-xs text-accent/80">Network: BSC Testnet</p>
+          {/* Network is locked to BSC Mainnet */}
+          <p className="text-xs text-accent/80">Network: BSC Mainnet</p>
           {isInitializing && (
             <p className="text-xs text-muted-foreground">Initializing...</p>
           )}
