@@ -11,10 +11,15 @@ export type UseSafuPadSDKResult = {
   isInitializing: boolean;
   error: unknown | null;
   connect: () => Promise<string | null>;
+  network: "bsc" | "bscTestnet";
 };
 
+// Get network configuration from environment variable
+const NETWORK = (process.env.NEXT_PUBLIC_NETWORK || "bsc") as "bsc" | "bscTestnet";
+const CHAIN_ID = NETWORK === "bsc" ? 56 : 97;
+
 /**
- * Gets the appropriate provider for BSC Mainnet (chainId 56)
+ * Gets the appropriate provider for the configured network
  * Falls back to JsonRpcProvider if wallet is not connected
  */
 
@@ -39,7 +44,7 @@ function clientToProvider(client: Client<Transport, Chain>) {
 /**
  * useSafuPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Network is locked to BSC Mainnet
+ * - Network is configured via NEXT_PUBLIC_NETWORK environment variable (bsc or bscTestnet)
  * - Falls back to JsonRpcProvider for read-only operations when wallet is disconnected
  */
 export function useSafuPadSDK(): UseSafuPadSDKResult {
@@ -47,7 +52,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [isInitializing, setIsInitializing] = useState(false);
   const [error, setError] = useState<unknown | null>(null);
   const initAttempted = useRef(false);
-  const client = useClient<Config>({ chainId: 56 });
+  const client = useClient<Config>({ chainId: CHAIN_ID });
 
   // Get wallet client from wagmi (connected wallet)
   const { data: walletClient } = useWalletClient();
@@ -71,14 +76,14 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
       setError(null);
 
       try {
-        console.log("🔧 SafuPad SDK: Getting BSC Mainnet provider...");
-  
+        console.log(`🔧 SafuPad SDK: Getting ${NETWORK === "bsc" ? "BSC Mainnet" : "BSC Testnet"} provider...`);
+
         const provider = await clientToProvider(client);
-        
-        console.log("🔧 SafuPad SDK: Creating SDK instance with bsc...");
+
+        console.log(`🔧 SafuPad SDK: Creating SDK instance with ${NETWORK}...`);
 
         const instance = new SafuPadSDK({
-          network: "bsc",
+          network: NETWORK,
           provider: provider,
           alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
         });
@@ -145,5 +150,5 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
     }
   };
 
-  return { sdk, isInitializing, error, connect };
+  return { sdk, isInitializing, error, connect, network: NETWORK };
 }

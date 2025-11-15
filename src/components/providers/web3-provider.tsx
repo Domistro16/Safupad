@@ -15,6 +15,10 @@ import "@rainbow-me/rainbowkit/styles.css";
 const walletConnectProjectId =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "1b974de95099d6d52750938f885f4b04";
 
+// Get network configuration from environment variable
+const NETWORK = (process.env.NEXT_PUBLIC_NETWORK || "bsc") as "bsc" | "bscTestnet";
+const initialChain = NETWORK === "bsc" ? bsc : bscTestnet;
+
 const config = getDefaultConfig({
   appName: "Safupad",
   projectId: walletConnectProjectId,
@@ -38,7 +42,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
             borderRadius: "medium",
             overlayBlur: "small",
           })}
-          initialChain={bsc}
+          initialChain={initialChain}
         >
           {children}
         </RainbowKitProvider>
