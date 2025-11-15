@@ -13,7 +13,7 @@ export type UseSafuPadSDKResult = {
 };
 
 /**
- * Gets the appropriate provider for BSC Testnet (chainId 97)
+ * Gets the appropriate provider for BSC Mainnet (chainId 56)
  * Falls back to JsonRpcProvider if wallet is not connected
  */
 import { FallbackProvider, JsonRpcProvider } from 'ethers'
@@ -42,7 +42,7 @@ function clientToProvider(client: Client<Transport, Chain>) {
 /**
  * useSafuPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Network is locked to BSC Testnet
+ * - Network is locked to BSC Mainnet
  * - Falls back to JsonRpcProvider for read-only operations when wallet is disconnected
  */
 export function useSafuPadSDK(): UseSafuPadSDKResult {
@@ -50,7 +50,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [isInitializing, setIsInitializing] = useState(false);
   const [error, setError] = useState<unknown | null>(null);
   const initAttempted = useRef(false);
-         const client = useClient<Config>({ chainId: 97 })
+         const client = useClient<Config>({ chainId: 56 })
   
   // Get wallet client from wagmi (connected wallet)
   const { data: walletClient } = useWalletClient();
@@ -74,15 +74,16 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
       setError(null);
 
       try {
-        console.log("🔧 SafuPad SDK: Getting BSC Testnet provider...");
+        console.log("🔧 SafuPad SDK: Getting BSC Mainnet provider...");
   
         const provider = await clientToProvider(client);
         
-        console.log("🔧 SafuPad SDK: Creating SDK instance with bscTestnet...");
-        
+        console.log("🔧 SafuPad SDK: Creating SDK instance with bsc...");
+
         const instance = new SafuPadSDK({
-          network: "bscTestnet",
+          network: "bsc",
           provider: provider,
+          alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
         });
 
         console.log("🔧 SafuPad SDK: Calling initialize()...");
