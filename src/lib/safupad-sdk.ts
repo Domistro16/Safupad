@@ -41,7 +41,7 @@ function clientToProvider(client: Client<Transport, Chain>) {
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
  * - Network automatically switches based on connected wallet's chain
  * - Supports BSC Mainnet (56) and BSC Testnet (97)
- * - Defaults to BSC Mainnet when wallet is not connected
+ * - Defaults to BSC Testnet when wallet is not connected
  */
 export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [sdk, setSdk] = useState<SafuPadSDK | null>(null);
@@ -52,8 +52,8 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
   const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  // Determine network based on connected chain, default to BSC mainnet (56)
-  const chainId = chain?.id ?? 56;
+  // Determine network based on connected chain, default to BSC testnet (97)
+  const chainId = chain?.id ?? 97;
   const network: "bsc" | "bscTestnet" = chainId === 97 ? "bscTestnet" : "bsc";
 
   const client = useClient<Config>({ chainId });
