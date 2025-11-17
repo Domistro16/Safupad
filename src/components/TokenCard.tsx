@@ -4,14 +4,20 @@ import { Token } from "@/types/token";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { 
-  formatCurrency, 
-  formatPercentage, 
-  formatPrice, 
+import {
+  formatCurrency,
+  formatPercentage,
+  formatPrice,
   formatTimeRemaining,
-  getProgressPercentage 
+  getProgressPercentage,
 } from "@/lib/utils/format";
-import { Clock, TrendingUp, Users, ExternalLink, DollarSign } from "lucide-react";
+import {
+  Clock,
+  TrendingUp,
+  Users,
+  ExternalLink,
+  DollarSign,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSafuPadSDK } from "@/lib/safupad-sdk";
@@ -19,6 +25,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import { getTokenStats, type PancakeSwapStats } from "@/lib/utils/pancakeswap";
+import { get24hVolumeWithCache } from "@/lib/volumeTracker";
 
 interface TokenCardProps {
   token: Token;
@@ -28,23 +35,23 @@ interface TokenCardProps {
 // Generate a consistent gradient based on token ID/name
 function generateGradient(seed: string): string {
   const colors = [
-    ['#FFB000', '#ff6b00'],
-    ['#ffd700', '#FFB000'],
-    ['#ff8c00', '#ff6b00'],
-    ['#FFB000', '#ffaa00'],
-    ['#ff6b00', '#ff0055'],
-    ['#ffd700', '#ff8c00'],
+    ["#FFB000", "#ff6b00"],
+    ["#ffd700", "#FFB000"],
+    ["#ff8c00", "#ff6b00"],
+    ["#FFB000", "#ffaa00"],
+    ["#ff6b00", "#ff0055"],
+    ["#ffd700", "#ff8c00"],
   ];
-  
+
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
-    hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+    hash = (hash << 5) - hash + seed.charCodeAt(i);
     hash = hash & hash;
   }
-  
+
   const index = Math.abs(hash) % colors.length;
-  const angle = (Math.abs(hash) % 360);
-  
+  const angle = Math.abs(hash) % 360;
+
   return `linear-gradient(${angle}deg, ${colors[index][0]}, ${colors[index][1]})`;
 }
 
@@ -52,21 +59,24 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
   const { sdk } = useSafuPadSDK();
   const { address: userAddress } = useAccount();
   const [bnbReserve, setBnbReserve] = useState<number>(0);
+  const [volumeBNB, setVolumeBNB] = useState<number>(0);
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
   const [bnbRaised, setBnbRaised] = useState<number>(0);
   const [bnbTarget, setBnbTarget] = useState<number>(0);
-  const [pancakeSwapStats, setPancakeSwapStats] = useState<PancakeSwapStats | null>(null);
+  const [pancakeSwapStats, setPancakeSwapStats] =
+    useState<PancakeSwapStats | null>(null);
   const [graduatedToPancakeSwap, setGraduatedToPancakeSwap] = useState(false);
-  
+
   const isProjectRaise = token.launchType === "project-raise";
   const isGraduated = token.graduated;
 
   // Check if image URL is valid
-  const isValidImageUrl = token.image && 
-    (token.image.startsWith('http://') || 
-     token.image.startsWith('https://') || 
-     token.image.startsWith('/'));
+  const isValidImageUrl =
+    token.image &&
+    (token.image.startsWith("http://") ||
+      token.image.startsWith("https://") ||
+      token.image.startsWith("/"));
 
   const shouldShowGradient = !isValidImageUrl || imageError;
   const gradient = generateGradient(token.id + token.symbol);
@@ -75,7 +85,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
   useEffect(() => {
     const fetchGraduationStatus = async () => {
       if (!sdk) return;
-      
+
       try {
         const launchInfo = await sdk.launchpad.getLaunchInfo(token.id);
         setGraduatedToPancakeSwap(Boolean(launchInfo.graduatedToPancakeSwap));
@@ -92,9 +102,11 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
     const fetchPancakeSwapStats = async () => {
       // Fetch PancakeSwap stats when token has graduated to PancakeSwap
       if (!graduatedToPancakeSwap) return;
-      
+
       try {
-        const provider = new ethers.JsonRpcProvider("https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
+        const provider = new ethers.JsonRpcProvider(
+          `https://bnb-testnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+        );
         const stats = await getTokenStats(token.id, provider, sdk);
         setPancakeSwapStats(stats);
       } catch (error) {
@@ -109,7 +121,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
   useEffect(() => {
     const fetchPoolInfo = async () => {
       if (!sdk || isGraduated) return;
-      
+
       try {
         const poolInfo = await sdk.bondingDex.getPoolInfo(token.id);
         const reserve = Number(ethers.formatEther(poolInfo.bnbReserve));
@@ -126,7 +138,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
   useEffect(() => {
     const convertToBnb = async () => {
       if (!sdk || !isProjectRaise || !token.projectRaise) return;
-      
+
       try {
         const raisedBNB = await sdk.priceOracle.usdToBNB(
           ethers.parseEther(token.projectRaise.raisedAmount.toString())
@@ -134,7 +146,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
         const targetBNB = await sdk.priceOracle.usdToBNB(
           ethers.parseEther(token.projectRaise.targetAmount.toString())
         );
-        
+
         setBnbRaised(Number(ethers.formatEther(raisedBNB)));
         setBnbTarget(Number(ethers.formatEther(targetBNB)));
       } catch (error) {
@@ -142,38 +154,58 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
       }
     };
 
+    const setVolume = async () => {
+      if (!sdk) return;
+
+      try {
+        const bnb = await sdk.bondingDex.get24hVolume(token.contractAddress);
+        const usd = await sdk.priceOracle.bnbToUSD(bnb.volumeBNB);
+        setVolumeBNB(Number(ethers.formatEther(usd)));
+      } catch (error) {
+        console.error("Error getting volume:", error);
+      }
+    };
+    void setVolume();
     void convertToBnb();
   }, [sdk, isProjectRaise, token.projectRaise]);
 
   // Use PancakeSwap stats if available, otherwise use token stats
-  const displayPrice = pancakeSwapStats ? pancakeSwapStats.priceInUSD : token.currentPrice;
-  const displayMarketCap = pancakeSwapStats ? pancakeSwapStats.marketCapUSD : token.marketCap;
-  
+  const displayPrice = pancakeSwapStats
+    ? pancakeSwapStats.priceInUSD
+    : token.currentPrice;
+  const displayMarketCap = pancakeSwapStats
+    ? pancakeSwapStats.marketCapUSD
+    : token.marketCap;
+
   // Handle liquidityPool - it might be a number, BigInt, or bigint string
   const getDisplayLiquidity = () => {
     if (pancakeSwapStats) return pancakeSwapStats.liquidityUSD;
-    
+
     if (!token.liquidityPool) return 0;
-    
-    // If it's already a number, return it
-    if (typeof token.liquidityPool === 'number') return token.liquidityPool;
-    
+
+    console.log(volumeBNB);
+    if (typeof token.liquidityPool === "number") return volumeBNB;
+
     // If it's a BigInt or string, format it
     try {
-      return Number(ethers.formatUnits(token.liquidityPool.toString(), 18));
+      return Number(ethers.formatEther(token.liquidityPool.toString()));
     } catch (error) {
       console.error("Error formatting liquidity:", error);
       return 0;
     }
   };
-  
+
   const displayLiquidity = getDisplayLiquidity();
 
   // Derive display status per spec
   const displayStatus = (() => {
     if (isProjectRaise && token.projectRaise) {
       const now = Date.now();
-      const stillRaising = token.projectRaise.endTime && token.projectRaise.endTime.getTime() > now && (token.projectRaise.raisedAmount ?? 0) < (token.projectRaise.targetAmount || 0);
+      const stillRaising =
+        token.projectRaise.endTime &&
+        token.projectRaise.endTime.getTime() > now &&
+        (token.projectRaise.raisedAmount ?? 0) <
+          (token.projectRaise.targetAmount || 0);
       if (stillRaising) return "Raising";
       if (isGraduated) return "Graduated";
       return "Trading";
@@ -181,7 +213,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
     return isGraduated ? "Graduated" : "Trading";
   })();
   const isRaising = displayStatus === "Raising";
-  console.log(pancakeSwapStats)
+  console.log(pancakeSwapStats);
   return (
     <div className="bg-card/70 border-2 border-primary/30 pixel-corners hover:border-primary/60 transition-all hover:shadow-xl glow-effect flex h-full flex-col">
       {/* Header */}
@@ -189,7 +221,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
         <div className="flex items-start gap-3">
           <Link href={`/token/${token.id}`} className="cursor-pointer">
             {shouldShowGradient ? (
-              <div 
+              <div
                 className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-black text-background/90 hover:scale-105 transition-transform"
                 style={{ background: gradient }}
               >
@@ -210,12 +242,24 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
           <div className="flex-1 min-w-0">
             <Link href={`/token/${token.id}`} className="cursor-pointer block">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-lg hover:text-primary transition-colors">{token.symbol}</h3>
-                <Badge variant={isGraduated ? "default" : token.status === "pending" ? "secondary" : "outline"}>
+                <h3 className="font-bold text-lg hover:text-primary transition-colors">
+                  {token.symbol}
+                </h3>
+                <Badge
+                  variant={
+                    isGraduated
+                      ? "default"
+                      : token.status === "pending"
+                        ? "secondary"
+                        : "outline"
+                  }
+                >
                   {displayStatus}
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground truncate hover:text-accent transition-colors">{token.name}</p>
+              <p className="text-sm text-muted-foreground truncate hover:text-accent transition-colors">
+                {token.name}
+              </p>
             </Link>
             <div className="flex items-center gap-2 mt-1">
               <Badge variant="outline" className="text-xs">
@@ -234,7 +278,9 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-primary" />
-                <span className="text-xs font-bold text-primary">Creator Fees</span>
+                <span className="text-xs font-bold text-primary">
+                  Creator Fees
+                </span>
               </div>
               {token.instantLaunch.canClaim && (
                 <Badge variant="default" className="text-xs">
@@ -245,13 +291,17 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="space-y-1">
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Accumulated:</span>
-                <span className="font-medium">{formatCurrency(token.instantLaunch.creatorFees)}</span>
+                <span className="font-medium">
+                  {formatCurrency(token.instantLaunch.creatorFees)}
+                </span>
               </div>
               {token.instantLaunch.lastClaimTime && (
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground">Last Claim:</span>
                   <span className="font-medium">
-                    {new Date(token.instantLaunch.lastClaimTime).toLocaleDateString()}
+                    {new Date(
+                      token.instantLaunch.lastClaimTime
+                    ).toLocaleDateString()}
                   </span>
                 </div>
               )}
@@ -265,14 +315,20 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div>
               <p className="text-xs text-muted-foreground mb-1">Price</p>
               <p className="text-sm font-bold">{formatPrice(displayPrice)}</p>
-              <p className={`text-xs ${token.priceChange24h >= 0 ? "text-green-500" : "text-red-500"}`}>
+              <p
+                className={`text-xs ${token.priceChange24h >= 0 ? "text-green-500" : "text-red-500"}`}
+              >
                 {formatPercentage(token.priceChange24h)}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-1">Market Cap</p>
-              <p className="text-sm font-bold">{formatCurrency(displayMarketCap)}</p>
-              <p className="text-xs text-muted-foreground">{formatCurrency(displayLiquidity)} Vol</p>
+              <p className="text-sm font-bold">
+                {formatCurrency(displayMarketCap)}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {formatCurrency(displayLiquidity)} 24h Vol
+              </p>
             </div>
           </div>
         )}
@@ -286,14 +342,19 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
                 {bnbRaised.toFixed(4)} BNB / {bnbTarget.toFixed(4)} BNB
               </span>
             </div>
-            <Progress 
-              value={getProgressPercentage(token.projectRaise.raisedAmount, token.projectRaise.targetAmount)} 
+            <Progress
+              value={getProgressPercentage(
+                token.projectRaise.raisedAmount,
+                token.projectRaise.targetAmount
+              )}
               className="h-2"
             />
             {displayStatus === "Raising" && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="w-3 h-3" />
-                <span>{formatTimeRemaining(token.projectRaise.endTime)} left</span>
+                <span>
+                  {formatTimeRemaining(token.projectRaise.endTime)} left
+                </span>
               </div>
             )}
           </div>
@@ -308,8 +369,8 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
                 {bnbReserve.toFixed(4)} BNB / 15 BNB
               </span>
             </div>
-            <Progress 
-              value={getProgressPercentage(bnbReserve, 15)} 
+            <Progress
+              value={getProgressPercentage(bnbReserve, 15)}
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
@@ -322,11 +383,15 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
         <div className="flex items-center justify-between text-xs pt-2 border-t border-border">
           <div className="flex items-center gap-1">
             <Users className="w-3 h-3 text-muted-foreground" />
-            <span className="text-muted-foreground">{token.holders || 0} holders</span>
+            <span className="text-muted-foreground">
+              {token.holders || 0} holders
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <TrendingUp className="w-3 h-3 text-muted-foreground" />
-            <span className="text-muted-foreground">{token.transactions || 0} txns</span>
+            <span className="text-muted-foreground">
+              {token.transactions || 0} txns
+            </span>
           </div>
         </div>
       </div>
@@ -344,7 +409,11 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
         )}
         <div className="flex gap-2">
           {token.twitter && (
-            <Button size="sm" className="controller-btn-outline arcade-btn flex-1" asChild>
+            <Button
+              size="sm"
+              className="controller-btn-outline arcade-btn flex-1"
+              asChild
+            >
               <a href={token.twitter} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3 h-3 mr-1" />
                 Twitter
@@ -352,7 +421,11 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             </Button>
           )}
           {token.website && (
-            <Button size="sm" className="controller-btn-outline arcade-btn flex-1" asChild>
+            <Button
+              size="sm"
+              className="controller-btn-outline arcade-btn flex-1"
+              asChild
+            >
               <a href={token.website} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3 h-3 mr-1" />
                 Website

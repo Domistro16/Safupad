@@ -63,7 +63,7 @@ export function TradeHistory({ trades }: TradeHistoryProps) {
 
             <div className="text-right">
               <div className="text-sm font-medium mb-1">
-                {formatCurrency(trade.price)}
+                {formatCurrency(trade.total)}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">

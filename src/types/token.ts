@@ -53,7 +53,7 @@ export interface Token {
   launchType: LaunchType;
   status: TokenStatus;
   createdAt: Date;
-  
+
   // Financial data
   totalSupply: number;
   currentPrice: number;
@@ -61,7 +61,7 @@ export interface Token {
   liquidityPool: number;
   volume24h: number;
   priceChange24h: number;
-  
+
   // Project Raise specific
   projectRaise?: {
     config: ProjectRaiseConfig;
@@ -72,7 +72,7 @@ export interface Token {
     vestingSchedule: VestingSchedule;
     approved: boolean;
   };
-  
+
   // Instant Launch specific
   instantLaunch?: {
     config: InstantLaunchConfig;
@@ -80,19 +80,20 @@ export interface Token {
     creatorFees: number;
     lastClaimTime: Date | null;
     claimableAmount: number;
+    canClaim: boolean;
   };
-  
+
   // Graduation
   graduated: boolean;
   graduatedToPancakeSwap?: boolean;
   graduationDate?: Date;
   startingMarketCap: number;
-  
+
   // Social
   twitter?: string;
   telegram?: string;
   website?: string;
-  
+
   // Stats
   holders: number;
   transactions: number;
