@@ -365,6 +365,7 @@ export default function Home() {
                 description: "Failed to load token data",
                 image:
                   "https://images.unsplash.com/photo-1614064641938-3bbee52942c1?w=400&h=400&fit=crop",
+                startingMarketCap: 0,
                 contractAddress: addr,
                 creatorAddress: "0x0000000000000000000000000000000000000000",
                 status: "active",
@@ -508,12 +509,12 @@ export default function Home() {
             {!loading && liveTokens && (
               <p className="text-xs text-accent/80">
                 Showing {liveTokens.length} live launch
-                {liveTokens.length === 1 ? "" : "es"} from SDK
+                {liveTokens.length === 1 ? "" : "es"}
               </p>
             )}
             {!loading && loadError && (
               <p className="text-xs text-destructive">
-                Live launches unavailable. Showing sample data.
+                Live launches unavailable.
               </p>
             )}
           </div>
