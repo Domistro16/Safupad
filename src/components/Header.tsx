@@ -4,7 +4,7 @@ import { Wallet, Rocket, Shield, Gamepad2, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { CustomConnectButton } from "./CustomConnectButton";
 
 export function Header() {
   const [isConnected, setIsConnected] = useState(false);
@@ -54,7 +54,7 @@ export function Header() {
 
             {/* Wallet Connect */}
             <div className="flex items-center gap-3 flex-shrink-0 scale-90 sm:scale-95 2xl:scale-100 origin-right">
-              <ConnectButton chainStatus="icon" showBalance={false} accountStatus="address" />
+              <CustomConnectButton />
             </div>
           </div>
         </div>
