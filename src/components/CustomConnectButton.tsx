@@ -41,9 +41,9 @@ export function CustomConnectButton() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="arcade-btn px-4 py-2"
+                    className="controller-btn px-4 py-2 text-sm font-bold tracking-wide"
                   >
-                    Connect Wallet
+                    🎮 Connect Wallet
                   </button>
                 );
               }
@@ -53,9 +53,9 @@ export function CustomConnectButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="arcade-btn px-4 py-2 bg-destructive"
+                    className="controller-btn px-4 py-2 text-sm font-bold tracking-wide !bg-destructive"
                   >
-                    Wrong network
+                    ⚠️ Wrong Network
                   </button>
                 );
               }
@@ -65,7 +65,7 @@ export function CustomConnectButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="arcade-btn px-3 py-2 flex items-center gap-2"
+                    className="controller-btn-outline arcade-btn px-3 py-2 flex items-center gap-2 text-sm font-bold"
                   >
                     {chain.hasIcon && (
                       <div
@@ -119,9 +119,9 @@ function AccountButton({ address, displayName, onClick }: AccountButtonProps) {
     <button
       onClick={onClick}
       type="button"
-      className="arcade-btn px-4 py-2"
+      className="controller-btn px-4 py-2 text-sm font-bold tracking-wide"
     >
-      {loading ? "Loading..." : finalDisplayName}
+      {loading ? "⏳ Loading..." : finalDisplayName}
     </button>
   );
 }
