@@ -22,7 +22,7 @@ export type UseSafuPadSDKResult = {
   isInitializing: boolean;
   error: unknown | null;
   connect: () => Promise<string | null>;
-  network: "bsc" | "bscTestnet";
+  network: "bsc";
   chainId: number;
 };
 
@@ -61,9 +61,8 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
 /**
  * useSafuPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Network automatically switches based on connected wallet's chain
- * - Supports BSC Mainnet (56) and BSC Testnet (97)
- * - Defaults to BSC Testnet when wallet is not connected
+ * - Only supports BSC Mainnet (56)
+ * - Defaults to BSC Mainnet when wallet is not connected
  */
 export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [sdk, setSdk] = useState<SafuPadSDK | null>(null);
@@ -74,9 +73,9 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
   const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  // Determine network based on connected chain, default to BSC testnet (97)
-  const chainId = chain?.id ?? 97;
-  const network: "bsc" | "bscTestnet" = chainId === 97 ? "bscTestnet" : "bsc";
+  // Only support BSC Mainnet (56)
+  const chainId = chain?.id ?? 56;
+  const network: "bsc" = "bsc";
 
   const { data: client } = useConnectorClient<Config>({ chainId });
   const provClient = useClient<Config>({ chainId });
@@ -95,7 +94,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
       }
 
       console.log(
-        `🔧 SafuPad SDK: Initializing for ${network === "bsc" ? "BSC Mainnet" : "BSC Testnet"} (Chain ID: ${chainId})...`
+        `🔧 SafuPad SDK: Initializing for BSC Mainnet (Chain ID: ${chainId})...`
       );
 
       setIsInitializing(true);
@@ -103,7 +102,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
 
       try {
         console.log(
-          `🔧 SafuPad SDK: Getting ${network === "bsc" ? "BSC Mainnet" : "BSC Testnet"} provider...`
+          `🔧 SafuPad SDK: Getting BSC Mainnet provider...`
         );
 
         const signer = clientToSigner(client);
@@ -133,7 +132,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
           return;
         }
 
-        console.log(`✅ SafuPad SDK: Successfully initialized on ${network}!`);
+        console.log(`✅ SafuPad SDK: Successfully initialized on BSC Mainnet!`);
         setSdk(instance);
       } catch (e: any) {
         if (cancelled) return;
