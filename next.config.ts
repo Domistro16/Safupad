@@ -16,22 +16,24 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  outputFileTracingRoot: path.resolve(__dirname, '../../'),
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
-  turbopack: {
-    rules: {
-      "*.{jsx,tsx}": {
-        loaders: [LOADER]
+  // Turbopack is only for dev mode, not production
+  ...(process.env.NODE_ENV === 'development' && {
+    turbopack: {
+      rules: {
+        "*.{jsx,tsx}": {
+          loaders: [LOADER]
+        }
       }
     }
-  },
+  }),
   webpack: (config, { isServer }) => {
-    // Fix for @safupad/sdk Node.js built-in modules
+    // Fix for @safupad/sdk and other packages that use Node.js built-in modules
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -43,6 +45,9 @@ const nextConfig: NextConfig = {
         http: false,
         https: false,
         zlib: false,
+        net: false,
+        tls: false,
+        child_process: false,
       };
     }
     return config;
@@ -50,4 +55,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-// Orchids restart: 1763222595012

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export const SafuSdkPanel = () => {
-  const { sdk, isInitializing, error, connect } = useSafuPadSDK();
+  const { sdk, isInitializing, error, connect, network, chainId } = useSafuPadSDK();
 
   useEffect(() => {
     if (sdk) {
@@ -209,8 +209,9 @@ export const SafuSdkPanel = () => {
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold tracking-wide text-accent/90">SafuPad SDK</p>
-          {/* Network is locked to BSC Testnet */}
-          <p className="text-xs text-accent/80">Network: BSC Testnet</p>
+          <p className="text-xs text-accent/80">
+            Network: {network === "bsc" ? "BSC Mainnet" : "BSC Testnet"} (Chain ID: {chainId})
+          </p>
           {isInitializing && (
             <p className="text-xs text-muted-foreground">Initializing...</p>
           )}

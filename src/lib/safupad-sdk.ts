@@ -1,111 +1,149 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  BrowserProvider,
+  FallbackProvider,
+  JsonRpcProvider,
+  JsonRpcSigner,
+} from "ethers";
+import type { Account, Chain, Client, Transport } from "viem";
+import {
+  type Config,
+  useClient,
+  useWalletClient,
+  useAccount,
+  useConnectorClient,
+} from "wagmi";
 import { SafuPadSDK } from "@safupad/sdk";
-import { ethers } from "ethers";
-import { useWalletClient } from "wagmi";
 
 export type UseSafuPadSDKResult = {
   sdk: SafuPadSDK | null;
   isInitializing: boolean;
   error: unknown | null;
   connect: () => Promise<string | null>;
+  network: "bsc";
+  chainId: number;
 };
 
 /**
- * Gets the appropriate provider for BSC Testnet (chainId 97)
- * Falls back to JsonRpcProvider if wallet is not connected
+ * Gets the appropriate provider for the configured network
  */
-import { FallbackProvider, JsonRpcProvider } from 'ethers'
-import { useMemo } from 'react'
-import type { Chain, Client, Transport } from 'viem'
-import { type Config, useClient } from 'wagmi'
-
 function clientToProvider(client: Client<Transport, Chain>) {
-  const { chain, transport } = client
+  const { chain, transport } = client;
   const network = {
     chainId: chain.id,
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
-  }
-  if (transport.type === 'fallback') {
+  };
+  if (transport.type === "fallback") {
     const providers = (transport.transports as ReturnType<Transport>[]).map(
-      ({ value }) => new JsonRpcProvider(value?.url, network),
-    )
-    if (providers.length === 1) return providers[0]
-    return new FallbackProvider(providers)
+      ({ value }) => new JsonRpcProvider(value?.url, network)
+    );
+    if (providers.length === 1) return providers[0];
+    return new FallbackProvider(providers);
   }
-  return new JsonRpcProvider(transport.url, network)
+  return new JsonRpcProvider(transport.url, network);
 }
 
+export function clientToSigner(client: Client<Transport, Chain, Account>) {
+  const { account, chain, transport } = client;
+  const network = {
+    chainId: chain.id,
+    name: chain.name,
+    ensAddress: chain.contracts?.ensRegistry?.address,
+  };
+  const provider = new BrowserProvider(transport, network);
+  const signer = new JsonRpcSigner(provider, account.address);
+  return signer;
+}
 
 /**
  * useSafuPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Network is locked to BSC Testnet
- * - Falls back to JsonRpcProvider for read-only operations when wallet is disconnected
+ * - Only supports BSC Mainnet (56)
+ * - Defaults to BSC Mainnet when wallet is not connected
  */
 export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [sdk, setSdk] = useState<SafuPadSDK | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [error, setError] = useState<unknown | null>(null);
-  const initAttempted = useRef(false);
-         const client = useClient<Config>({ chainId: 97 })
-  
-  // Get wallet client from wagmi (connected wallet)
+
+  // Get current chain from wallet connection
+  const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  useEffect(() => {
-    // Reset initialization flag when wallet connection changes
-    initAttempted.current = false;
-  }, [walletClient]);
+  // Only support BSC Mainnet (56)
+  const chainId = chain?.id ?? 56;
+  const network: "bsc" = "bsc";
+
+  const { data: client } = useConnectorClient<Config>({ chainId });
+  const provClient = useClient<Config>({ chainId });
 
   useEffect(() => {
-    // Prevent double initialization
-    if (initAttempted.current) return;
-    initAttempted.current = true;
-
     let cancelled = false;
 
     async function init() {
-      console.log("🔧 SafuPad SDK: Starting initialization...");
+      // Wait for both clients to be available
+      if (!client || !provClient) {
+        console.log(
+          `⏳ SafuPad SDK: Waiting for clients... (chain: ${chainId})`
+        );
+        setSdk(null); // Clear SDK while waiting
+        return;
+      }
+
+      console.log(
+        `🔧 SafuPad SDK: Initializing for BSC Mainnet (Chain ID: ${chainId})...`
+      );
 
       setIsInitializing(true);
       setError(null);
 
       try {
-        console.log("🔧 SafuPad SDK: Getting BSC Testnet provider...");
-  
-        const provider = await clientToProvider(client);
-        
-        console.log("🔧 SafuPad SDK: Creating SDK instance with bscTestnet...");
-        
+        console.log(
+          `🔧 SafuPad SDK: Getting BSC Mainnet provider...`
+        );
+
+        const signer = clientToSigner(client);
+        const provider = clientToProvider(provClient);
+      
+        console.log(
+          `🔧 SafuPad SDK: Creating SDK instance with network: ${network}...`
+        );
+        console.log(await provider.getNetwork())
         const instance = new SafuPadSDK({
-          network: "bscTestnet",
+          network: network,
           provider: provider,
+          alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+          subgraphUrl:
+            "https://api.studio.thegraph.com/query/112443/safupad-subgraph/v0.0.11",
         });
 
         console.log("🔧 SafuPad SDK: Calling initialize()...");
         await instance.initialize();
+
+        // UPDATE THE SIGNER AFTER INITIALIZATION
+        console.log("🔧 SafuPad SDK: Updating signer...");
+        instance.updateSigner(signer);
 
         if (cancelled) {
           console.log("⚠️ SafuPad SDK: Initialization cancelled");
           return;
         }
 
-        console.log("✅ SafuPad SDK: Successfully initialized!");
+        console.log(`✅ SafuPad SDK: Successfully initialized on BSC Mainnet!`);
         setSdk(instance);
-        
       } catch (e: any) {
         if (cancelled) return;
-        
+
         console.error("❌ SafuPad SDK: Initialization failed:", e);
         console.error("Error details:", {
           message: e?.message,
           code: e?.code,
           data: e?.data,
         });
-        
+
         setError(e);
         setSdk(null);
       } finally {
@@ -119,14 +157,16 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
 
     return () => {
       cancelled = true;
+      setSdk(null);
     };
-  }, [walletClient]); // Re-initialize when wallet connection changes
-
+  }, [chainId, network, client, provClient]);
   const connect = async () => {
     console.log("🔗 SafuPad SDK: Connect called");
-    
+
     if (!walletClient) {
-      console.warn("⚠️ SafuPad SDK: No wallet connected. Please connect via RainbowKit first.");
+      console.warn(
+        "⚠️ SafuPad SDK: No wallet connected. Please connect via RainbowKit first."
+      );
       return null;
     }
 
@@ -147,5 +187,5 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
     }
   };
 
-  return { sdk, isInitializing, error, connect };
+  return { sdk, isInitializing, error, connect, network, chainId };
 }

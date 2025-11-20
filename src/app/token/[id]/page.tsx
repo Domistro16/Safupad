@@ -16,111 +16,117 @@ import { useEffect, useMemo, useState } from "react";
 import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import type { Token, Trade } from "@/types/token";
 import { ethers } from "ethers";
-import {useAccount} from "wagmi"
-import { toast } from "sonner"
+import { useAccount } from "wagmi";
+import { toast } from "sonner";
 import { getTokenStats, type PancakeSwapStats } from "@/lib/utils/pancakeswap";
 
-export const abi = [{
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "pools",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "bnbReserve",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenReserve",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "reservedTokens",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "totalTokenSupply",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "marketCap",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "graduationMarketCap",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "graduated",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "active",
-          "type": "bool"
-        },
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "virtualBnbReserve",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "bnbForPancakeSwap",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "lpToken",
-          "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "burnLP",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "launchBlock",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "graduationBnbThreshold",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "graduationMarketCapBNB",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },]
+export const abi = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "pools",
+    outputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "bnbReserve",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenReserve",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "reservedTokens",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "totalTokenSupply",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "marketCap",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "graduationMarketCap",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "graduated",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "active",
+        type: "bool",
+      },
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "virtualBnbReserve",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "bnbForPancakeSwap",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "lpToken",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "burnLP",
+        type: "bool",
+      },
+      {
+        internalType: "uint256",
+        name: "launchBlock",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "graduationBnbThreshold",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "graduationMarketCapBNB",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+];
 
-export default function TokenPage({ params }: { params: Promise<{ id: string }> }) {
+export default function TokenPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const { sdk } = useSafuPadSDK();
   const [token, setToken] = useState<Token | null>(null);
@@ -135,7 +141,7 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
     bnbInPool: number;
     canClaim: boolean;
   } | null>(null);
-  const {address} = useAccount()
+  const { address } = useAccount();
   const [isInstantLaunch, setIsInstantLaunch] = useState(false);
   const [actualBnbInPool, setActualBnbInPool] = useState<number>(0);
   const [virtualLiquidityUSD, setVirtualLiquidityUSD] = useState<number>(0);
@@ -151,7 +157,8 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
     timeRemaining: number;
   } | null>(null);
   const [isHarvesting, setIsHarvesting] = useState(false);
-  const [pancakeSwapStats, setPancakeSwapStats] = useState<PancakeSwapStats | null>(null);
+  const [pancakeSwapStats, setPancakeSwapStats] =
+    useState<PancakeSwapStats | null>(null);
   const [raiseCompleted, setRaiseCompleted] = useState(false);
 
   // Fetch token data from SDK
@@ -173,22 +180,25 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
         const tokenMeta = tokenInfo.metadata;
         const tokenName = tokenInfo.name || "Unknown Token";
         const tokenSymbol = tokenInfo.symbol || "???";
-        const logoURI = tokenMeta.logoURI || 
+        const logoURI =
+          tokenMeta.logoURI ||
           "https://images.unsplash.com/photo-1614064641938-3bbee52942c1?w=400&h=400&fit=crop";
 
         // Fetch launch info with USD values
         const launchInfo = await sdk.launchpad.getLaunchInfoWithUSD(id);
-        
+
         // Fetch graduation status separately using getLaunchInfo
         const launchInfoBasic = await sdk.launchpad.getLaunchInfo(id);
-        const graduatedToPancake = Boolean(launchInfoBasic.graduatedToPancakeSwap);
+        const graduatedToPancake = Boolean(
+          launchInfoBasic.graduatedToPancakeSwap
+        );
         const raiseComplete = Boolean(launchInfo.raiseCompleted);
-        
+
         if (!cancelled) {
           setGraduatedToPancakeSwap(graduatedToPancake);
           setRaiseCompleted(raiseComplete);
         }
-        
+
         // Parse launch type FIRST before fetching pool data
         const launchTypeNum = Number(launchInfo.launchType);
         const isProjectRaise = launchTypeNum === 0;
@@ -200,25 +210,34 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
 
         // Fetch pool info
         const poolInfo = await sdk.bondingDex.getPoolInfo(id);
-        
+
         // Only fetch bonding curve contract data for instant-launch tokens
         let pool: any = null;
         if (isInstant) {
-          const bond = sdk.bondingDex.getContract()
-          const provider = new ethers.JsonRpcProvider("https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
-          const bonding = new ethers.Contract(await bond.getAddress(), abi, provider);
+          const bond = sdk.bondingDex.getContract();
+          const provider = new ethers.JsonRpcProvider(
+            "https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
+          );
+          const bonding = new ethers.Contract(
+            await bond.getAddress(),
+            abi,
+            provider
+          );
           pool = await bonding.pools(id);
-
+          console.log(pool)
           // Store actual BNB in pool from contract for instant-launch
-          const totalBnb = Number(ethers.formatEther(pool.bnbReserve)) + Number(ethers.formatEther(pool.virtualBnbReserve));
+          const totalBnb =
+            Number(ethers.formatEther(pool.bnbReserve)) +
+            Number(ethers.formatEther(pool.virtualBnbReserve));
           if (!cancelled) {
             setActualBnbInPool(totalBnb);
-            
+
             // Convert BNB to USD using price oracle
-            const totalBnbWei = BigInt(pool.bnbReserve) + BigInt(pool.virtualBnbReserve);
+            const totalBnbWei =
+              BigInt(pool.bnbReserve) + BigInt(pool.virtualBnbReserve);
             const usdValue = await sdk.priceOracle.bnbToUSD(totalBnbWei);
             setVirtualLiquidityUSD(Number(ethers.formatEther(usdValue)));
-            
+
             // Convert graduation BNB threshold to USD
             const graduationBnbWei = BigInt(pool.graduationBnbThreshold);
             setGraduationBnb(Number(ethers.formatEther(graduationBnbWei)));
@@ -239,13 +258,17 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
           try {
             const claimable = await sdk.launchpad.getClaimableAmounts(id);
             const parsedClaimable = {
-              claimableTokens: Number(ethers.formatEther(claimable.claimableTokens)),
-              claimableFunds: Number(ethers.formatEther(claimable.claimableFunds)),
+              claimableTokens: Number(
+                ethers.formatEther(claimable.claimableTokens)
+              ),
+              claimableFunds: Number(
+                ethers.formatEther(claimable.claimableFunds)
+              ),
             };
             if (!cancelled) {
               setClaimableAmounts(parsedClaimable);
             }
-            console.log('Claimable amounts:', parsedClaimable);
+            console.log("Claimable amounts:", parsedClaimable);
           } catch (err) {
             console.warn(`Could not fetch claimable amounts for ${id}:`, err);
             if (!cancelled) {
@@ -258,24 +281,35 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
         if (isInstant) {
           try {
             const feeInfo = await sdk.bondingDex.getCreatorFeeInfo(id);
-            console.log('Creator fee info:', feeInfo);
-            
+            console.log("Creator fee info:", feeInfo);
+
             const parsedFeeInfo = {
-              accumulatedFees: Number(ethers.formatEther(feeInfo.accumulatedFees)),
-              lastClaimTime: feeInfo.lastClaimTime && Number(feeInfo.lastClaimTime) > 0
-                ? new Date(Number(feeInfo.lastClaimTime) * 1000)
-                : null,
-              graduationMarketCap: Number(ethers.formatEther(feeInfo.graduationMarketCap)),
-              currentMarketCap: Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(feeInfo.currentMarketCap))),
+              accumulatedFees: Number(
+                ethers.formatEther(
+                  await sdk.priceOracle.bnbToUSD(feeInfo.accumulatedFees)
+                )
+              ),
+              lastClaimTime:
+                feeInfo.lastClaimTime && Number(feeInfo.lastClaimTime) > 0
+                  ? new Date(Number(feeInfo.lastClaimTime) * 1000)
+                  : null,
+              graduationMarketCap: Number(
+                ethers.formatEther(feeInfo.graduationMarketCap)
+              ),
+              currentMarketCap: Number(
+                ethers.formatEther(
+                  await sdk.priceOracle.bnbToUSD(feeInfo.currentMarketCap)
+                )
+              ),
               bnbInPool: Number(ethers.formatEther(feeInfo.bnbInPool)),
               canClaim: Boolean(feeInfo.canClaim),
             };
-            
+
             if (!cancelled) {
               setCreatorFeeInfo(parsedFeeInfo);
             }
           } catch (err) {
-            console.error('Error fetching creator fee info:', err);
+            console.error("Error fetching creator fee info:", err);
             // Set default values if fetch fails for instant-launch
             if (!cancelled) {
               setCreatorFeeInfo({
@@ -291,24 +325,36 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
         }
 
         // Parse numeric values
-        const totalRaisedUSD = Number(ethers.formatEther(launchInfo.totalRaisedUSD));
-        const raiseMaxUSD = Number(ethers.formatEther(launchInfo.raiseTargetUSD));
+        const totalRaisedUSD = Number(
+          ethers.formatEther(launchInfo.totalRaisedUSD)
+        );
+        const raiseMaxUSD = Number(
+          ethers.formatEther(launchInfo.raiseTargetUSD)
+        );
         const marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-        const currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
+        const currentPrice = Number(
+          ethers.formatEther(
+            await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
+          )
+        );
         const graduationProgress = Number(poolInfo.graduationProgress);
         const priceMultiplier = Number(poolInfo.priceMultiplier);
         const raiseCompleted = Boolean(launchInfo.raiseCompleted);
         const graduated = Boolean(poolInfo.graduated);
-        
+
         // Calculate liquidity pool - different for project-raise vs instant-launch
         let liquidityPool: any;
         if (isInstant && pool) {
           const virtual = pool.virtualBnbReserve;
-          liquidityPool = await sdk.priceOracle.bnbToUSD(BigInt(poolInfo.bnbReserve) + BigInt(virtual));
+          liquidityPool = await sdk.priceOracle.bnbToUSD(
+            BigInt(poolInfo.bnbReserve) + BigInt(virtual)
+          );
         } else {
-          liquidityPool = await sdk.priceOracle.bnbToUSD(BigInt(poolInfo.bnbReserve));
+          liquidityPool = await sdk.priceOracle.bnbToUSD(
+            BigInt(poolInfo.bnbReserve)
+          );
         }
-        
+
         // Parse vesting data if available
         const startMarketCap = vestingData
           ? Number(ethers.formatEther(vestingData.startMarketCap))
@@ -325,7 +371,7 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
         const founderTokensClaimed = vestingData
           ? Number(ethers.formatEther(vestingData.founderTokensClaimed))
           : 0;
-        
+
         // Parse deadline
         const raiseDeadline = launchInfo.raiseDeadline
           ? new Date(Number(launchInfo.raiseDeadline) * 1000)
@@ -343,24 +389,33 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
           try {
             // Get total volume
             const totalVolumeData = await sdk.bondingDex.getTotalVolume(id);
-            totalVolumeBNB = Number(ethers.formatEther(totalVolumeData.totalVolumeBNB));
-            transactionCount = totalVolumeData.buyCount + totalVolumeData.sellCount;
-            
+            totalVolumeBNB = Number(
+              ethers.formatEther(totalVolumeData.totalVolumeBNB)
+            );
+            transactionCount =
+              totalVolumeData.buyCount + totalVolumeData.sellCount;
+
             // Convert total volume to USD
-            const totalVolumeUSD = await sdk.priceOracle.bnbToUSD(totalVolumeData.totalVolumeBNB);
+            const totalVolumeUSD = await sdk.priceOracle.bnbToUSD(
+              totalVolumeData.totalVolumeBNB
+            );
             volume24h = Number(ethers.formatEther(totalVolumeUSD));
-            
+
             console.log(totalVolumeData);
-                  
+
             // Get 24h price change
             try {
-              const priceChangeData = await sdk.bondingDex.get24hPriceChange(id);
+              const priceChangeData =
+                await sdk.bondingDex.get24hPriceChange(id);
               priceChange24h = priceChangeData.priceChangePercent;
               console.log(`Price change for ${tokenName}: ${priceChange24h}%`);
             } catch (error) {
-              console.warn(`Could not fetch price change data for ${id}:`, error);
+              console.warn(
+                `Could not fetch price change data for ${id}:`,
+                error
+              );
             }
-            
+
             // Get recent trades and convert to Trade format
             const tradesData = await sdk.bondingDex.getRecentTrades(id);
             recentTradesCount = tradesData.length;
@@ -368,17 +423,26 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
             // Convert SDK TradeData format to Trade format
             const convertedTrades: Trade[] = await Promise.all(
               tradesData.map(async (tradeData: any, index: number) => {
-                const usdPrice = await sdk.priceOracle.bnbToUSD(tradeData.price);
-                const usdValue = await sdk.priceOracle.bnbToUSD(tradeData.bnbAmount);
+                const usdPrice = await sdk.priceOracle.bnbToUSD(
+                  tradeData.price
+                );
+                const usdValue = await sdk.priceOracle.bnbToUSD(
+                  tradeData.bnbAmount
+                );
                 const priceInBnbHexOrBN = tradeData.price;
 
-                const amount = Number(ethers.formatEther(tradeData.tokenAmount));
+                const amount = Number(
+                  ethers.formatEther(tradeData.tokenAmount)
+                );
                 const price = Number(ethers.formatEther(priceInBnbHexOrBN));
                 const total = Number(ethers.formatEther(usdValue));
 
                 return {
                   id: `${tradeData.txHash}-${index}`,
-                  tokenId: tradeData.tokenId ?? tradeData.id ?? `${tradeData.txHash}-${index}`,
+                  tokenId:
+                    tradeData.tokenId ??
+                    tradeData.id ??
+                    `${tradeData.txHash}-${index}`,
                   type: tradeData.type,
                   amount,
                   price,
@@ -393,10 +457,10 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
             if (!cancelled) {
               setRecentTrades(convertedTrades);
             }
-            
+
             // Get holder count
             holderCount = await sdk.bondingDex.getEstimatedHolderCount(id);
-            
+
             console.log(`Volume data for ${tokenName}:`, {
               volume24h,
               totalVolumeBNB,
@@ -404,10 +468,13 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
               holderCount,
               priceChange24h,
               totalVolumeData,
-              convertedTrades
+              convertedTrades,
             });
           } catch (error) {
-            console.warn(`Could not fetch volume/holder data for ${id}:`, error);
+            console.warn(
+              `Could not fetch volume/holder data for ${id}:`,
+              error
+            );
           }
         }
 
@@ -421,15 +488,15 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
           image: logoURI,
           contractAddress: id,
           creatorAddress: launchInfo.founder,
-          
+
           launchType: isProjectRaise ? "project-raise" : "instant-launch",
-          
+
           status: ((): Token["status"] => {
             if (graduated) return "completed";
             if (isProjectRaise && !raiseComplete) return "active";
             return "active";
           })(),
-          
+
           createdAt: new Date(),
 
           // Financial
@@ -441,57 +508,72 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
           priceChange24h,
 
           // Project Raise
-          projectRaise: isProjectRaise ? {
-            config: {
-              type: "project-raise",
-              targetAmount: raiseMaxUSD || 0,
-              raiseWindow: 24 * 60 * 60 * 1000,
-              ownerAllocation: 20,
-              immediateUnlock: 10,
-              vestingMonths: 6,
-              liquidityAllocation: 10,
-              liquidityCap: 100000,
-              graduationThreshold: 15,
-              tradingFee: { platform: 0.1, liquidity: 0.3, infofiPlatform: 0.6, creator: 1.0 },
-            },
-            raisedAmount: totalRaisedUSD,
-            targetAmount: raiseMaxUSD || 0,
-            startTime: new Date(Date.now() - 60_000),
-            endTime: raiseDeadline,
-            vestingSchedule: { 
-              totalAmount: founderTokens, 
-              releasedAmount: founderTokensClaimed, 
-              schedule: [] 
-            },
-            approved: true,
-            graduationProgress,
-            // Vesting data from SDK
-            vestingData: vestingData ? {
-              startMarketCap,
-              vestingDuration,
-              vestingStartTime,
-              founderTokens,
-              founderTokensClaimed,
-            } : undefined,
-          } : undefined,
+          projectRaise: isProjectRaise
+            ? {
+                config: {
+                  type: "project-raise",
+                  targetAmount: raiseMaxUSD || 0,
+                  raiseWindow: 24 * 60 * 60 * 1000,
+                  ownerAllocation: 20,
+                  immediateUnlock: 10,
+                  vestingMonths: 6,
+                  liquidityAllocation: 10,
+                  liquidityCap: 100000,
+                  graduationThreshold: 15,
+                  tradingFee: {
+                    platform: 0.1,
+                    liquidity: 0.3,
+                    infofiPlatform: 0.6,
+                    creator: 1.0,
+                  },
+                },
+                raisedAmount: totalRaisedUSD,
+                targetAmount: raiseMaxUSD || 0,
+                startTime: new Date(Date.now() - 60_000),
+                endTime: raiseDeadline,
+                vestingSchedule: {
+                  totalAmount: founderTokens,
+                  releasedAmount: founderTokensClaimed,
+                  schedule: [],
+                },
+                approved: true,
+                graduationProgress,
+                // Vesting data from SDK
+                vestingData: vestingData
+                  ? {
+                      startMarketCap,
+                      vestingDuration,
+                      vestingStartTime,
+                      founderTokens,
+                      founderTokensClaimed,
+                    }
+                  : undefined,
+              }
+            : undefined,
 
           // Instant Launch
-          instantLaunch: !isProjectRaise ? {
-            config: {
-              type: "instant-launch",
-              tradingFee: { platform: 0.1, creator: 1.0, infofiPlatform: 0.9 },
-              graduationThreshold: 15,
-              claimCooldown: 86_400_000,
-              marketCapRequirement: true,
-              accrualPeriod: 604_800_000,
-            },
-            cumulativeBuys: Number(poolInfo.bnbReserve),
-            creatorFees: 0,
-            lastClaimTime: null,
-            claimableAmount: 0,
-            graduationProgress,
-            priceMultiplier,
-          } as any : undefined,
+          instantLaunch: !isProjectRaise
+            ? ({
+                config: {
+                  type: "instant-launch",
+                  tradingFee: {
+                    platform: 0.1,
+                    creator: 1.0,
+                    infofiPlatform: 0.9,
+                  },
+                  graduationThreshold: 15,
+                  claimCooldown: 86_400_000,
+                  marketCapRequirement: true,
+                  accrualPeriod: 604_800_000,
+                },
+                cumulativeBuys: Number(poolInfo.bnbReserve),
+                creatorFees: 0,
+                lastClaimTime: null,
+                claimableAmount: 0,
+                graduationProgress,
+                priceMultiplier,
+              } as any)
+            : undefined,
 
           // Graduation
           graduated,
@@ -536,16 +618,18 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
         setPancakeSwapStats(null);
         return;
       }
-      
+
       try {
-        const provider = new ethers.JsonRpcProvider("https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
+        const provider = new ethers.JsonRpcProvider(
+          "https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
+        );
         const stats = await getTokenStats(token.id, provider, sdk);
-        
+
         if (!cancelled) {
           setPancakeSwapStats(stats);
-          
+
           // Update token with PancakeSwap price
-          setToken(prevToken => {
+          setToken((prevToken) => {
             if (!prevToken) return null;
             return {
               ...prevToken,
@@ -554,7 +638,7 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
               liquidityPool: stats.liquidityUSD,
             };
           });
-          
+
           console.log("PancakeSwap stats loaded:", stats);
         }
       } catch (error) {
@@ -566,7 +650,7 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
     };
 
     void fetchPancakeSwapStats();
-    
+
     // Poll every 30 seconds for price updates
     const interval = setInterval(() => {
       void fetchPancakeSwapStats();
@@ -590,23 +674,27 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
       try {
         // Fetch lock info for total fees harvested
         const lockInfo = await sdk.lpHarvester.getLockInfo(id);
-        
+
         // Fetch can harvest status
         const harvestStatus = await sdk.lpHarvester.canHarvest(id);
-        
+
         const parsedData = {
-          totalFeesHarvested: Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(lockInfo.totalFeesHarvested))),
+          totalFeesHarvested: Number(
+            ethers.formatEther(
+              await sdk.priceOracle.bnbToUSD(lockInfo.totalFeesHarvested)
+            )
+          ),
           canHarvest: Boolean(harvestStatus.ready),
           timeRemaining: Number(harvestStatus.timeRemaining),
         };
-        
+
         if (!cancelled) {
           setPostGraduationFees(parsedData);
         }
-        
-        console.log('Post-graduation fees:', parsedData);
+
+        console.log("Post-graduation fees:", parsedData);
       } catch (err) {
-        console.error('Error fetching post-graduation fees:', err);
+        console.error("Error fetching post-graduation fees:", err);
         if (!cancelled) {
           setPostGraduationFees({
             totalFeesHarvested: 0,
@@ -640,12 +728,12 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
       try {
         const launchInfo = await sdk.launchpad.getLaunchInfo(id);
         const graduated = Boolean(launchInfo.graduatedToPancakeSwap);
-        
+
         if (!cancelled) {
           setGraduatedToPancakeSwap(graduated);
         }
       } catch (err) {
-        console.error('Error checking graduation status:', err);
+        console.error("Error checking graduation status:", err);
       }
     };
 
@@ -671,22 +759,24 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
 
     setIsHarvesting(true);
     try {
-     const harvester = new ethers.Contract(sdk.lpHarvester.address, ['function harvestFees(address)'], sdk.getSigner())
+      const harvester = sdk.lpHarvester.getContract();
       const tr = await harvester.harvestFees(id);
       await tr.wait();
       toast.success("Fees harvested successfully!");
-      
+
       // Refresh post-graduation fees data
       const lockInfo = await sdk.lpHarvester.getLockInfo(id);
       const harvestStatus = await sdk.lpHarvester.canHarvest(id);
-      
+
       setPostGraduationFees({
-        totalFeesHarvested: Number(ethers.formatEther(lockInfo.totalFeesHarvested)),
+        totalFeesHarvested: Number(
+          ethers.formatEther(lockInfo.totalFeesHarvested)
+        ),
         canHarvest: Boolean(harvestStatus.ready),
         timeRemaining: Number(harvestStatus.timeRemaining),
       });
     } catch (err: any) {
-      console.error('Error harvesting fees:', err);
+      console.error("Error harvesting fees:", err);
       toast.error(err?.message || "Failed to harvest fees");
     } finally {
       setIsHarvesting(false);
@@ -694,37 +784,42 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
   };
 
   // Derive current user address from localStorage
-  const [currentAddress, setCurrentAddress] = useState<string>(address);
-
 
   const isCreator = useMemo(() => {
     if (!address || !token) return false;
     return address.toLowerCase() === token.creatorAddress.toLowerCase();
-  }, [currentAddress, token]);
+  }, [address, token]);
 
   // Determine if we should show contribute interface
   const isProjectRaise = token?.launchType === "project-raise";
   // Show contribute interface for project-raise tokens until they graduate to PancakeSwap
   const shouldShowContribute = isProjectRaise && !graduatedToPancakeSwap;
-  
+
   // Show trading interface when not showing contribute interface
   const shouldShowTrading = !shouldShowContribute;
 
   // Show banner ONLY for instant-launch OR project-raise tokens that graduated to PancakeSwap
-  const showFeesBanner = isInstantLaunch || (isProjectRaise && graduatedToPancakeSwap);
+  const showFeesBanner =
+    isInstantLaunch || (isProjectRaise && graduatedToPancakeSwap);
   const canClaimFees = showFeesBanner && isCreator && creatorFeeInfo?.canClaim;
-  
+
   // Show claimable funds banner for project-raise tokens
   const showClaimableFunds = !isInstantLaunch && claimableAmounts;
-  const hasClaimableFunds = showClaimableFunds && claimableAmounts && claimableAmounts.claimableFunds > 0;
-  const hasClaimableTokens = showClaimableFunds && claimableAmounts && claimableAmounts.claimableTokens > 0;
-  
+  const hasClaimableFunds =
+    showClaimableFunds &&
+    claimableAmounts &&
+    claimableAmounts.claimableFunds > 0;
+  const hasClaimableTokens =
+    showClaimableFunds &&
+    claimableAmounts &&
+    claimableAmounts.claimableTokens > 0;
+
   // Check if harvest is available (either SDK says so OR timer has elapsed)
-  const canHarvestFees = postGraduationFees && (
-    postGraduationFees.canHarvest || postGraduationFees.timeRemaining <= 0
-  );
-  
-  console.log('Debug Info:', {
+  const canHarvestFees =
+    postGraduationFees &&
+    (postGraduationFees.canHarvest || postGraduationFees.timeRemaining <= 0);
+
+  console.log("Debug Info:", {
     isCreator,
     graduatedToPancakeSwap,
     hasCreatorFeeInfo: !!creatorFeeInfo,
@@ -733,7 +828,7 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
     canHarvestFees,
     postGraduationFees,
   });
-  
+
   // Loading state
   if (loading) {
     return (
@@ -764,17 +859,20 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
               </div>
               <h2 className="text-2xl font-bold">Token Not Found</h2>
               <p className="text-muted-foreground">
-                {error || "Unable to load token data. The token may not exist or there was an error fetching its information."}
+                {error ||
+                  "Unable to load token data. The token may not exist or there was an error fetching its information."}
               </p>
               <div className="pt-4">
-                <p className="text-xs text-muted-foreground mb-2">Token Address:</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Token Address:
+                </p>
                 <code className="text-xs bg-muted px-3 py-2 rounded break-all block">
                   {id}
                 </code>
               </div>
-              <Button 
-                className="controller-btn mt-4" 
-                onClick={() => window.location.href = '/'}
+              <Button
+                className="controller-btn mt-4"
+                onClick={() => (window.location.href = "/")}
               >
                 Back to Home
               </Button>
@@ -788,7 +886,7 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
         {/* Creator Fees Banner - visible for instant-launch OR project-raise tokens that graduated */}
         {showFeesBanner && (
@@ -796,22 +894,28 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
             <div className="space-y-2 flex-1">
               <div className="flex items-center gap-2">
                 <Coins className="w-5 h-5 text-accent" />
-                <p className="text-sm text-muted-foreground">Creator Fees Status</p>
+                <p className="text-sm text-muted-foreground">
+                  Creator Fees Status
+                </p>
               </div>
-              
+
               {/* For Instant Launch: Show bonding curve fee info */}
               {isInstantLaunch && creatorFeeInfo ? (
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-muted-foreground">Accumulated Fees</p>
+                      <p className="text-xs text-muted-foreground">
+                        Accumulated Fees
+                      </p>
                       <p className="text-xl font-black tracking-wide">
                         {formatCurrency(creatorFeeInfo.accumulatedFees)}
                       </p>
                     </div>
                     {!graduatedToPancakeSwap && (
                       <div>
-                        <p className="text-xs text-muted-foreground">Virtual Liquidity</p>
+                        <p className="text-xs text-muted-foreground">
+                          Virtual Liquidity
+                        </p>
                         <p className="text-xl font-black tracking-wide">
                           {formatCurrency(virtualLiquidityUSD)}
                         </p>
@@ -819,15 +923,24 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
                     )}
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        {graduatedToPancakeSwap ? "PancakeSwap Market Cap" : "Current Market Cap"}
+                        {graduatedToPancakeSwap
+                          ? "PancakeSwap Market Cap"
+                          : "Current Market Cap"}
                       </p>
                       <p className="text-xl font-black tracking-wide">
-                        {formatCurrency(graduatedToPancakeSwap ? (pancakeSwapStats?.marketCapUSD || creatorFeeInfo.currentMarketCap) : creatorFeeInfo.currentMarketCap)}
+                        {formatCurrency(
+                          graduatedToPancakeSwap
+                            ? pancakeSwapStats?.marketCapUSD ||
+                                creatorFeeInfo.currentMarketCap
+                            : creatorFeeInfo.currentMarketCap
+                        )}
                       </p>
                     </div>
                     {!graduatedToPancakeSwap && (
                       <div>
-                        <p className="text-xs text-muted-foreground">Graduation BNB</p>
+                        <p className="text-xs text-muted-foreground">
+                          Graduation BNB
+                        </p>
                         <p className="text-xl font-black tracking-wide">
                           {graduationBnb} BNB
                         </p>
@@ -836,7 +949,8 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
                   </div>
                   {creatorFeeInfo.lastClaimTime && (
                     <p className="text-xs text-muted-foreground">
-                      Last Claim: <span className="font-semibold text-foreground">
+                      Last Claim:{" "}
+                      <span className="font-semibold text-foreground">
                         {creatorFeeInfo.lastClaimTime.toLocaleString()}
                       </span>
                     </p>
@@ -860,14 +974,18 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
                   {postGraduationFees ? (
                     <div className="space-y-3">
                       <div>
-                        <p className="text-xs text-muted-foreground">Total Fees Harvested</p>
+                        <p className="text-xs text-muted-foreground">
+                          Total Fees Harvested
+                        </p>
                         <p className="text-xl font-black tracking-wide text-secondary">
-                          {formatCurrency(postGraduationFees.totalFeesHarvested)}
+                          {formatCurrency(
+                            postGraduationFees.totalFeesHarvested
+                          )}
                         </p>
                       </div>
                       {canHarvestFees && (
-                        <Button 
-                          className="controller-btn w-full sm:w-auto" 
+                        <Button
+                          className="controller-btn w-full sm:w-auto"
                           onClick={handleHarvestFees}
                           disabled={isHarvesting}
                         >
@@ -884,23 +1002,34 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
                           )}
                         </Button>
                       )}
-                      {isCreator && !canHarvestFees && postGraduationFees.timeRemaining > 0 && (
-                        <p className="text-xs text-yellow-500">
-                          ⏱️ Next harvest available in {Math.ceil(postGraduationFees.timeRemaining / 60)} minutes
-                        </p>
-                      )}
+                      {isCreator &&
+                        !canHarvestFees &&
+                        postGraduationFees.timeRemaining > 0 && (
+                          <p className="text-xs text-yellow-500">
+                            ⏱️ Next harvest available in{" "}
+                            {Math.ceil(postGraduationFees.timeRemaining / 60)}{" "}
+                            minutes
+                          </p>
+                        )}
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <p className="text-sm">Loading post-graduation fee data...</p>
+                      <p className="text-sm">
+                        Loading post-graduation fee data...
+                      </p>
                     </div>
                   )}
                 </>
               )}
             </div>
             {canClaimFees && isInstantLaunch && (
-              <Button className="controller-btn" onClick={() => {/* wire claim action later */}}>
+              <Button
+                className="controller-btn"
+                onClick={() => {
+                  /* wire claim action later */
+                }}
+              >
                 <Wallet className="w-5 h-5 mr-2" />
                 Claim Fees
               </Button>
@@ -914,20 +1043,26 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-accent" />
-                <p className="text-sm text-muted-foreground">Founder Claimable Amounts</p>
+                <p className="text-sm text-muted-foreground">
+                  Founder Claimable Amounts
+                </p>
               </div>
               {claimableAmounts ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="border border-primary/30 p-4 pixel-corners bg-background/50">
-                      <p className="text-xs text-muted-foreground mb-2">Claimable Funds (BNB)</p>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Claimable Funds (BNB)
+                      </p>
                       <p className="text-2xl font-black tracking-wide text-primary">
                         {claimableAmounts.claimableFunds.toFixed(4)} BNB
                       </p>
                       {hasClaimableFunds && (
-                        <Button 
-                          className="controller-btn mt-3 w-full" 
-                          onClick={() => {/* wire claim funds action later */}}
+                        <Button
+                          className="controller-btn mt-3 w-full"
+                          onClick={() => {
+                            /* wire claim funds action later */
+                          }}
                         >
                           <Coins className="w-4 h-4 mr-2" />
                           Claim Funds
@@ -935,14 +1070,19 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
                       )}
                     </div>
                     <div className="border border-primary/30 p-4 pixel-corners bg-background/50">
-                      <p className="text-xs text-muted-foreground mb-2">Claimable Tokens</p>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Claimable Tokens
+                      </p>
                       <p className="text-2xl font-black tracking-wide text-primary">
-                        {claimableAmounts.claimableTokens.toFixed(2)} {token?.symbol}
+                        {claimableAmounts.claimableTokens.toFixed(2)}{" "}
+                        {token?.symbol}
                       </p>
                       {hasClaimableTokens && (
-                        <Button 
-                          className="controller-btn mt-3 w-full" 
-                          onClick={() => {/* wire claim tokens action later */}}
+                        <Button
+                          className="controller-btn mt-3 w-full"
+                          onClick={() => {
+                            /* wire claim tokens action later */
+                          }}
                         >
                           <Coins className="w-4 h-4 mr-2" />
                           Claim Tokens
@@ -969,10 +1109,13 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Token Info & Chart */}
           <div className="lg:col-span-2 space-y-6">
-            <TokenInfo token={token} graduatedToPancakeSwap={graduatedToPancakeSwap} />
+            <TokenInfo
+              token={token}
+              graduatedToPancakeSwap={graduatedToPancakeSwap}
+            />
             {token.projectRaise && raiseCompleted && (
-              <VestingTimeline 
-                vestingSchedule={token.projectRaise.vestingSchedule} 
+              <VestingTimeline
+                vestingSchedule={token.projectRaise.vestingSchedule}
                 tokenAddress={token.contractAddress}
                 vestingData={token.projectRaise.vestingData}
               />
@@ -985,8 +1128,8 @@ export default function TokenPage({ params }: { params: Promise<{ id: string }> 
             {shouldShowContribute ? (
               <ContributeInterface token={token} />
             ) : shouldShowTrading ? (
-              <TradingInterface 
-                token={token} 
+              <TradingInterface
+                token={token}
                 pancakeSwapPrice={pancakeSwapStats?.priceInUSD}
                 pancakeSwapPriceInBNB={pancakeSwapStats?.priceInBNB}
                 graduatedToPancakeSwap={graduatedToPancakeSwap}
