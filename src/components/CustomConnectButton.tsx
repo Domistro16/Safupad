@@ -41,9 +41,9 @@ export function CustomConnectButton() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="controller-btn px-4 py-2 text-sm font-bold tracking-wide"
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
                   >
-                    🎮 Connect Wallet
+                    Connect Wallet
                   </button>
                 );
               }
@@ -53,16 +53,40 @@ export function CustomConnectButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="controller-btn px-4 py-2 text-sm font-bold tracking-wide !bg-destructive"
+                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
                   >
-                    ⚠️ Wrong Network
+                    Wrong Network
                   </button>
                 );
               }
 
               return (
-                <div className="flex gap-2">
-            
+                <div className="flex gap-3">
+                  {chain && (
+                    <button
+                      onClick={openChainModal}
+                      type="button"
+                      className="bg-gray-800 hover:bg-gray-700 text-white font-medium px-3 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                    >
+                      {chain.hasIcon && (
+                        <div
+                          className="w-5 h-5 rounded-full overflow-hidden bg-white/10"
+                          style={{
+                            background: chain.iconBackground,
+                          }}
+                        >
+                          {chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? "Chain icon"}
+                              src={chain.iconUrl}
+                              className="w-5 h-5"
+                            />
+                          )}
+                        </div>
+                      )}
+                      <span className="text-sm">{chain.name}</span>
+                    </button>
+                  )}
 
                   <AccountButton
                     address={account.address}
@@ -95,9 +119,11 @@ function AccountButton({ address, displayName, onClick }: AccountButtonProps) {
     <button
       onClick={onClick}
       type="button"
-      className="controller-btn text-sm font-bold tracking-wide"
+      className="bg-gray-800 hover:bg-gray-700 text-white font-medium px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
     >
-      {loading ? "⏳ Loading..." : finalDisplayName.toLowerCase()}
+      <span className="text-sm">
+        {loading ? "Loading..." : finalDisplayName}
+      </span>
     </button>
   );
 }
