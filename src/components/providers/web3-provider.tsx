@@ -13,7 +13,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 
 // Use a safe fallback to prevent runtime crashes if the env var is missing
 const walletConnectProjectId =
-  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "1b974de95099d6d52750938f885f4b04";
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID";
 
 const config = getDefaultConfig({
   appName: "Safupad",
