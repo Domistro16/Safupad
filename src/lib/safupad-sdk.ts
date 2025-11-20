@@ -85,11 +85,8 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
 
     async function init() {
       // Wait for both clients to be available
-      if (!client || !provClient) {
-        console.log(
-          `⏳ SafuPad SDK: Waiting for clients... (chain: ${chainId})`
-        );
-        setSdk(null); // Clear SDK while waiting
+
+      if(!provClient) {
         return;
       }
 
@@ -105,7 +102,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
           `🔧 SafuPad SDK: Getting BSC Mainnet provider...`
         );
 
-        const signer = clientToSigner(client);
+  
         const provider = clientToProvider(provClient);
       
         console.log(
@@ -125,8 +122,10 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
 
         // UPDATE THE SIGNER AFTER INITIALIZATION
         console.log("🔧 SafuPad SDK: Updating signer...");
+        if(client){
+                const signer = clientToSigner(client);
         instance.updateSigner(signer);
-
+        }
         if (cancelled) {
           console.log("⚠️ SafuPad SDK: Initialization cancelled");
           return;
