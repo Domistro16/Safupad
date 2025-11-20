@@ -41,9 +41,10 @@ export function CustomConnectButton() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
+                    className="relative px-6 py-3 bg-gradient-to-b from-[#FFB000] to-[#ff6b00] border-2 border-[#ffd700] rounded-2xl text-[#0a0a0f] font-bold text-sm uppercase tracking-wider transition-all duration-200 shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(255,176,0,0.4)] hover:shadow-[0_6px_0_rgba(0,0,0,0.3),0_0_30px_rgba(255,176,0,0.6)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_rgba(0,0,0,0.3),0_0_15px_rgba(255,176,0,0.3)]"
                   >
-                    Connect Wallet
+                    <span className="relative z-10">Connect Wallet</span>
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none" />
                   </button>
                 );
               }
@@ -53,24 +54,25 @@ export function CustomConnectButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
+                    className="relative px-6 py-3 bg-gradient-to-b from-[#ff0055] to-[#cc0044] border-2 border-red-400 rounded-2xl text-white font-bold text-sm uppercase tracking-wider transition-all duration-200 shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(255,0,85,0.4)] hover:shadow-[0_6px_0_rgba(0,0,0,0.3),0_0_30px_rgba(255,0,85,0.6)] hover:-translate-y-0.5 active:translate-y-1"
                   >
-                    Wrong Network
+                    <span className="relative z-10">Wrong Network</span>
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none" />
                   </button>
                 );
               }
 
               return (
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   {chain && (
                     <button
                       onClick={openChainModal}
                       type="button"
-                      className="bg-gray-800 hover:bg-gray-700 text-white font-medium px-3 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                      className="relative px-3 py-2.5 bg-gradient-to-b from-[rgba(255,176,0,0.25)] to-[rgba(255,107,0,0.15)] border-2 border-[rgba(255,215,0,0.4)] rounded-xl text-[#ffd700] font-bold text-sm uppercase tracking-wide transition-all duration-200 shadow-[0_3px_0_rgba(0,0,0,0.3),0_0_15px_rgba(255,176,0,0.25)] hover:shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(255,176,0,0.4)] hover:-translate-y-0.5 active:translate-y-0.5 flex items-center gap-2"
                     >
                       {chain.hasIcon && (
                         <div
-                          className="w-5 h-5 rounded-full overflow-hidden bg-white/10"
+                          className="w-5 h-5 rounded-full overflow-hidden border border-[rgba(255,215,0,0.3)]"
                           style={{
                             background: chain.iconBackground,
                           }}
@@ -84,7 +86,7 @@ export function CustomConnectButton() {
                           )}
                         </div>
                       )}
-                      <span className="text-sm">{chain.name}</span>
+                      <span className="relative z-10">{chain.name}</span>
                     </button>
                   )}
 
@@ -119,9 +121,9 @@ function AccountButton({ address, displayName, onClick }: AccountButtonProps) {
     <button
       onClick={onClick}
       type="button"
-      className="bg-gray-800 hover:bg-gray-700 text-white font-medium px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+      className="relative px-4 py-2.5 bg-gradient-to-b from-[rgba(255,176,0,0.25)] to-[rgba(255,107,0,0.15)] border-2 border-[rgba(255,215,0,0.4)] rounded-xl text-[#ffd700] font-bold text-sm uppercase tracking-wide transition-all duration-200 shadow-[0_3px_0_rgba(0,0,0,0.3),0_0_15px_rgba(255,176,0,0.25)] hover:shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(255,176,0,0.4)] hover:-translate-y-0.5 active:translate-y-0.5"
     >
-      <span className="text-sm">
+      <span className="relative z-10">
         {loading ? "Loading..." : finalDisplayName}
       </span>
     </button>
