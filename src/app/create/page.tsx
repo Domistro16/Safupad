@@ -15,12 +15,12 @@ export default function CreatePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 !whitespace-pre-line">TOKENIZE ANYTHING
-
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 !whitespace-pre-line">
+              TOKENIZE ANYTHING
             </h1>
             <p className="text-xl text-muted-foreground">
               Select the perfect launch model for your token
@@ -33,49 +33,65 @@ export default function CreatePage() {
               <div className="absolute top-4 right-4">
                 <Badge>Recommended for Projects</Badge>
               </div>
-              
+
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <Rocket className="w-8 h-8 text-primary" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Project Raise</h2>
                 <p className="text-muted-foreground">
-                  Raise 50-500 BNB over 24 hours with structured vesting and liquidity management
+                  Raise 50-500 BNB over 24 hours with structured vesting and
+                  liquidity management
                 </p>
               </div>
 
               <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">24-hour raise window (50-500 BNB target)</span>
+                  <span className="text-sm">
+                    24-hour raise window (50-500 BNB target)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">20% owner allocation (10% immediate, 90% vested over vesting schedule)</span>
+                  <span className="text-sm">
+                    20% owner allocation (10% immediate, 90% vested over vesting
+                    schedule)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">10% liquidity pool (capped at 100 BNB)</span>
+                  <span className="text-sm">
+                    10% liquidity pool and 50% of raised amount (capped at 100
+                    BNB)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">2% trading fee (1% creator, 0.6% InfoFi, 0.3% liquidity, 0.1% platform)</span>
+                  <span className="text-sm">
+                    1% trading fee Post graduation platform fee for trades
+                    through our platform
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Graduate to PancakeSwap at 15 BNB</span>
+                  <span className="text-sm">
+                    1% fees havested with 24h cooldown from Pancakeswap (70% creator and 30% platform)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Dedicated InfoFi dashboard and fee pool</span>
+                  <span className="text-sm">
+                    Graduate to PancakeSwap when raise target is met
+                  </span>
                 </div>
               </div>
 
               <Button
                 className="w-full controller-btn"
                 size="lg"
-                onClick={() => setSelectedType("project-raise")}>
-
+                onClick={() => setSelectedType("project-raise")}
+              >
                 Launch Project Raise
               </Button>
             </Card>
@@ -85,7 +101,7 @@ export default function CreatePage() {
               <div className="absolute top-4 right-4">
                 <Badge variant="secondary">Fast & Simple</Badge>
               </div>
-              
+
               <div className="mb-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <Zap className="w-8 h-8 text-primary" />
@@ -99,11 +115,15 @@ export default function CreatePage() {
               <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Instant token creation and deployment</span>
+                  <span className="text-sm">
+                    Instant token creation and deployment
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">2% trading fee (0.1% platform, 1% creator, 0.9% InfoFi)</span>
+                  <span className="text-sm">
+                    2% trading fee (0.1% platform, 1% creator, 0.9% InfoFi)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -111,23 +131,17 @@ export default function CreatePage() {
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Claim fees every 24h (if market cap maintained)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Tweet-bot integration for auto-creation</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Dedicated InfoFi dashboard</span>
+                  <span className="text-sm">
+                    Claim fees every 24h (if market cap maintained)
+                  </span>
                 </div>
               </div>
 
               <Button
                 className="w-full controller-btn"
                 size="lg"
-                onClick={() => setSelectedType("instant-launch")}>
-
+                onClick={() => setSelectedType("instant-launch")}
+              >
                 Launch Instantly
               </Button>
             </Card>
@@ -149,17 +163,23 @@ export default function CreatePage() {
                   <tr className="border-b border-border">
                     <td className="py-3 pr-4">Setup Time</td>
                     <td className="text-center py-3 px-4">~5 minutes</td>
-                    <td className="text-center py-3 px-4 text-primary font-medium">~1 minute</td>
+                    <td className="text-center py-3 px-4 text-primary font-medium">
+                      ~1 minute
+                    </td>
                   </tr>
                   <tr className="border-b border-border">
                     <td className="py-3 pr-4">Fundraising</td>
-                    <td className="text-center py-3 px-4 text-primary font-medium">50-500 BNB</td>
+                    <td className="text-center py-3 px-4 text-primary font-medium">
+                      50-500 BNB
+                    </td>
                     <td className="text-center py-3 px-4">No fundraising</td>
                   </tr>
                   <tr>
                     <td className="py-3 pr-4">Best For</td>
                     <td className="text-center py-3 px-4">Serious projects</td>
-                    <td className="text-center py-3 px-4 text-primary font-medium">Meme coins</td>
+                    <td className="text-center py-3 px-4 text-primary font-medium">
+                      Meme coins
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -169,18 +189,19 @@ export default function CreatePage() {
       </div>
 
       {/* Modals */}
-      {selectedType === "project-raise" &&
-      <ProjectRaiseModal
-        isOpen={true}
-        onClose={() => setSelectedType(null)} />
-
-      }
-      {selectedType === "instant-launch" &&
-      <InstantLaunchModal
-        isOpen={true}
-        onClose={() => setSelectedType(null)} />
-
-      }
-    </div>);
+      {selectedType === "project-raise" && (
+        <ProjectRaiseModal
+          isOpen={true}
+          onClose={() => setSelectedType(null)}
+        />
+      )}
+      {selectedType === "instant-launch" && (
+        <InstantLaunchModal
+          isOpen={true}
+          onClose={() => setSelectedType(null)}
+        />
+      )}
+    </div>
+  );
 
 }

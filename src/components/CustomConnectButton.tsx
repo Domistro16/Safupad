@@ -62,31 +62,7 @@ export function CustomConnectButton() {
 
               return (
                 <div className="flex gap-2">
-                  <button
-                    onClick={openChainModal}
-                    type="button"
-                    className="controller-btn-outline arcade-btn px-3 py-2 flex items-center gap-2 text-sm font-bold"
-                  >
-                    {chain.hasIcon && (
-                      <div
-                        className="w-4 h-4"
-                        style={{
-                          background: chain.iconBackground,
-                          borderRadius: 999,
-                          overflow: "hidden",
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          <img
-                            alt={chain.name ?? "Chain icon"}
-                            src={chain.iconUrl}
-                            style={{ width: 16, height: 16 }}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name}
-                  </button>
+            
 
                   <AccountButton
                     address={account.address}

@@ -53,7 +53,7 @@ export default function Home() {
             try {
               // A. Token Details - Use correct SDK method
               const tokenInfo = await sdk.tokenFactory.getTokenInfo(addr);
-              console.log(sdk.tokenFactory.address);
+              console.log(sdk.tokenFactory.getAddress());
               // ✅ FIX: metadata is already an object, not a promise
               const tokenMeta = tokenInfo.metadata;
               console.log(tokenInfo);
@@ -123,9 +123,10 @@ export default function Home() {
               const raiseCompleted = Boolean(launchInfo.raiseCompleted);
               const graduated = Boolean(poolInfo.graduated);
 
+              const launch = await sdk.launchpad.getLaunchInfo(addr);
               // ✅ Parse graduatedToPancakeSwap from launchInfo
               const graduatedToPancakeSwap = Boolean(
-                launchInfo.graduatedToPancakeSwap
+                launch.graduatedToPancakeSwap
               );
 
               // Parse vesting data if available
