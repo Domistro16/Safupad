@@ -119,9 +119,9 @@ function AccountButton({ address, displayName, onClick }: AccountButtonProps) {
     <button
       onClick={onClick}
       type="button"
-      className="controller-btn px-4 py-2 text-sm font-bold tracking-wide"
+      className="controller-btn text-sm font-bold tracking-wide"
     >
-      {loading ? "⏳ Loading..." : finalDisplayName}
+      {loading ? "⏳ Loading..." : finalDisplayName.toLowerCase()}
     </button>
   );
 }

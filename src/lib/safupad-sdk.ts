@@ -118,7 +118,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
           provider: provider,
           alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
           subgraphUrl:
-            "https://api.studio.thegraph.com/query/112443/safupad-testnet/v0.0.12",
+            "https://api.studio.thegraph.com/query/112443/safupad-subgraph/v0.0.11",
         });
 
         console.log("🔧 SafuPad SDK: Calling initialize()...");
