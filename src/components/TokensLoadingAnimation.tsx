@@ -36,7 +36,7 @@ export function TokensLoadingAnimation() {
               
               {/* Center Coin */}
               <div className="relative">
-                <Coins className="w-16 h-16 text-primary glow-text animate-pulse" />
+                <img src="/small.png" className="w-16 h-16 text-primary glow-text animate-pulse" />
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
               </div>
             </div>
