@@ -27,7 +27,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
     name: "",
     symbol: "",
     description: "",
-    targetAmount: "0.3",
+    targetAmount: "50",
     twitter: "",
     telegram: "",
     website: "",
@@ -130,8 +130,8 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
     }
     
     const targetBNB = Number(formData.targetAmount);
-    if (!Number.isFinite(targetBNB) || targetBNB < 0.1 || targetBNB > 0.5) {
-      setError("Target amount must be between 0.1 BNB and 0.5 BNB.");
+    if (!Number.isFinite(targetBNB) || targetBNB < 50 || targetBNB > 500) {
+      setError("Target amount must be between 50 BNB and 500 BNB.");
       return;
     }
     if (formData.vestingDuration < 3 || formData.vestingDuration > 6) {
@@ -180,7 +180,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
         symbol: formData.symbol.trim().toUpperCase(),
         totalSupply: TOTAL_SUPPLY,
         raiseTargetBNB: String(targetBNB), // ✅ Changed from raiseTargetUSD
-        raiseMaxBNB: '0.5',    // ✅ Changed from raiseMaxUSD
+        raiseMaxBNB: '500',    // ✅ Changed from raiseMaxUSD
         vestingDuration: formData.vestingDuration * 30,
         metadata,
         burnLP: formData.burnLP,
@@ -237,7 +237,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                Raise window is 24 hours. Target between 0.1-0.5 BNB.
+                Raise window is 24 hours. Target between 50-500 BNB.
               </AlertDescription>
             </Alert>
 
@@ -382,7 +382,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                Set your fundraising target between 0.1 BNB and 0.5 BNB
+                Set your fundraising target between 50 BNB and 500 BNB
               </AlertDescription>
             </Alert>
 
@@ -391,23 +391,23 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
               <Input
                 id="targetAmount"
                 type="number"
-                min="0.1"
-                max="0.5"
-                step="0.01"
+                min="50"
+                max="500"
+                step="10"
                 value={formData.targetAmount}
                 onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
                 disabled={submitting || isInitializing}
               />
               <Slider
                 value={[parseFloat(formData.targetAmount)]}
-                onValueChange={(value) => setFormData({ ...formData, targetAmount: value[0].toFixed(2) })}
-                min={0.1}
-                max={0.5}
-                step={0.05}
+                onValueChange={(value) => setFormData({ ...formData, targetAmount: value[0].toFixed(0) })}
+                min={50}
+                max={500}
+                step={10}
                 className="mt-2"
               />
               <p className="text-xs text-muted-foreground">
-                {parseFloat(formData.targetAmount).toFixed(2)} BNB
+                {parseFloat(formData.targetAmount).toFixed(0)} BNB
               </p>
             </div>
 
@@ -542,7 +542,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
               <div className="text-sm space-y-1">
                 <p><strong>Token:</strong> {formData.name} ({formData.symbol})</p>
                 <p><strong>Supply:</strong> {TOTAL_SUPPLY.toLocaleString()}</p>
-                <p><strong>Target:</strong> {parseFloat(formData.targetAmount).toFixed(2)} BNB</p>
+                <p><strong>Target:</strong> {parseFloat(formData.targetAmount).toFixed(0)} BNB</p>
                 <p><strong>Vesting Duration:</strong> {formData.vestingDuration} month{formData.vestingDuration !== 1 ? 's' : ''}</p>
                 <p><strong>Burn LP:</strong> {formData.burnLP ? 'Yes' : 'No'}</p>
                 {imagePreview && <p><strong>Image:</strong> Uploaded ✓</p>}
