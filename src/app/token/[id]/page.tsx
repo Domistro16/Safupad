@@ -956,7 +956,7 @@ export default function TokenPage({
                     </p>
                   )}
                   {!creatorFeeInfo.canClaim && (
-                    <p className="text-xs text-yellow-500">
+                    <p className="text-xs text-muted-foreground">
                       ⏱️ There is a week cooldown time between fee claims
                     </p>
                   )}
@@ -1005,7 +1005,7 @@ export default function TokenPage({
                       {isCreator &&
                         !canHarvestFees &&
                         postGraduationFees.timeRemaining > 0 && (
-                          <p className="text-xs text-yellow-500">
+                          <p className="text-xs text-muted-foreground">
                             ⏱️ Next harvest available in{" "}
                             {Math.ceil(postGraduationFees.timeRemaining / 60)}{" "}
                             minutes

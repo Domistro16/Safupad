@@ -67,9 +67,9 @@ export function TokensLoadingAnimation() {
               {/* Progress Fill */}
               <div
                 className="relative h-full bg-gradient-to-r from-primary via-secondary to-primary transition-all duration-300 ease-out"
-                style={{ 
+                style={{
                   width: `${progress}%`,
-                  boxShadow: "0 0 15px rgba(255, 176, 0, 0.6)"
+                  boxShadow: "0 0 15px rgba(131, 110, 249, 0.6)"
                 }}
               >
                 {/* Shine Effect */}

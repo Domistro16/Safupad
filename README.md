@@ -131,10 +131,10 @@ infofi-launch/
 ## 🎨 Design System
 
 ### Brand Colors
-- **Primary**: `#FFB000` (Gold/Orange)
-- **Background**: `#000000` (Black)
-- **Card**: `#0a0a0a` (Near Black)
-- **Border**: `rgba(255, 176, 0, 0.2)`
+- **Primary**: `#836ef9` (Monad Purple)
+- **Background**: `#0a0a0f` (Dark Purple-Black)
+- **Card**: `#1a1520` (Dark Card)
+- **Border**: `rgba(131, 110, 249, 0.3)`
 
 ### Typography
 - **Headings**: Bold, -0.02em letter spacing
