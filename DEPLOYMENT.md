@@ -31,7 +31,7 @@ module.exports = {
   solidity: "0.8.20",
   networks: {
     bscTestnet: {
-      url: "https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv",
+      url: "https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv",
       accounts: [process.env.PRIVATE_KEY],
       chainId: 97,
     },

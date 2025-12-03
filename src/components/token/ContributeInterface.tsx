@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Zap, TrendingUp, Info, Loader2, Clock, Trophy, Coins, Flame, DollarSign, XCircle } from "lucide-react";
 import { formatCurrency, getProgressPercentage } from "@/lib/utils/format";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import { ethers } from "ethers";
 import { toast } from "sonner";
 import { useAccount } from 'wagmi';
@@ -20,7 +20,7 @@ interface ContributeInterfaceProps {
 }
 
 export function ContributeInterface({ token }: ContributeInterfaceProps) {
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const { address } = useAccount();
   const [contribution, setContribution] = useState("");
   const [isContributing, setIsContributing] = useState(false);
@@ -28,10 +28,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
   const [isClaiming, setIsClaiming] = useState(false);
   const [isBurning, setIsBurning] = useState(false);
   const [isRefunding, setIsRefunding] = useState(false);
-  const [bnbBalance, setBnbBalance] = useState<string | null>(null);
+  const [monBalance, setBnbBalance] = useState<string | null>(null);
   const [loadingBalance, setLoadingBalance] = useState(true);
-  const [bnbRaised, setBnbRaised] = useState<number>(0);
-  const [bnbTarget, setBnbTarget] = useState<number>(0);
+  const [monRaised, setBnbRaised] = useState<number>(0);
+  const [monTarget, setBnbTarget] = useState<number>(0);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
   const [raiseCompleted, setRaiseCompleted] = useState(false);
   const [raiseFailed, setRaiseFailed] = useState(false);
@@ -49,7 +49,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       try {
         const launchInfo = await sdk.launchpad.getLaunchInfoWithUSD(token.id);
         const raiseComplete = Boolean(launchInfo.raiseCompleted);
-        
+
         if (!cancelled) {
           setRaiseCompleted(raiseComplete);
         }
@@ -81,10 +81,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
       try {
         setLoadingBalance(true);
-        const provider = new ethers.JsonRpcProvider("https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
-        const bnbBal = await provider.getBalance(address);
+        const provider = new ethers.JsonRpcProvider("https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
+        const monBal = await provider.getBalance(address);
         if (!cancelled) {
-          setBnbBalance(ethers.formatEther(bnbBal));
+          setBnbBalance(ethers.formatEther(monBal));
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
@@ -113,7 +113,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
   useEffect(() => {
     const loadBnbValues = async () => {
       if (!sdk || !projectRaise) return;
-      
+
       try {
         const raisedBNB = await sdk.priceOracle.usdToBNB(
           ethers.parseEther(projectRaise.raisedAmount.toString())
@@ -121,7 +121,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
         const targetBNB = await sdk.priceOracle.usdToBNB(
           ethers.parseEther(projectRaise.targetAmount.toString())
         );
-        
+
         setBnbRaised(Number(ethers.formatEther(raisedBNB)));
         setBnbTarget(Number(ethers.formatEther(targetBNB)));
       } catch (error) {
@@ -163,41 +163,41 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     return () => clearInterval(interval);
   }, [projectRaise?.endTime, raiseCompleted]);
 
-  const raiseProgress = isProjectRaise && projectRaise 
+  const raiseProgress = isProjectRaise && projectRaise
     ? getProgressPercentage(projectRaise.raisedAmount, projectRaise.targetAmount)
     : 0;
 
-  const simulateContribution = async (tokenAddress: string, bnbAmount: string) => {
+  const simulateContribution = async (tokenAddress: string, monAmount: string) => {
     try {
       const signer = await sdk!.provider.getSigner();
       const signerAddress = await signer.getAddress();
-      
+
       const iface = new ethers.Interface([
         'function contribute(address token) payable'
       ]);
       const data = iface.encodeFunctionData('contribute', [tokenAddress]);
-      
+
       console.log('🔍 Simulating contribution...');
       await sdk!.provider.call({
         from: signerAddress,
         to: sdk!.launchpad.address,
         data: data,
-        value: ethers.parseEther(bnbAmount)
+        value: ethers.parseEther(monAmount)
       });
-      
+
       console.log('✅ Simulation successful!');
       return true;
     } catch (error: any) {
       console.log('❌ Simulation failed!');
       console.error('Error:', error);
-      
+
       if (error.data) {
         try {
           const reason = ethers.toUtf8String('0x' + error.data.slice(138));
           console.log('Decoded reason:', reason);
-        } catch {}
+        } catch { }
       }
-      
+
       return false;
     }
   };
@@ -223,13 +223,13 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       toast.error("Please connect your wallet first");
       return;
     }
-    
+
     try {
       setIsContributing(true);
-      
+
       // Simulate first
       const simSuccess = await simulateContribution(token.id, amountBNB.toString());
-      
+
       if (!simSuccess) {
         toast.error("Transaction simulation failed. Please check the console for details.");
         return;
@@ -239,34 +239,34 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const launchpad = new ethers.Contract(
-        sdk.launchpad.address, 
+        sdk.launchpad.address,
         [{
-          "inputs": [{"internalType": "address", "name": "token", "type": "address"}],
+          "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
           "name": "contribute",
           "outputs": [],
           "stateMutability": "payable",
           "type": "function"
-        }], 
+        }],
         signer
       );
-      
+
       const tx = await launchpad.contribute(token.id, {
         value: ethers.parseEther(amountBNB.toString())
       });
-      
+
       toast.success("Transaction submitted! Waiting for confirmation...");
       await tx.wait();
 
       toast.success(`Successfully contributed ${amountBNB} MON to ${token.symbol}!`);
-      
+
       // Reset form and refresh balance
       setContribution("");
-      const bnbBal = await provider.getBalance(address);
-      setBnbBalance(ethers.formatEther(bnbBal));
-      
+      const monBal = await provider.getBalance(address);
+      setBnbBalance(ethers.formatEther(monBal));
+
       // Refresh page to show updated raise amounts
       setTimeout(() => window.location.reload(), 2000);
-      
+
     } catch (err: any) {
       console.error("Contribution failed:", err);
       toast.error(err?.message || "Contribution failed. Please try again.");
@@ -291,10 +291,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     try {
       // Call sdk.launchpad.graduateToPancakeSwap(tokenAddress)
       toast.success("Graduating to PancakeSwap! Waiting for confirmation...");
-      
+
       const tx = await sdk.launchpad.graduateToPancakeSwap(token.id);
       await tx.wait();
-      
+
       toast.success(`${token.symbol} has graduated to PancakeSwap! 🎉`);
 
       // Reload page to show updated status
@@ -324,10 +324,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     try {
       // Call sdk.launchpad.claimContributorTokens(tokenAddress)
       toast.success("Claiming tokens! Waiting for confirmation...");
-      
+
       const tx = await sdk.launchpad.claimContributorTokens(token.id);
       await tx.wait();
-      
+
       toast.success(`Successfully claimed ${token.symbol} tokens! 🎉`);
 
       // Reload page to show updated balances
@@ -360,7 +360,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       const launchpad = new ethers.Contract(
         sdk.launchpad.address,
         [{
-          "inputs": [{"internalType": "address", "name": "token", "type": "address"}],
+          "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
           "name": "burnFailedRaiseTokens",
           "outputs": [],
           "stateMutability": "nonpayable",
@@ -371,7 +371,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
       const tx = await launchpad.burnFailedRaiseTokens(token.id);
       toast.success("Burn transaction initiated! Waiting for confirmation...");
-      
+
       await tx.wait();
       toast.success(`Tokens from failed raise have been burned! 🔥`);
 
@@ -405,7 +405,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       const launchpad = new ethers.Contract(
         sdk.launchpad.address,
         [{
-          "inputs": [{"internalType": "address", "name": "token", "type": "address"}],
+          "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
           "name": "claimRefund",
           "outputs": [],
           "stateMutability": "nonpayable",
@@ -416,7 +416,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
       const tx = await launchpad.claimRefund(token.id);
       toast.success("Refund claim initiated! Waiting for confirmation...");
-      
+
       await tx.wait();
       toast.success(`Successfully claimed your refund! 💰`);
 
@@ -460,11 +460,11 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
             </h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            {raiseFailed 
-              ? "Raise target not reached. Claim your refund or burn tokens." 
-              : raiseCompleted 
-              ? "Ready to graduate to trading phase!" 
-              : "Power up this raise. Be part of the mission!"}
+            {raiseFailed
+              ? "Raise target not reached. Claim your refund or burn tokens."
+              : raiseCompleted
+                ? "Ready to graduate to trading phase!"
+                : "Power up this raise. Be part of the mission!"}
           </p>
         </div>
 
@@ -491,22 +491,22 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
             <span className="font-black text-primary">{raiseProgress.toFixed(1)}%</span>
           </div>
           <div className="h-4 w-full bg-input pixel-corners overflow-hidden">
-            <div 
+            <div
               className={`h-full ${raiseFailed ? 'bg-destructive/50' : 'bg-gradient-to-r from-primary to-secondary energy-bar'}`}
-              style={{ width: `${Math.min(raiseProgress, 100)}%` }} 
+              style={{ width: `${Math.min(raiseProgress, 100)}%` }}
             />
           </div>
           <div className="flex justify-between text-sm">
             <div>
               <p className="text-xs text-muted-foreground">Raised</p>
-              <p className="font-bold">{bnbRaised.toFixed(4)} MON</p>
+              <p className="font-bold">{monRaised.toFixed(4)} MON</p>
               <p className="text-xs text-muted-foreground">
                 {formatCurrency(projectRaise.raisedAmount)}
               </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Target</p>
-              <p className="font-bold">{bnbTarget.toFixed(4)} MON</p>
+              <p className="font-bold">{monTarget.toFixed(4)} MON</p>
               <p className="text-xs text-muted-foreground">
                 {formatCurrency(projectRaise.targetAmount)}
               </p>
@@ -527,7 +527,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
             {/* Failed Raise Action Buttons */}
             <div className="space-y-3">
-              <button 
+              <button
                 onClick={handleBurnTokens}
                 className="controller-btn w-full flex items-center justify-center gap-2 !bg-gradient-to-b from-destructive/90 to-destructive/70 hover:from-destructive hover:to-destructive/80"
                 disabled={isBurning}
@@ -545,7 +545,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
                 )}
               </button>
 
-              <button 
+              <button
                 onClick={handleClaimRefund}
                 className="controller-btn-outline controller-btn w-full flex items-center justify-center gap-2"
                 disabled={isRefunding}
@@ -576,7 +576,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <button 
+              <button
                 onClick={handleGraduate}
                 className="controller-btn w-full flex items-center justify-center gap-2"
                 disabled={isGraduating}
@@ -594,7 +594,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
                 )}
               </button>
 
-              <button 
+              <button
                 onClick={handleClaimTokens}
                 className="controller-btn-outline controller-btn w-full flex items-center justify-center gap-2"
                 disabled={isClaiming}
@@ -639,7 +639,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
                 min="0.01"
               />
               <p className="text-xs text-muted-foreground">
-                Balance: {formatBalance(bnbBalance, loadingBalance)} MON
+                Balance: {formatBalance(monBalance, loadingBalance)} MON
               </p>
               <p className="text-xs text-muted-foreground">
                 Minimum: 0.01 MON
@@ -683,7 +683,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
             </div>
 
             {/* Contribute Button */}
-            <button 
+            <button
               onClick={handleContribute}
               className="controller-btn w-full flex items-center justify-center gap-2"
               disabled={isContributing || !contribution || Number(contribution) <= 0 || Number(contribution) < 0.01}

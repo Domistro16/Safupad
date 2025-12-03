@@ -46,7 +46,7 @@ contract InstantLaunchToken is ERC20, Ownable, ReentrancyGuard {
     
     // Events
     event TokenLaunched(address indexed creator, uint256 initialBuy);
-    event BuyExecuted(address indexed buyer, uint256 amount, uint256 bnbAmount);
+    event BuyExecuted(address indexed buyer, uint256 amount, uint256 monAmount);
     event TokensGraduated(uint256 cumulativeBuys);
     event CreatorFeeClaimed(address indexed creator, uint256 amount);
     event FeeCollected(uint256 platformFee, uint256 creatorFee, uint256 infoFiFee);

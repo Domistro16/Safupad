@@ -6,15 +6,16 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle } from
-"@/components/ui/dialog";
+  DialogTitle
+} from
+  "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info, Zap, CheckCircle2, XCircle, Loader2, Upload, X } from "lucide-react";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 
 interface InstantLaunchModalProps {
   isOpen: boolean;
@@ -34,11 +35,11 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
 
   const TOTAL_SUPPLY = 1000000000; // 1 billion constant
 
-  const { sdk, isInitializing, error: sdkError, connect } = useSafuPadSDK();
+  const { sdk, isInitializing, error: sdkError, connect } = useBaldPadSDK();
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
-  
+
   // Image upload state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -92,7 +93,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
       }
 
       const data = await response.json();
-      
+
       if (!data.url) {
         throw new Error('No URL returned from upload');
       }
@@ -132,7 +133,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
 
     try {
       setSubmitting(true);
-      
+
       // Upload image right before creating launch
       let imageUrl = "";
       if (imageFile) {
@@ -146,7 +147,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           setImageUploading(false);
         }
       }
-      
+
       // Ensure wallet is connected to provide signer
       const address = await connect();
       if (!address) {
@@ -204,7 +205,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           </Alert>
 
           {sdkError &&
-          <Alert>
+            <Alert>
               <AlertDescription>
                 SDK error: {String((sdkError as any)?.message || sdkError)}
               </AlertDescription>
@@ -212,7 +213,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           }
 
           {submitError &&
-          <Alert>
+            <Alert>
               <AlertDescription>
                 {submitError}
               </AlertDescription>
@@ -220,7 +221,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           }
 
           {txHash &&
-          <Alert>
+            <Alert>
               <AlertDescription>
                 Transaction submitted: {txHash}
               </AlertDescription>
@@ -484,10 +485,10 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             </div>
           </div>
 
-          <Button 
-            onClick={handleSubmit} 
-            className="w-full controller-btn" 
-            size="lg" 
+          <Button
+            onClick={handleSubmit}
+            className="w-full controller-btn"
+            size="lg"
             disabled={submitting || isInitializing || imageUploading}
           >
             <Zap className="w-4 h-4 mr-2" />

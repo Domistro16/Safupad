@@ -42,8 +42,8 @@ NEXT_PUBLIC_DOCS_URL=https://docs...
 
 ### Application Settings
 ```
-NEXT_PUBLIC_APP_NAME=Safupad
-NEXT_PUBLIC_APP_DESCRIPTION=The most advanced token launchpad on BSC
+NEXT_PUBLIC_APP_NAME=Baldpad
+NEXT_PUBLIC_APP_DESCRIPTION=The most advanced token launchpad on Monad
 NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
 NEXT_PUBLIC_ENABLE_TESTNET=false
 NEXT_PUBLIC_ENABLE_ANALYTICS=true

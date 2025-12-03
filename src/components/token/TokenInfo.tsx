@@ -25,8 +25,8 @@ import {
   Loader2,
 } from "lucide-react";
 import Image from "next/image";
-import {ethers} from "ethers";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { ethers } from "ethers";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { toast } from "sonner";
@@ -48,11 +48,11 @@ function generateGradient(id: string, symbol: string) {
 }
 
 export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwapProp }: TokenInfoProps) {
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const { address } = useAccount();
   const [marketCapBnb, setMarketCapBnb] = useState<number>(0);
   const [targetCapBnb, setTargetCapBnb] = useState<number>(0);
-  const [bnbReserve, setBnbReserve] = useState<number>(0);
+  const [monReserve, setBnbReserve] = useState<number>(0);
   const [imageError, setImageError] = useState(false);
   const [isInvalidUrl, setIsInvalidUrl] = useState(false);
   const [isGraduating, setIsGraduating] = useState(false);
@@ -70,18 +70,18 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
   useEffect(() => {
     const fetchPoolInfo = async () => {
       if (!sdk) return;
-      
+
       try {
-        // Fetch pool info to get bnbReserve
+        // Fetch pool info to get monReserve
         const poolInfo = await sdk.bondingDex.getPoolInfo(token.id);
-        const reserve = Number(ethers.formatEther(poolInfo.bnbReserve));
+        const reserve = Number(ethers.formatEther(poolInfo.monReserve));
         setBnbReserve(reserve);
-        
+
         // Convert current market cap to BNB
         const currentBnb = await sdk.priceOracle.usdToBNB(
           ethers.parseEther(token.marketCap.toString())
         );
-        
+
         setMarketCapBnb(Number(ethers.formatEther(currentBnb)));
       } catch (error) {
         console.error("Error fetching pool info:", error);
@@ -98,7 +98,7 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
         setLoadingGraduationStatus(false);
         return;
       }
-      
+
       setLoadingGraduationStatus(true);
       try {
         const launchInfo = await sdk.launchpad.getLaunchInfo(token.id);
@@ -118,9 +118,9 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
   useEffect(() => {
     const fetchPancakeSwapStats = async () => {
       if (!token.graduated || !graduatedToPancakeSwap) return;
-      
+
       try {
-        const provider = new ethers.JsonRpcProvider("https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
+        const provider = new ethers.JsonRpcProvider("https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
         const stats = await getTokenStats(token.id, provider, sdk);
         setPancakeSwapStats(stats);
         console.log("PancakeSwap stats:", stats);
@@ -169,15 +169,15 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
   // Use PancakeSwap stats if available, otherwise use token stats
   const displayPrice = pancakeSwapStats ? pancakeSwapStats.priceInUSD : token.currentPrice;
   const displayMarketCap = pancakeSwapStats ? pancakeSwapStats.marketCapUSD : token.marketCap;
-  
+
   // Handle liquidityPool safely
   const getDisplayLiquidity = () => {
     if (pancakeSwapStats) return pancakeSwapStats.liquidityUSD;
-    
+
     if (!token.liquidityPool) return 0;
-    
+
     if (typeof token.liquidityPool === 'number') return token.liquidityPool;
-    
+
     try {
       return Number(ethers.formatUnits(token.liquidityPool.toString(), 18));
     } catch (error) {
@@ -185,7 +185,7 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
       return 0;
     }
   };
-  
+
   const displayLiquidity = getDisplayLiquidity();
 
   return (
@@ -228,13 +228,13 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
             </div>
             <h2 className="text-lg md:text-xl text-muted-foreground mb-3 break-words">{token.name}</h2>
             <p className="text-sm text-muted-foreground mb-4 break-words">{token.description}</p>
-            
+
             {/* Founder Address */}
             <div className="flex items-center gap-2 mb-4 p-2 bg-muted/30 rounded-lg">
               <span className="text-xs text-muted-foreground whitespace-nowrap">Founder:</span>
               <code className="text-xs font-mono text-accent">{formatAddress(token.creatorAddress)}</code>
             </div>
-            
+
             {/* Social Links */}
             <div className="flex flex-wrap gap-2">
               {token.twitter && (
@@ -361,11 +361,11 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
               <div className="flex flex-wrap justify-between text-sm mb-2 gap-2">
                 <span className="text-muted-foreground">To 15 MON</span>
                 <span className="font-bold break-words">
-                  {bnbReserve.toFixed(7)} MON / 15 MON
+                  {monReserve.toFixed(7)} MON / 15 MON
                 </span>
               </div>
               <Progress
-                value={getProgressPercentage(bnbReserve, 15)}
+                value={getProgressPercentage(monReserve, 15)}
                 className="h-2"
               />
             </div>
@@ -386,7 +386,7 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
             <h3 className="text-base md:text-lg font-bold">Token Graduated!</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-2 break-words">
-            {graduatedToPancakeSwap 
+            {graduatedToPancakeSwap
               ? "This token has been migrated to PancakeSwap and can be traded on both platforms."
               : "This token has graduated and is ready to be migrated to PancakeSwap."}
           </p>

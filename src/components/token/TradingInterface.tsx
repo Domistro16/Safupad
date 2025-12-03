@@ -17,7 +17,7 @@ import {
   Lock,
 } from "lucide-react";
 import { formatCurrency, formatPrice } from "@/lib/utils/format";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import { ethers, parseEther } from "ethers";
 import { toast } from "sonner";
 import { useBalance, useAccount } from "wagmi";
@@ -59,12 +59,12 @@ export function TradingInterface({
   pancakeSwapPriceInBNB,
   graduatedToPancakeSwap = false,
 }: TradingInterfaceProps) {
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
   const [amount, setAmount] = useState("");
-  const [bnbAmount, setBnbAmount] = useState("");
+  const [monAmount, setBnbAmount] = useState("");
   const [isTrading, setIsTrading] = useState(false);
-  const [bnbBalance, setBnbBalance] = useState<string | null>(null);
+  const [monBalance, setBnbBalance] = useState<string | null>(null);
   const [tokenBalance, setTokenBalance] = useState<string | null>(null);
   const [loadingBalances, setLoadingBalances] = useState(true);
   const [slippage, setSlippage] = useState("0.5");
@@ -91,7 +91,7 @@ export function TradingInterface({
   const isSellDisabled = token.graduated && !graduatedToPancakeSwap;
 
   const provider = new ethers.JsonRpcProvider(
-    `https://bnb-testnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    `https://mon-testnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
   );
   const tokenCon = new ethers.Contract(token.contractAddress, abi, provider);
   // Fetch balances
@@ -110,9 +110,9 @@ export function TradingInterface({
         // Get connected wallet address
 
         // Fetch BNB balance
-        const bnbBal = await provider.getBalance(address!);
+        const monBal = await provider.getBalance(address!);
         if (!cancelled) {
-          setBnbBalance(ethers.formatEther(bnbBal));
+          setBnbBalance(ethers.formatEther(monBal));
         }
 
         // Fetch token balance
@@ -210,7 +210,7 @@ export function TradingInterface({
           await approve.wait();
           const tx = await sdk.launchpad.handlePostGraduationBuy(
             token.contractAddress,
-            bnbAmount,
+            monAmount,
             minTokenOut
           );
 
@@ -227,7 +227,7 @@ export function TradingInterface({
           ).toFixed(18);
           const tx = await sdk.bondingDex.buyTokens(
             token.contractAddress,
-            bnbAmount,
+            monAmount,
             Number(minTokenOut)
           );
 
@@ -239,7 +239,7 @@ export function TradingInterface({
         // Use post-graduation sell for project-raise tokens that graduated to PancakeSwap
         if (graduatedToPancakeSwap && isProjectRaise) {
           // Calculate minimum BNB out with slippage protection
-          const expectedBnb = parseFloat(bnbAmount);
+          const expectedBnb = parseFloat(monAmount);
           const slippagePercent = parseFloat(slippage);
           const minBNBOut = (expectedBnb * (1 - slippagePercent / 100)).toFixed(
             18
@@ -306,8 +306,8 @@ export function TradingInterface({
 
       // Refresh balances after trade
       const address = await sdk.getAddress();
-      const bnbBal = await sdk.getBalance(address);
-      setBnbBalance(ethers.formatEther(bnbBal));
+      const monBal = await sdk.getBalance(address);
+      setBnbBalance(ethers.formatEther(monBal));
       const tokenBal = await tokenCon.balanceOf(address);
       setTokenBalance(ethers.formatEther(tokenBal));
     } catch (error: any) {
@@ -320,91 +320,91 @@ export function TradingInterface({
     }
   };
 
-const calculateBnb = async (tokenAmount: string) => {
-  if (!tokenAmount || !sdk) return "";
+  const calculateBnb = async (tokenAmount: string) => {
+    if (!tokenAmount || !sdk) return "";
 
-  try {
-    if (graduatedToPancakeSwap) {
-      // ✅ Use PancakeSwap Router for graduated tokens
-      const pancakeRouterAddress = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet Router
-      const routerAbi = [
-        "function getAmountsOut(uint amountIn, address[] memory path) external view returns (uint[] memory amounts)",
-      ];
+    try {
+      if (graduatedToPancakeSwap) {
+        // ✅ Use PancakeSwap Router for graduated tokens
+        const pancakeRouterAddress = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet Router
+        const routerAbi = [
+          "function getAmountsOut(uint amountIn, address[] memory path) external view returns (uint[] memory amounts)",
+        ];
 
-      const router = new ethers.Contract(
-        pancakeRouterAddress,
-        routerAbi,
-        provider
-      );
+        const router = new ethers.Contract(
+          pancakeRouterAddress,
+          routerAbi,
+          provider
+        );
 
-      const path = [
-        token.contractAddress,
-        "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
-      ]; // Token -> WBNB
-      const amounts = await router.getAmountsOut(
-        ethers.parseEther(tokenAmount),
-        path
-      );
+        const path = [
+          token.contractAddress,
+          "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+        ]; // Token -> WBNB
+        const amounts = await router.getAmountsOut(
+          ethers.parseEther(tokenAmount),
+          path
+        );
 
-      return ethers.formatEther(amounts[1]); // BNB out
-    } else {
-      // ✅ Use Bonding Curve for non-graduated tokens
-      const quote = await sdk.bondingDex.getSellQuote(
-        token.contractAddress,
-        ethers.parseEther(tokenAmount).toString()
-      );
+        return ethers.formatEther(amounts[1]); // BNB out
+      } else {
+        // ✅ Use Bonding Curve for non-graduated tokens
+        const quote = await sdk.bondingDex.getSellQuote(
+          token.contractAddress,
+          ethers.parseEther(tokenAmount).toString()
+        );
 
-      return ethers.formatEther(quote.pricePerToken);
+        return ethers.formatEther(quote.pricePerToken);
+      }
+    } catch (error) {
+      console.error("Error calculating BNB:", error);
+      return "";
     }
-  } catch (error) {
-    console.error("Error calculating BNB:", error);
-    return "";
-  }
-};
+  };
 
-const calculateTokens = async (bnb: string) => {
-  if (!bnb || !sdk) return "";
+  const calculateTokens = async (mon: string) => {
+    if (!mon || !sdk) return "";
 
-  try {
-    if (graduatedToPancakeSwap) {
-      // ✅ Use PancakeSwap Router for graduated tokens
-      const pancakeRouterAddress = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet Router
-      const routerAbi = [
-        "function getAmountsOut(uint amountIn, address[] memory path) external view returns (uint[] memory amounts)",
-      ];
+    try {
+      if (graduatedToPancakeSwap) {
+        // ✅ Use PancakeSwap Router for graduated tokens
+        const pancakeRouterAddress = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"; // BSC Testnet Router
+        const routerAbi = [
+          "function getAmountsOut(uint amountIn, address[] memory path) external view returns (uint[] memory amounts)",
+        ];
 
-      const router = new ethers.Contract(
-        pancakeRouterAddress,
-        routerAbi,
-        provider
-      );
+        const router = new ethers.Contract(
+          pancakeRouterAddress,
+          routerAbi,
+          provider
+        );
 
-      const path = [
-        "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
-        token.contractAddress,
-      ]; // WBNB -> Token
-      const amounts = await router.getAmountsOut(ethers.parseEther(bnb), path);
+        const path = [
+          "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+          token.contractAddress,
+        ]; // WBNB -> Token
+        const amounts = await router.getAmountsOut(ethers.parseEther(mon), path);
 
-      return parseFloat(ethers.formatEther(amounts[1])).toFixed(2); // Tokens out
-    } else {
-      // ✅ Use Bonding Curve for non-graduated tokens
-      const quote = await sdk.bondingDex.getBuyQuote(
-        token.contractAddress,
-        ethers.parseEther(bnb).toString()
-      );
+        return parseFloat(ethers.formatEther(amounts[1])).toFixed(2); // Tokens out
+      } else {
+        // ✅ Use Bonding Curve for non-graduated tokens
+        const quote = await sdk.bondingDex.getBuyQuote(
+          token.contractAddress,
+          ethers.parseEther(mon).toString()
+        );
 
-      return parseFloat(ethers.formatEther(quote.tokensOut)).toFixed(2);
+        return parseFloat(ethers.formatEther(quote.tokensOut)).toFixed(2);
+      }
+    } catch (error) {
+      console.error("Error calculating tokens:", error);
+      return "";
     }
-  } catch (error) {
-    console.error("Error calculating tokens:", error);
-    return "";
-  }
-};
+  };
 
   const handleAmountChange = async (value: string) => {
     setAmount(value);
-    const bnb = await calculateBnb(value);
-    setBnbAmount(bnb);
+    const mon = await calculateBnb(value);
+    setBnbAmount(mon);
   };
 
   const handleBnbChange = async (value: string) => {
@@ -478,10 +478,9 @@ const calculateTokens = async (bnb: string) => {
                   disabled={isBuyDisabled && isSellDisabled}
                   className={`
                     px-3 py-2 text-xs font-black rounded border-2 transition-all
-                    ${
-                      slippage === val
-                        ? "bg-primary text-primary-foreground border-primary shadow-[0_0_12px_rgba(131,110,249,0.5)]"
-                        : "bg-card/30 text-foreground/70 border-primary/20 hover:border-primary/40 hover:bg-card/50"
+                    ${slippage === val
+                      ? "bg-primary text-primary-foreground border-primary shadow-[0_0_12px_rgba(131,110,249,0.5)]"
+                      : "bg-card/30 text-foreground/70 border-primary/20 hover:border-primary/40 hover:bg-card/50"
                     }
                     ${isBuyDisabled && isSellDisabled ? "opacity-50 cursor-not-allowed" : ""}
                   `}
@@ -542,17 +541,17 @@ const calculateTokens = async (bnb: string) => {
 
         <TabsContent value="buy" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="bnb-buy">You Pay (MON)</Label>
+            <Label htmlFor="mon-buy">You Pay (MON)</Label>
             <Input
-              id="bnb-buy"
+              id="mon-buy"
               type="number"
               placeholder="0.0"
-              value={bnbAmount}
+              value={monAmount}
               onChange={(e) => handleBnbChange(e.target.value)}
               disabled={isTrading || isBuyDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(bnbBalance, loadingBalances)} MON
+              Balance: {formatBalance(monBalance, loadingBalances)} MON
             </p>
           </div>
 
@@ -591,11 +590,11 @@ const calculateTokens = async (bnb: string) => {
                 {token.launchType === "project-raise" ? "2%" : "2%"})
               </span>
               <span className="font-medium">
-                {bnbAmount
+                {monAmount
                   ? (
-                      parseFloat(bnbAmount) *
-                      (token.launchType === "project-raise" ? 0.01 : 0.02)
-                    ).toFixed(4)
+                    parseFloat(monAmount) *
+                    (token.launchType === "project-raise" ? 0.01 : 0.02)
+                  ).toFixed(4)
                   : "0.0000"}{" "}
                 MON
               </span>
@@ -612,8 +611,8 @@ const calculateTokens = async (bnb: string) => {
             size="lg"
             disabled={
               isTrading ||
-              !bnbAmount ||
-              parseFloat(bnbAmount) <= 0 ||
+              !monAmount ||
+              parseFloat(monAmount) <= 0 ||
               isBuyDisabled
             }
           >
@@ -657,17 +656,17 @@ const calculateTokens = async (bnb: string) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bnb-sell">You Receive (MON)</Label>
+            <Label htmlFor="mon-sell">You Receive (MON)</Label>
             <Input
-              id="bnb-sell"
+              id="mon-sell"
               type="number"
               placeholder="0.0"
-              value={bnbAmount}
+              value={monAmount}
               onChange={(e) => handleBnbChange(e.target.value)}
               disabled={isTrading || isSellDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(bnbBalance, loadingBalances)} MON
+              Balance: {formatBalance(monBalance, loadingBalances)} MON
             </p>
           </div>
 
@@ -684,11 +683,11 @@ const calculateTokens = async (bnb: string) => {
                 {token.launchType === "project-raise" ? "2%" : "2%"})
               </span>
               <span className="font-medium">
-                {bnbAmount
+                {monAmount
                   ? (
-                      parseFloat(bnbAmount) *
-                      (token.launchType === "project-raise" ? 0.02 : 0.02)
-                    ).toFixed(4)
+                    parseFloat(monAmount) *
+                    (token.launchType === "project-raise" ? 0.02 : 0.02)
+                  ).toFixed(4)
                   : "0.0000"}{" "}
                 MON
               </span>
@@ -766,8 +765,8 @@ const calculateTokens = async (bnb: string) => {
                       parseFloat(tokenBalance) * percentage
                     ).toFixed(4);
                     setAmount(tokensToSell);
-                    const bnb = await calculateBnb(tokensToSell);
-                    setBnbAmount(bnb);
+                    const mon = await calculateBnb(tokensToSell);
+                    setBnbAmount(mon);
                   }}
                   disabled={
                     isTrading ||

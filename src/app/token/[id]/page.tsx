@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils/format";
 import { Wallet, Coins, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import type { Token, Trade } from "@/types/token";
 import { ethers } from "ethers";
 import { useAccount } from "wagmi";
@@ -38,7 +38,7 @@ export const abi = [
       },
       {
         internalType: "uint256",
-        name: "bnbReserve",
+        name: "monReserve",
         type: "uint256",
       },
       {
@@ -88,7 +88,7 @@ export const abi = [
       },
       {
         internalType: "uint256",
-        name: "bnbForPancakeSwap",
+        name: "monForPancakeSwap",
         type: "uint256",
       },
       {
@@ -128,7 +128,7 @@ export default function TokenPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const [token, setToken] = useState<Token | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -138,7 +138,7 @@ export default function TokenPage({
     lastClaimTime: Date | null;
     graduationMarketCap: number;
     currentMarketCap: number;
-    bnbInPool: number;
+    monInPool: number;
     canClaim: boolean;
   } | null>(null);
   const { address } = useAccount();
@@ -216,7 +216,7 @@ export default function TokenPage({
         if (isInstant) {
           const bond = sdk.bondingDex.getContract();
           const provider = new ethers.JsonRpcProvider(
-            "https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
+            "https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
           );
           const bonding = new ethers.Contract(
             await bond.getAddress(),
@@ -227,15 +227,15 @@ export default function TokenPage({
           console.log(pool)
           // Store actual BNB in pool from contract for instant-launch
           const totalBnb =
-            Number(ethers.formatEther(pool.bnbReserve)) +
+            Number(ethers.formatEther(pool.monReserve)) +
             Number(ethers.formatEther(pool.virtualBnbReserve));
           if (!cancelled) {
             setActualBnbInPool(totalBnb);
 
             // Convert BNB to USD using price oracle
             const totalBnbWei =
-              BigInt(pool.bnbReserve) + BigInt(pool.virtualBnbReserve);
-            const usdValue = await sdk.priceOracle.bnbToUSD(totalBnbWei);
+              BigInt(pool.monReserve) + BigInt(pool.virtualBnbReserve);
+            const usdValue = await sdk.priceOracle.monToUSD(totalBnbWei);
             setVirtualLiquidityUSD(Number(ethers.formatEther(usdValue)));
 
             // Convert graduation BNB threshold to USD
@@ -286,7 +286,7 @@ export default function TokenPage({
             const parsedFeeInfo = {
               accumulatedFees: Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.bnbToUSD(feeInfo.accumulatedFees)
+                  await sdk.priceOracle.monToUSD(feeInfo.accumulatedFees)
                 )
               ),
               lastClaimTime:
@@ -298,10 +298,10 @@ export default function TokenPage({
               ),
               currentMarketCap: Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.bnbToUSD(feeInfo.currentMarketCap)
+                  await sdk.priceOracle.monToUSD(feeInfo.currentMarketCap)
                 )
               ),
-              bnbInPool: Number(ethers.formatEther(feeInfo.bnbInPool)),
+              monInPool: Number(ethers.formatEther(feeInfo.monInPool)),
               canClaim: Boolean(feeInfo.canClaim),
             };
 
@@ -317,7 +317,7 @@ export default function TokenPage({
                 lastClaimTime: null,
                 graduationMarketCap: 0,
                 currentMarketCap: 0,
-                bnbInPool: 0,
+                monInPool: 0,
                 canClaim: false,
               });
             }
@@ -334,7 +334,7 @@ export default function TokenPage({
         const marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
         const currentPrice = Number(
           ethers.formatEther(
-            await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
+            await sdk.priceOracle.monToUSD(poolInfo.currentPrice)
           )
         );
         const graduationProgress = Number(poolInfo.graduationProgress);
@@ -346,12 +346,12 @@ export default function TokenPage({
         let liquidityPool: any;
         if (isInstant && pool) {
           const virtual = pool.virtualBnbReserve;
-          liquidityPool = await sdk.priceOracle.bnbToUSD(
-            BigInt(poolInfo.bnbReserve) + BigInt(virtual)
+          liquidityPool = await sdk.priceOracle.monToUSD(
+            BigInt(poolInfo.monReserve) + BigInt(virtual)
           );
         } else {
-          liquidityPool = await sdk.priceOracle.bnbToUSD(
-            BigInt(poolInfo.bnbReserve)
+          liquidityPool = await sdk.priceOracle.monToUSD(
+            BigInt(poolInfo.monReserve)
           );
         }
 
@@ -396,7 +396,7 @@ export default function TokenPage({
               totalVolumeData.buyCount + totalVolumeData.sellCount;
 
             // Convert total volume to USD
-            const totalVolumeUSD = await sdk.priceOracle.bnbToUSD(
+            const totalVolumeUSD = await sdk.priceOracle.monToUSD(
               totalVolumeData.totalVolumeBNB
             );
             volume24h = Number(ethers.formatEther(totalVolumeUSD));
@@ -423,11 +423,11 @@ export default function TokenPage({
             // Convert SDK TradeData format to Trade format
             const convertedTrades: Trade[] = await Promise.all(
               tradesData.map(async (tradeData: any, index: number) => {
-                const usdPrice = await sdk.priceOracle.bnbToUSD(
+                const usdPrice = await sdk.priceOracle.monToUSD(
                   tradeData.price
                 );
-                const usdValue = await sdk.priceOracle.bnbToUSD(
-                  tradeData.bnbAmount
+                const usdValue = await sdk.priceOracle.monToUSD(
+                  tradeData.monAmount
                 );
                 const priceInBnbHexOrBN = tradeData.price;
 
@@ -484,7 +484,7 @@ export default function TokenPage({
           id,
           name: tokenName,
           symbol: tokenSymbol,
-          description: tokenMeta.description || "Launched token on SafuPad",
+          description: tokenMeta.description || "Launched token on BaldPad",
           image: logoURI,
           contractAddress: id,
           creatorAddress: launchInfo.founder,
@@ -510,69 +510,69 @@ export default function TokenPage({
           // Project Raise
           projectRaise: isProjectRaise
             ? {
-                config: {
-                  type: "project-raise",
-                  targetAmount: raiseMaxUSD || 0,
-                  raiseWindow: 24 * 60 * 60 * 1000,
-                  ownerAllocation: 20,
-                  immediateUnlock: 10,
-                  vestingMonths: 6,
-                  liquidityAllocation: 10,
-                  liquidityCap: 100000,
-                  graduationThreshold: 15,
-                  tradingFee: {
-                    platform: 0.1,
-                    liquidity: 0.3,
-                    infofiPlatform: 0.6,
-                    creator: 1.0,
-                  },
-                },
-                raisedAmount: totalRaisedUSD,
+              config: {
+                type: "project-raise",
                 targetAmount: raiseMaxUSD || 0,
-                startTime: new Date(Date.now() - 60_000),
-                endTime: raiseDeadline,
-                vestingSchedule: {
-                  totalAmount: founderTokens,
-                  releasedAmount: founderTokensClaimed,
-                  schedule: [],
+                raiseWindow: 24 * 60 * 60 * 1000,
+                ownerAllocation: 20,
+                immediateUnlock: 10,
+                vestingMonths: 6,
+                liquidityAllocation: 10,
+                liquidityCap: 100000,
+                graduationThreshold: 15,
+                tradingFee: {
+                  platform: 0.1,
+                  liquidity: 0.3,
+                  infofiPlatform: 0.6,
+                  creator: 1.0,
                 },
-                approved: true,
-                graduationProgress,
-                // Vesting data from SDK
-                vestingData: vestingData
-                  ? {
-                      startMarketCap,
-                      vestingDuration,
-                      vestingStartTime,
-                      founderTokens,
-                      founderTokensClaimed,
-                    }
-                  : undefined,
-              }
+              },
+              raisedAmount: totalRaisedUSD,
+              targetAmount: raiseMaxUSD || 0,
+              startTime: new Date(Date.now() - 60_000),
+              endTime: raiseDeadline,
+              vestingSchedule: {
+                totalAmount: founderTokens,
+                releasedAmount: founderTokensClaimed,
+                schedule: [],
+              },
+              approved: true,
+              graduationProgress,
+              // Vesting data from SDK
+              vestingData: vestingData
+                ? {
+                  startMarketCap,
+                  vestingDuration,
+                  vestingStartTime,
+                  founderTokens,
+                  founderTokensClaimed,
+                }
+                : undefined,
+            }
             : undefined,
 
           // Instant Launch
           instantLaunch: !isProjectRaise
             ? ({
-                config: {
-                  type: "instant-launch",
-                  tradingFee: {
-                    platform: 0.1,
-                    creator: 1.0,
-                    infofiPlatform: 0.9,
-                  },
-                  graduationThreshold: 15,
-                  claimCooldown: 86_400_000,
-                  marketCapRequirement: true,
-                  accrualPeriod: 604_800_000,
+              config: {
+                type: "instant-launch",
+                tradingFee: {
+                  platform: 0.1,
+                  creator: 1.0,
+                  infofiPlatform: 0.9,
                 },
-                cumulativeBuys: Number(poolInfo.bnbReserve),
-                creatorFees: 0,
-                lastClaimTime: null,
-                claimableAmount: 0,
-                graduationProgress,
-                priceMultiplier,
-              } as any)
+                graduationThreshold: 15,
+                claimCooldown: 86_400_000,
+                marketCapRequirement: true,
+                accrualPeriod: 604_800_000,
+              },
+              cumulativeBuys: Number(poolInfo.monReserve),
+              creatorFees: 0,
+              lastClaimTime: null,
+              claimableAmount: 0,
+              graduationProgress,
+              priceMultiplier,
+            } as any)
             : undefined,
 
           // Graduation
@@ -621,7 +621,7 @@ export default function TokenPage({
 
       try {
         const provider = new ethers.JsonRpcProvider(
-          "https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
+          "https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
         );
         const stats = await getTokenStats(token.id, provider, sdk);
 
@@ -681,7 +681,7 @@ export default function TokenPage({
         const parsedData = {
           totalFeesHarvested: Number(
             ethers.formatEther(
-              await sdk.priceOracle.bnbToUSD(lockInfo.totalFeesHarvested)
+              await sdk.priceOracle.monToUSD(lockInfo.totalFeesHarvested)
             )
           ),
           canHarvest: Boolean(harvestStatus.ready),
@@ -931,7 +931,7 @@ export default function TokenPage({
                         {formatCurrency(
                           graduatedToPancakeSwap
                             ? pancakeSwapStats?.marketCapUSD ||
-                                creatorFeeInfo.currentMarketCap
+                            creatorFeeInfo.currentMarketCap
                             : creatorFeeInfo.currentMarketCap
                         )}
                       </p>

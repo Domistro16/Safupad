@@ -76,7 +76,7 @@ export async function calculate24hVolume(
       totalVolumeBNB += topics[0];
     });
 
-    // Sum sell volumes (use bnbReceived for actual BNB value)
+    // Sum sell volumes (use monReceived for actual BNB value)
     sellEvents.forEach((event) => {
       const args = event.topics;
 
@@ -95,9 +95,9 @@ export async function calculate24hVolume(
     // Get current BNB price for USD conversion
     let volumeUSD = 0;
     try {
-      const bnbPriceRaw = await sdk.priceOracle.getBNBPrice();
-      const bnbPriceUSD = Number(bnbPriceRaw) / 1e8; // Price oracle returns 8 decimals
-      volumeUSD = volumeBNB * bnbPriceUSD;
+      const monPriceRaw = await sdk.priceOracle.getBNBPrice();
+      const monPriceUSD = Number(monPriceRaw) / 1e8; // Price oracle returns 8 decimals
+      volumeUSD = volumeBNB * monPriceUSD;
     } catch (error) {
       console.warn("Could not fetch BNB price for USD conversion:", error);
       // Fallback: assume BNB = $600

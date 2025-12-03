@@ -7,7 +7,7 @@ import { Coins, Trophy, Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import type { Token } from "@/types/token";
 import { ethers } from "ethers";
 import { ContributeModal } from "@/components/ContributeModal";
@@ -21,7 +21,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [contributeToken, setContributeToken] = useState<Token | null>(null);
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const [liveTokens, setLiveTokens] = useState<Token[] | null>(null);
 
   const handleContribute = (token: Token) => {
@@ -104,18 +104,18 @@ export default function Home() {
 
               // Parse numeric values (handle BigNumber if needed)
               // ✅ CORRECT: Convert BigNumbers from wei (18 decimals) to regular numbers
-              const totalRaisedUSD = Number(
-                ethers.formatEther(launchInfo.totalRaisedUSD)
+              const totalRaisedMON = Number(
+                ethers.formatEther(launchInfo.totalRaisedMON)
               );
-              const raiseMaxUSD = Number(
-                ethers.formatEther(launchInfo.raiseTargetUSD)
+              const raiseMaxMON = Number(
+                ethers.formatEther(launchInfo.raiseTargetMON)
               );
               const marketCapUSD = Number(
                 ethers.formatEther(poolInfo.marketCapUSD)
               );
               const currentPrice = Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
+                  await sdk.priceOracle.monToUSD(poolInfo.currentPrice)
                 )
               );
               const graduationProgress = Number(poolInfo.graduationProgress);
@@ -149,12 +149,12 @@ export default function Home() {
               // Parse creator fee info if available
               const accumulatedFees = creatorFeeInfo
                 ? Number(
-                    ethers.formatEther(
-                      await sdk.priceOracle.bnbToUSD(
-                        creatorFeeInfo.accumulatedFees
-                      )
+                  ethers.formatEther(
+                    await sdk.priceOracle.monToUSD(
+                      creatorFeeInfo.accumulatedFees
                     )
                   )
+                )
                 : 0;
               const lastClaimTime = creatorFeeInfo?.lastClaimTime
                 ? new Date(Number(creatorFeeInfo.lastClaimTime) * 1000)
@@ -165,9 +165,9 @@ export default function Home() {
               const currentMarketCapFromFee = creatorFeeInfo
                 ? Number(ethers.formatEther(creatorFeeInfo.currentMarketCap))
                 : marketCapUSD;
-              const bnbInPool = creatorFeeInfo
-                ? Number(ethers.formatEther(creatorFeeInfo.bnbInPool))
-                : Number(poolInfo.bnbReserve);
+              const monInPool = creatorFeeInfo
+                ? Number(ethers.formatEther(creatorFeeInfo.monInPool))
+                : Number(poolInfo.monReserve);
               const canClaim = creatorFeeInfo?.canClaim ?? false;
 
               // Parse deadline
@@ -188,7 +188,7 @@ export default function Home() {
                 const volume24hData = await sdk.bondingDex.get24hVolume(addr);
                 const volume24hBNB = volume24hData.volumeBNB;
 
-                const vol = await sdk.priceOracle.bnbToUSD(volume24hBNB);
+                const vol = await sdk.priceOracle.monToUSD(volume24hBNB);
                 volume24h = ethers.formatUnits(Number(vol).toString(), 18);
 
                 // Get total volume
@@ -245,7 +245,7 @@ export default function Home() {
                 name: tokenName, // ✅ Correct: never shows address
                 symbol: tokenSymbol,
                 description:
-                  tokenMeta.description || "Launched token on SafuPad",
+                  tokenMeta.description || "Launched token on BaldPad",
                 image: logoURI,
                 contractAddress: addr,
                 creatorAddress: launchInfo.founder,
@@ -264,76 +264,76 @@ export default function Home() {
                 totalSupply: Number(tokenInfo.totalSupply),
                 currentPrice,
                 marketCap: marketCapUSD,
-                liquidityPool: Number(poolInfo.bnbReserve),
+                liquidityPool: Number(poolInfo.monReserve),
                 volume24h,
                 priceChange24h: priceChange24h,
 
                 // Project Raise
                 projectRaise: isProjectRaise
                   ? {
-                      config: {
-                        type: "project-raise",
-                        targetAmount: raiseMaxUSD || 0,
-                        raiseWindow: 24 * 60 * 60 * 1000,
-                        ownerAllocation: 20,
-                        immediateUnlock: 10,
-                        vestingMonths: 6,
-                        liquidityAllocation: 10,
-                        liquidityCap: 100000,
-                        graduationThreshold: 500000,
-                        tradingFee: {
-                          platform: 0.1,
-                          liquidity: 0.3,
-                          infofiPlatform: 0.6,
-                        },
+                    config: {
+                      type: "project-raise",
+                      targetAmount: raiseMaxMON || 0,
+                      raiseWindow: 24 * 60 * 60 * 1000,
+                      ownerAllocation: 20,
+                      immediateUnlock: 10,
+                      vestingMonths: 6,
+                      liquidityAllocation: 10,
+                      liquidityCap: 100000,
+                      graduationThreshold: 500000,
+                      tradingFee: {
+                        platform: 0.1,
+                        liquidity: 0.3,
+                        infofiPlatform: 0.6,
                       },
-                      raisedAmount: totalRaisedUSD,
-                      targetAmount: raiseMaxUSD || 0,
-                      startTime: new Date(Date.now() - 60_000),
-                      endTime: raiseDeadline,
-                      vestingSchedule: {
-                        totalAmount: founderTokens,
-                        releasedAmount: founderTokensClaimed,
-                        schedule: [],
-                      },
-                      approved: true,
-                      // Vesting data from SDK
-                      vestingData: vestingData
-                        ? {
-                            startMarketCap,
-                            vestingDuration,
-                            vestingStartTime,
-                            founderTokens,
-                            founderTokensClaimed,
-                          }
-                        : undefined,
-                    }
+                    },
+                    raisedAmount: totalRaisedMON,
+                    targetAmount: raiseMaxMON || 0,
+                    startTime: new Date(Date.now() - 60_000),
+                    endTime: raiseDeadline,
+                    vestingSchedule: {
+                      totalAmount: founderTokens,
+                      releasedAmount: founderTokensClaimed,
+                      schedule: [],
+                    },
+                    approved: true,
+                    // Vesting data from SDK
+                    vestingData: vestingData
+                      ? {
+                        startMarketCap,
+                        vestingDuration,
+                        vestingStartTime,
+                        founderTokens,
+                        founderTokensClaimed,
+                      }
+                      : undefined,
+                  }
                   : undefined,
 
                 // Instant Launch
                 instantLaunch: !isProjectRaise
                   ? ({
-                      config: {
-                        type: "instant-launch",
-                        tradingFee: {
-                          platform: 0.1,
-                          creator: 1.0,
-                          infofiPlatform: 0.9,
-                        },
-                        graduationThreshold: 15,
-                        claimCooldown: 86_400_000,
-                        marketCapRequirement: true,
-                        accrualPeriod: 604_800_000,
+                    config: {
+                      type: "instant-launch",
+                      tradingFee: {
+                        platform: 0.1,
+                        creator: 1.0,
+                        infofiPlatform: 0.9,
                       },
-                      cumulativeBuys: bnbInPool,
-                      creatorFees: accumulatedFees,
-                      lastClaimTime: lastClaimTime,
-                      claimableAmount: canClaim ? accumulatedFees : 0,
-                      graduationProgress,
-                      priceMultiplier,
-                      graduationMarketCap,
-                      canClaim,
-                    } as any)
+                      graduationThreshold: 15,
+                      claimCooldown: 86_400_000,
+                      marketCapRequirement: true,
+                      accrualPeriod: 604_800_000,
+                    },
+                    cumulativeBuys: monInPool,
+                    creatorFees: accumulatedFees,
+                    lastClaimTime: lastClaimTime,
+                    claimableAmount: canClaim ? accumulatedFees : 0,
+                    graduationProgress,
+                    priceMultiplier,
+                    graduationMarketCap,
+                    canClaim,
+                  } as any)
                   : undefined,
 
                 // Graduation
@@ -449,16 +449,16 @@ export default function Home() {
             ? (a.instantLaunch?.graduationProgress ?? 0)
             : a.projectRaise
               ? (a.projectRaise.raisedAmount /
-                  (a.projectRaise.targetAmount || 1)) *
-                100
+                (a.projectRaise.targetAmount || 1)) *
+              100
               : 0;
         const pb =
           b.launchType === "instant-launch"
             ? (b.instantLaunch?.graduationProgress ?? 0)
             : b.projectRaise
               ? (b.projectRaise.raisedAmount /
-                  (b.projectRaise.targetAmount || 1)) *
-                100
+                (b.projectRaise.targetAmount || 1)) *
+              100
               : 0;
         return pb - pa;
       });
@@ -628,3 +628,4 @@ export default function Home() {
     </div>
   );
 }
+

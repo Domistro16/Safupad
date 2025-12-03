@@ -6,7 +6,7 @@ import Script from "next/script";
 import { Web3Provider } from "@/components/providers/web3-provider";
 
 export const metadata: Metadata = {
-  title: "Safupad",
+  title: "Baldpad",
   description: "Tokenize Anything!",
 };
 

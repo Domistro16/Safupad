@@ -2,7 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { WagmiProvider, cookieStorage, createStorage } from "wagmi";
-import { bsc } from "wagmi/chains";
+import { monad } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   RainbowKitProvider,
@@ -16,9 +16,9 @@ const walletConnectProjectId =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID";
 
 const config = getDefaultConfig({
-  appName: "Safupad",
+  appName: "Baldpad",
   projectId: walletConnectProjectId,
-  chains: [bsc],
+  chains: [monad],
   ssr: true,
   storage: createStorage({
     storage: cookieStorage,
@@ -38,7 +38,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
             borderRadius: "medium",
             overlayBlur: "small",
           })}
-          initialChain={bsc}
+          initialChain={monad}
         >
           {children}
         </RainbowKitProvider>

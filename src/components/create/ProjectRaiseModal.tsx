@@ -27,7 +27,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
     name: "",
     symbol: "",
     description: "",
-    targetAmount: "5000000", // 5m MON
+    targetAmount: "50",
     twitter: "",
     telegram: "",
     website: "",
@@ -39,7 +39,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  
+
   // Image upload state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -47,8 +47,8 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
   const [imageUploadError, setImageUploadError] = useState<string | null>(null);
 
   // lazy import to avoid tree-shake issues
-  const { useSafuPadSDK } = require("@/lib/safupad-sdk");
-  const { sdk, isInitializing } = useSafuPadSDK();
+  const { useBaldPadSDK } = require("@/lib/baldpad-sdk");
+  const { sdk, isInitializing } = useBaldPadSDK();
 
   const TOTAL_SUPPLY = 1000000000; // 1 billion constant
 
@@ -99,7 +99,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
       }
 
       const data = await response.json();
-      
+
       if (!data.url) {
         throw new Error('No URL returned from upload');
       }
@@ -128,10 +128,10 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
       setError("Please fill in all required fields (name, symbol, target amount).");
       return;
     }
-    
+
     const targetBNB = Number(formData.targetAmount);
-    if (!Number.isFinite(targetBNB) || targetBNB < 5000000 || targetBNB > 20000000) {
-      setError("Target amount must be between 5m MON and 20m MON.");
+    if (!Number.isFinite(targetBNB) || targetBNB < 50 || targetBNB > 500) {
+      setError("Target amount must be between 50 BNB and 500 BNB.");
       return;
     }
     if (formData.vestingDuration !== 6) {
@@ -146,7 +146,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
 
     try {
       setSubmitting(true);
-      
+
       // Upload image right before creating launch
       let imageUrl = "";
       if (imageFile) {
@@ -160,7 +160,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
           setImageUploading(false);
         }
       }
-      
+
       // Ensure wallet is connected
       await sdk.connect();
       const founder = await sdk.getAddress();
@@ -174,13 +174,13 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
         discord: "",
       };
 
-      // ✅ UPDATED for SDK v2.0.0 + Monad migration: Use raiseTargetBNB and raiseMaxBNB
+      // ✅ UPDATED for SDK v2.0.0: Use raiseTargetBNB and raiseMaxBNB instead of USD
       const params = {
         name: formData.name.trim(),
         symbol: formData.symbol.trim().toUpperCase(),
         totalSupply: TOTAL_SUPPLY,
         raiseTargetBNB: String(targetBNB), // ✅ Changed from raiseTargetUSD
-        raiseMaxBNB: '20000000',    // ✅ 20m MON max
+        raiseMaxBNB: '500',    // ✅ Changed from raiseMaxUSD
         vestingDuration: formData.vestingDuration * 30,
         metadata,
         burnLP: formData.burnLP,
@@ -238,7 +238,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                Raise window is 72 hours. Target between 5m-20m MON. Max contribution: 50,000 MON.
+                Raise window is 24 hours. Target between 50-500 BNB.
               </AlertDescription>
             </Alert>
 
@@ -383,7 +383,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                Set your fundraising target between 5m MON and 20m MON
+                Set your fundraising target between 50 BNB and 500 BNB
               </AlertDescription>
             </Alert>
 
@@ -392,9 +392,9 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
               <Input
                 id="targetAmount"
                 type="number"
-                min="5000000"
-                max="20000000"
-                step="1000000"
+                min="50"
+                max="500"
+                step="10"
                 value={formData.targetAmount}
                 onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
                 disabled={submitting || isInitializing}
@@ -408,7 +408,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
                 className="mt-2"
               />
               <p className="text-xs text-muted-foreground">
-                {(parseFloat(formData.targetAmount) / 1000000).toFixed(1)}m MON
+                {parseFloat(formData.targetAmount).toFixed(0)} BNB
               </p>
             </div>
 
@@ -533,8 +533,8 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
               <div className="text-sm space-y-1">
                 <p><strong>Token:</strong> {formData.name} ({formData.symbol})</p>
                 <p><strong>Supply:</strong> {TOTAL_SUPPLY.toLocaleString()}</p>
-                <p><strong>Target:</strong> {(parseFloat(formData.targetAmount) / 1000000).toFixed(1)}m MON</p>
-                <p><strong>Vesting Duration:</strong> 6 months (60% at raise end, rest monthly)</p>
+                <p><strong>Target:</strong> {parseFloat(formData.targetAmount).toFixed(0)} BNB</p>
+                <p><strong>Vesting Duration:</strong> {formData.vestingDuration} month{formData.vestingDuration !== 1 ? 's' : ''}</p>
                 <p><strong>Burn LP:</strong> {formData.burnLP ? 'Yes' : 'No'}</p>
                 {imagePreview && <p><strong>Image:</strong> Uploaded ✓</p>}
                 {txHash && (
@@ -567,3 +567,19 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
     </Dialog>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

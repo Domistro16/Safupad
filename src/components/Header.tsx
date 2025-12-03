@@ -23,7 +23,7 @@ export function Header() {
                 <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-sm sm:text-lg leading-tight font-black tracking-wider glow-text uppercase truncate max-w-[60vw] sm:max-w-none">Safupad</h1>
+                <h1 className="text-sm sm:text-lg leading-tight font-black tracking-wider glow-text uppercase truncate max-w-[60vw] sm:max-w-none">Baldpad</h1>
                 <p className="hidden sm:block text-[10px] text-accent font-bold uppercase tracking-widest">🎮 Game Mode Active</p>
               </div>
             </Link>
@@ -31,20 +31,20 @@ export function Header() {
             {/* D-Pad Navigation (hidden on mobile) */}
             <nav className="hidden xl:block">
               <div className="dpad-nav scale-90 origin-right 2xl:scale-100">
-                <Link 
-                  href="/" 
+                <Link
+                  href="/"
                   className={`dpad-btn ${pathname === "/" ? "active" : ""}`}
                 >
                   🎯 Explore
                 </Link>
-                <Link 
-                  href="/create" 
+                <Link
+                  href="/create"
                   className={`dpad-btn ${pathname === "/create" ? "active" : ""}`}
                 >
                   🚀 Create
                 </Link>
-                <Link 
-                  href="/portfolio" 
+                <Link
+                  href="/portfolio"
                   className={`dpad-btn ${pathname === "/portfolio" ? "active" : ""}`}
                 >
                   💼 Portfolio
@@ -74,11 +74,10 @@ export function Header() {
         {/* Pop-up Panel */}
         <div
           id="mobile-gamepad-panel"
-          className={`fixed left-1/2 -translate-x-1/2 z-[60] transition-all duration-200 ease-out ${
-            menuOpen
+          className={`fixed left-1/2 -translate-x-1/2 z-[60] transition-all duration-200 ease-out ${menuOpen
               ? "bottom-[calc(env(safe-area-inset-bottom)+6rem)] opacity-100"
               : "bottom-[calc(env(safe-area-inset-bottom)+4rem)] opacity-0 pointer-events-none"
-          }`}
+            }`}
         >
           <div className="dpad-nav">
             <Link

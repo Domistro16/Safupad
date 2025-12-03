@@ -42,11 +42,11 @@ export async function getTokenStats(
 
   const isToken0 = token0.toLowerCase() === tokenAddress.toLowerCase();
   const tokenReserve = isToken0 ? reserve0 : reserve1;
-  const wbnbReserve = isToken0 ? reserve1 : reserve0;
+  const wmonReserve = isToken0 ? reserve1 : reserve0;
 
   // Calculate price
   const priceInBNB =
-    Number(ethers.formatEther(wbnbReserve)) /
+    Number(ethers.formatEther(wmonReserve)) /
     Number(ethers.formatEther(tokenReserve));
 
   // Get total supply for market cap
@@ -59,13 +59,13 @@ export async function getTokenStats(
   const supply = Number(ethers.formatEther(totalSupply));
 
   // Get BNB price using SDK price oracle if available
-  let bnbPrice: number;
+  let monPrice: number;
   if (sdk?.priceOracle) {
     try {
       // Get USD value for 1 BNB
       const oneBNB = ethers.parseEther("1");
-      const bnbPriceWei = await sdk.priceOracle.bnbToUSD(oneBNB);
-      bnbPrice = Number(ethers.formatEther(bnbPriceWei));
+      const monPriceWei = await sdk.priceOracle.monToUSD(oneBNB);
+      monPrice = Number(ethers.formatEther(monPriceWei));
     } catch (error) {
       console.warn(
         "Failed to get BNB price from SDK, falling back to CoinGecko:",
@@ -75,7 +75,7 @@ export async function getTokenStats(
         "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
       );
       const data = await res.json();
-      bnbPrice = data.binancecoin.usd;
+      monPrice = data.binancecoin.usd;
     }
   } else {
     // Fallback to CoinGecko if SDK not provided
@@ -83,17 +83,17 @@ export async function getTokenStats(
       "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
     );
     const data = await res.json();
-    bnbPrice = data.binancecoin.usd;
+    monPrice = data.binancecoin.usd;
   }
 
-  const priceInUSD = priceInBNB * bnbPrice;
-  const wbnbLiq = Number(ethers.formatEther(wbnbReserve));
+  const priceInUSD = priceInBNB * monPrice;
+  const wmonLiq = Number(ethers.formatEther(wmonReserve));
 
   return {
     priceInBNB,
     priceInUSD,
     marketCapUSD: priceInUSD * supply,
-    liquidityUSD: wbnbLiq * bnbPrice * 2,
+    liquidityUSD: wmonLiq * monPrice * 2,
     totalSupply: supply,
     pairAddress,
   };
@@ -211,14 +211,14 @@ export async function sellTokenForBNB(
 /**
  * Buy token using BNB (BNB -> TOKEN).
  * - tokenAddress: address of token to buy
- * - bnbAmount: number | string | BigNumberish (human BNB or wei). Use parseBNBAmount helper.
+ * - monAmount: number | string | BigNumberish (human BNB or wei). Use parseBNBAmount helper.
  * - slippagePercent: e.g. 1 for 1%
  *
  * This uses swapExactETHForTokensSupportingFeeOnTransferTokens so fee-on-transfer tokens are supported.
  */
 export async function buyTokenWithBNB(
   tokenAddress: string,
-  bnbAmount: number | string | BigNumberish,
+  monAmount: number | string | BigNumberish,
   slippagePercent = 1,
   sdk: SafuPadSDK
 ): Promise<TxReceipt | undefined> {
@@ -231,7 +231,7 @@ export async function buyTokenWithBNB(
   if (!signer) return;
   const router = new ethers.Contract(ROUTER_ADDRESS, ROUTER_ABI, signer);
   const owner = await signer.getAddress();
-  const amountIn = parseBNBAmount(bnbAmount);
+  const amountIn = parseBNBAmount(monAmount);
 
   // Path WBNB -> TOKEN
   const path = [WBNB_ADDRESS, tokenAddress];
@@ -239,7 +239,7 @@ export async function buyTokenWithBNB(
   // Simulate expected token output using getAmountsOut
   const amountsOut: BigNumberish[] = await router.getAmountsOut(amountIn, path);
   const expectedOut: bigint = BigInt(amountsOut[amountsOut.length - 1]);
-  const amountOutMin = (expectedOut * BigInt((100 - slippagePercent))) /BigInt(100);
+  const amountOutMin = (expectedOut * BigInt((100 - slippagePercent))) / BigInt(100);
   const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
 
   // Execute swap; pass value as BNB (wei)

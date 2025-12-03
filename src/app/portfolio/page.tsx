@@ -9,16 +9,16 @@ import { Coins, TrendingUp, DollarSign } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import { useAccount } from "wagmi";
 import type { Token } from "@/types/token";
 import { ethers } from "ethers";
-import {getTokenStats} from '@/lib/utils/pancakeswap'
+import { getTokenStats } from '@/lib/utils/pancakeswap'
 import { TokensLoadingAnimation } from "@/components/TokensLoadingAnimation";
 
 export default function PortfolioPage() {
   const { address } = useAccount();
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const [loading, setLoading] = useState(false);
   const [userTokens, setUserTokens] = useState<Token[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -43,16 +43,16 @@ export default function PortfolioPage() {
 
         // Fetch details for each token and filter by founder
         const items: Token[] = [];
-        
+
         for (const addr of addresses) {
           try {
             // Get token info
             const tokenInfo = await sdk.tokenFactory.getTokenInfo(addr);
             const tokenMeta = tokenInfo.metadata;
-            
+
             // Get launch info to check founder
             const launchInfo = await sdk.launchpad.getLaunchInfoWithUSD(addr);
-            
+
             // Only include tokens created by the connected user
             if (launchInfo.founder.toLowerCase() !== address.toLowerCase()) {
               continue;
@@ -60,23 +60,23 @@ export default function PortfolioPage() {
 
             const tokenName = tokenInfo.name || "Unknown Token";
             const tokenSymbol = tokenInfo.symbol || "???";
-            const logoURI = tokenMeta.logoURI || 
+            const logoURI = tokenMeta.logoURI ||
               "https://www.rmg.co.uk/sites/default/files/styles/full_width_1440/public/Color-Full%20Moon%20%C2%A9%20Nicolas%20Lefaudeux.jpg.webp?itok=ghLyCuO0";
 
             // Get pool info
             const poolInfo = await sdk.bondingDex.getPoolInfo(addr);
-            
+
             // Check if graduated
             const graduated = Boolean(poolInfo.graduated);
             const graduatedToPancakeSwap = Boolean(launchInfo.graduatedToPancakeSwap);
-            
+
             // For graduated tokens, use getTokenStats() for accurate data
             let marketCapUSD;
             let currentPrice;
-            
+
             if (graduated) {
               try {
-                 const provider = new ethers.JsonRpcProvider("https://bnb-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
+                const provider = new ethers.JsonRpcProvider("https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
                 const tokenStats = await getTokenStats(addr, provider, sdk);
                 marketCapUSD = tokenStats.marketCapUSD;
                 currentPrice = tokenStats.priceInUSD;
@@ -87,14 +87,14 @@ export default function PortfolioPage() {
               } catch (err) {
                 console.warn(`Could not fetch token stats for ${addr}, falling back to pool info:`, err);
                 marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-                currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
+                currentPrice = Number(ethers.formatEther(await sdk.priceOracle.monToUSD(poolInfo.currentPrice)));
               }
             } else {
               // Non-graduated tokens use pool info
               marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-              currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
+              currentPrice = Number(ethers.formatEther(await sdk.priceOracle.monToUSD(poolInfo.currentPrice)));
             }
-            
+
             // Get vesting info
             let vestingData = null;
             try {
@@ -102,7 +102,7 @@ export default function PortfolioPage() {
             } catch (err) {
               console.warn(`Could not fetch vesting info for ${addr}:`, err);
             }
-            
+
             // Get creator fee info
             let creatorFeeInfo = null;
             try {
@@ -116,12 +116,12 @@ export default function PortfolioPage() {
             const isProjectRaise = launchTypeNum === 0;
 
             // Parse numeric values
-            const totalRaisedUSD = Number(ethers.formatEther(launchInfo.totalRaisedUSD));
-            const raiseMaxUSD = Number(ethers.formatEther(launchInfo.raiseTargetUSD));
+            const totalRaisedMON = Number(ethers.formatEther(launchInfo.totalRaisedMON));
+            const raiseMaxMON = Number(ethers.formatEther(launchInfo.raiseTargetMON));
             const graduationProgress = Number(poolInfo.graduationProgress);
             const priceMultiplier = Number(poolInfo.priceMultiplier);
             const raiseCompleted = Boolean(launchInfo.raiseCompleted);
-            
+
             // Parse vesting data
             const startMarketCap = vestingData
               ? Number(ethers.formatEther(vestingData.startMarketCap))
@@ -138,20 +138,20 @@ export default function PortfolioPage() {
             const founderTokensClaimed = vestingData
               ? Number(ethers.formatEther(vestingData.founderTokensClaimed))
               : 0;
-            
+
             // Parse creator fee info
-            const accumulatedFees = creatorFeeInfo 
+            const accumulatedFees = creatorFeeInfo
               ? Number(ethers.formatEther(creatorFeeInfo.accumulatedFees))
               : 0;
-            const lastClaimTime = creatorFeeInfo?.lastClaimTime 
+            const lastClaimTime = creatorFeeInfo?.lastClaimTime
               ? new Date(Number(creatorFeeInfo.lastClaimTime) * 1000)
               : null;
             const graduationMarketCap = creatorFeeInfo
               ? Number(ethers.formatEther(creatorFeeInfo.graduationMarketCap))
               : 0;
-            const bnbInPool = creatorFeeInfo
-              ? Number(ethers.formatEther(creatorFeeInfo.bnbInPool))
-              : Number(poolInfo.bnbReserve);
+            const monInPool = creatorFeeInfo
+              ? Number(ethers.formatEther(creatorFeeInfo.monInPool))
+              : Number(poolInfo.monReserve);
             const canClaim = creatorFeeInfo?.canClaim ?? false;
 
             // Parse deadline
@@ -165,19 +165,19 @@ export default function PortfolioPage() {
             let holderCount = 0;
             let transactionCount = 0;
             let priceChange24h = 0;
-            
+
             try {
               const volume24hData = await sdk.bondingDex.get24hVolume(addr);
               const volume24hBNB = volume24hData.volumeBNB;
-              const vol = await sdk.priceOracle.bnbToUSD(Number(volume24hBNB));
+              const vol = await sdk.priceOracle.monToUSD(Number(volume24hBNB));
               volume24h = Number(ethers.formatUnits(Number(vol).toString(), 18));
-              
+
               const totalVolumeData = await sdk.bondingDex.getTotalVolume(addr);
               totalVolumeBNB = Number(ethers.formatEther(totalVolumeData.totalVolumeBNB));
               transactionCount = totalVolumeData.buyCount + totalVolumeData.sellCount;
-              
+
               holderCount = await sdk.bondingDex.getEstimatedHolderCount(addr);
-              
+
               try {
                 const priceChangeData = await sdk.bondingDex.get24hPriceChange(addr);
                 priceChange24h = priceChangeData.priceChangePercent;
@@ -192,32 +192,32 @@ export default function PortfolioPage() {
               id: addr,
               name: tokenName,
               symbol: tokenSymbol,
-              description: tokenMeta.description || "Launched token on SafuPad",
+              description: tokenMeta.description || "Launched token on BaldPad",
               image: logoURI,
               contractAddress: addr,
               creatorAddress: launchInfo.founder,
-              
+
               launchType: isProjectRaise ? "project-raise" : "instant-launch",
-              
+
               status: ((): Token["status"] => {
                 if (graduated) return "completed";
                 if (isProjectRaise && !raiseCompleted) return "active";
                 return "active";
               })(),
-              
+
               createdAt: new Date(),
 
               totalSupply: Number(tokenInfo.totalSupply),
               currentPrice,
               marketCap: marketCapUSD,
-              liquidityPool: Number(poolInfo.bnbReserve),
+              liquidityPool: Number(poolInfo.monReserve),
               volume24h,
               priceChange24h,
 
               projectRaise: isProjectRaise ? {
                 config: {
                   type: "project-raise",
-                  targetAmount: raiseMaxUSD || 0,
+                  targetAmount: raiseMaxMON || 0,
                   raiseWindow: 24 * 60 * 60 * 1000,
                   ownerAllocation: 20,
                   immediateUnlock: 10,
@@ -227,14 +227,14 @@ export default function PortfolioPage() {
                   graduationThreshold: 500000,
                   tradingFee: { platform: 0.1, liquidity: 0.3, infofiPlatform: 0.6 },
                 },
-                raisedAmount: totalRaisedUSD,
-                targetAmount: raiseMaxUSD || 0,
+                raisedAmount: totalRaisedMON,
+                targetAmount: raiseMaxMON || 0,
                 startTime: new Date(Date.now() - 60_000),
                 endTime: raiseDeadline,
-                vestingSchedule: { 
-                  totalAmount: founderTokens, 
-                  releasedAmount: founderTokensClaimed, 
-                  schedule: [] 
+                vestingSchedule: {
+                  totalAmount: founderTokens,
+                  releasedAmount: founderTokensClaimed,
+                  schedule: []
                 },
                 approved: true,
                 vestingData: vestingData ? {
@@ -255,7 +255,7 @@ export default function PortfolioPage() {
                   marketCapRequirement: true,
                   accrualPeriod: 604_800_000,
                 },
-                cumulativeBuys: bnbInPool,
+                cumulativeBuys: monInPool,
                 creatorFees: accumulatedFees,
                 lastClaimTime: lastClaimTime,
                 claimableAmount: canClaim ? accumulatedFees : 0,
@@ -279,7 +279,7 @@ export default function PortfolioPage() {
             } as Token;
 
             items.push(token);
-            
+
           } catch (err) {
             console.error(`Error fetching token ${addr}:`, err);
           }
@@ -287,7 +287,7 @@ export default function PortfolioPage() {
 
         if (cancelled) return;
         setUserTokens(items);
-        
+
       } catch (e: any) {
         console.error("Error loading portfolio:", e);
         if (!cancelled) setLoadError(String(e?.message || e));
@@ -310,7 +310,7 @@ export default function PortfolioPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
@@ -400,7 +400,7 @@ export default function PortfolioPage() {
 
               {userTokens.map((token) => {
                 // Calculate founder holdings - use accurate price for graduated tokens
-                const founderHoldings = token.launchType === "project-raise" 
+                const founderHoldings = token.launchType === "project-raise"
                   ? token.projectRaise?.vestingData?.founderTokens || 0
                   : 0;
                 const holdingsValue = founderHoldings * token.currentPrice;

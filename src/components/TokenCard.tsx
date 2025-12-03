@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSafuPadSDK } from "@/lib/safupad-sdk";
+import { useBaldPadSDK } from "@/lib/baldpad-sdk";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
@@ -39,7 +39,7 @@ function generateGradient(seed: string): string {
     ["#a893ff", "#836ef9"],
     ["#7d69e8", "#6b5cd9"],
     ["#836ef9", "#9580f5"],
-    ["#6b5cd9", "#ff0055"],
+    ["#6b5cd9", "#5346b0"], // Replaced red with darker purple
     ["#a893ff", "#7d69e8"],
   ];
 
@@ -56,14 +56,14 @@ function generateGradient(seed: string): string {
 }
 
 export function TokenCard({ token, onContribute }: TokenCardProps) {
-  const { sdk } = useSafuPadSDK();
+  const { sdk } = useBaldPadSDK();
   const { address: userAddress } = useAccount();
-  const [bnbReserve, setBnbReserve] = useState<number>(0);
+  const [monReserve, setBnbReserve] = useState<number>(0);
   const [volumeBNB, setVolumeBNB] = useState<number>(0);
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
-  const [bnbRaised, setBnbRaised] = useState<number>(0);
-  const [bnbTarget, setBnbTarget] = useState<number>(0);
+  const [monRaised, setBnbRaised] = useState<number>(0);
+  const [monTarget, setBnbTarget] = useState<number>(0);
   const [pancakeSwapStats, setPancakeSwapStats] =
     useState<PancakeSwapStats | null>(null);
   const [graduatedToPancakeSwap, setGraduatedToPancakeSwap] = useState(false);
@@ -105,7 +105,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
       try {
         const provider = new ethers.JsonRpcProvider(
-          `https://bnb-testnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+          `https://mon-testnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
         );
         const stats = await getTokenStats(token.id, provider, sdk);
         setPancakeSwapStats(stats);
@@ -124,7 +124,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
       try {
         const poolInfo = await sdk.bondingDex.getPoolInfo(token.id);
-        const reserve = Number(ethers.formatEther(poolInfo.bnbReserve));
+        const reserve = Number(ethers.formatEther(poolInfo.monReserve));
         setBnbReserve(reserve);
       } catch (error) {
         console.error("Error fetching pool info:", error);
@@ -158,8 +158,8 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
       if (!sdk) return;
 
       try {
-        const bnb = await sdk.bondingDex.get24hVolume(token.contractAddress);
-        const usd = await sdk.priceOracle.bnbToUSD(bnb.volumeBNB);
+        const mon = await sdk.bondingDex.get24hVolume(token.contractAddress);
+        const usd = await sdk.priceOracle.monToUSD(mon.volumeBNB);
         setVolumeBNB(Number(ethers.formatEther(usd)));
       } catch (error) {
         console.error("Error getting volume:", error);
@@ -205,7 +205,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
         token.projectRaise.endTime &&
         token.projectRaise.endTime.getTime() > now &&
         (token.projectRaise.raisedAmount ?? 0) <
-          (token.projectRaise.targetAmount || 0);
+        (token.projectRaise.targetAmount || 0);
       if (stillRaising) return "Raising";
       if (isGraduated) return "Graduated";
       return "Trading";
@@ -339,7 +339,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Raise Progress</span>
               <span className="font-medium">
-                {bnbRaised.toFixed(4)} MON / {bnbTarget.toFixed(4)} MON
+                {monRaised.toFixed(4)} MON / {monTarget.toFixed(4)} MON
               </span>
             </div>
             <Progress
@@ -366,11 +366,11 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Graduation Progress</span>
               <span className="font-medium">
-                {bnbReserve.toFixed(4)} MON / 15 MON
+                {monReserve.toFixed(4)} MON / 15 MON
               </span>
             </div>
             <Progress
-              value={getProgressPercentage(bnbReserve, 15)}
+              value={getProgressPercentage(monReserve, 15)}
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
