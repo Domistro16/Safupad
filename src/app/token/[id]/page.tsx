@@ -939,10 +939,10 @@ export default function TokenPage({
                     {!graduatedToPancakeSwap && (
                       <div>
                         <p className="text-xs text-muted-foreground">
-                          Graduation BNB
+                          Graduation MON
                         </p>
                         <p className="text-xl font-black tracking-wide">
-                          {graduationBnb} BNB
+                          {graduationBnb} MON
                         </p>
                       </div>
                     )}
@@ -1052,10 +1052,10 @@ export default function TokenPage({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="border border-primary/30 p-4 pixel-corners bg-background/50">
                       <p className="text-xs text-muted-foreground mb-2">
-                        Claimable Funds (BNB)
+                        Claimable Funds (MON)
                       </p>
                       <p className="text-2xl font-black tracking-wide text-primary">
-                        {claimableAmounts.claimableFunds.toFixed(4)} BNB
+                        {claimableAmounts.claimableFunds.toFixed(4)} MON
                       </p>
                       {hasClaimableFunds && (
                         <Button

@@ -131,7 +131,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
     
     const targetBNB = Number(formData.targetAmount);
     if (!Number.isFinite(targetBNB) || targetBNB < 50 || targetBNB > 500) {
-      setError("Target amount must be between 50 BNB and 500 BNB.");
+      setError("Target amount must be between 50 MON and 500 MON.");
       return;
     }
     if (formData.vestingDuration < 3 || formData.vestingDuration > 6) {
@@ -237,7 +237,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                Raise window is 24 hours. Target between 50-500 BNB.
+                Raise window is 24 hours. Target between 50-500 MON.
               </AlertDescription>
             </Alert>
 
@@ -382,12 +382,12 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                Set your fundraising target between 50 BNB and 500 BNB
+                Set your fundraising target between 50 MON and 500 MON
               </AlertDescription>
             </Alert>
 
             <div className="space-y-2">
-              <Label htmlFor="targetAmount">Target Amount (BNB) *</Label>
+              <Label htmlFor="targetAmount">Target Amount (MON) *</Label>
               <Input
                 id="targetAmount"
                 type="number"
@@ -407,7 +407,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
                 className="mt-2"
               />
               <p className="text-xs text-muted-foreground">
-                {parseFloat(formData.targetAmount).toFixed(0)} BNB
+                {parseFloat(formData.targetAmount).toFixed(0)} MON
               </p>
             </div>
 
@@ -464,7 +464,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Liquidity Pool:</span>
-                <span className="font-medium">10% (capped at 100 BNB)</span>
+                <span className="font-medium">10% (capped at 100 MON)</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Public Sale:</span>
@@ -542,7 +542,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
               <div className="text-sm space-y-1">
                 <p><strong>Token:</strong> {formData.name} ({formData.symbol})</p>
                 <p><strong>Supply:</strong> {TOTAL_SUPPLY.toLocaleString()}</p>
-                <p><strong>Target:</strong> {parseFloat(formData.targetAmount).toFixed(0)} BNB</p>
+                <p><strong>Target:</strong> {parseFloat(formData.targetAmount).toFixed(0)} MON</p>
                 <p><strong>Vesting Duration:</strong> {formData.vestingDuration} month{formData.vestingDuration !== 1 ? 's' : ''}</p>
                 <p><strong>Burn LP:</strong> {formData.burnLP ? 'Yes' : 'No'}</p>
                 {imagePreview && <p><strong>Image:</strong> Uploaded ✓</p>}

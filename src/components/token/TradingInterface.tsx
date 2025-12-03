@@ -542,7 +542,7 @@ const calculateTokens = async (bnb: string) => {
 
         <TabsContent value="buy" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="bnb-buy">You Pay (BNB)</Label>
+            <Label htmlFor="bnb-buy">You Pay (MON)</Label>
             <Input
               id="bnb-buy"
               type="number"
@@ -552,7 +552,7 @@ const calculateTokens = async (bnb: string) => {
               disabled={isTrading || isBuyDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(bnbBalance, loadingBalances)} BNB
+              Balance: {formatBalance(bnbBalance, loadingBalances)} MON
             </p>
           </div>
 
@@ -597,7 +597,7 @@ const calculateTokens = async (bnb: string) => {
                       (token.launchType === "project-raise" ? 0.01 : 0.02)
                     ).toFixed(4)
                   : "0.0000"}{" "}
-                BNB
+                MON
               </span>
             </div>
             <div className="flex justify-between">
@@ -657,7 +657,7 @@ const calculateTokens = async (bnb: string) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bnb-sell">You Receive (BNB)</Label>
+            <Label htmlFor="bnb-sell">You Receive (MON)</Label>
             <Input
               id="bnb-sell"
               type="number"
@@ -667,7 +667,7 @@ const calculateTokens = async (bnb: string) => {
               disabled={isTrading || isSellDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(bnbBalance, loadingBalances)} BNB
+              Balance: {formatBalance(bnbBalance, loadingBalances)} MON
             </p>
           </div>
 
@@ -690,7 +690,7 @@ const calculateTokens = async (bnb: string) => {
                       (token.launchType === "project-raise" ? 0.02 : 0.02)
                     ).toFixed(4)
                   : "0.0000"}{" "}
-                BNB
+                MON
               </span>
             </div>
             <div className="flex justify-between">
@@ -744,7 +744,7 @@ const calculateTokens = async (bnb: string) => {
                   }}
                   disabled={isTrading || isBuyDisabled}
                 >
-                  {val} BNB
+                  {val} MON
                 </Button>
               ))}
             </div>

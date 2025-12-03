@@ -210,7 +210,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     }
 
     if (amountBNB < 0.01) {
-      toast.error("Minimum contribution is 0.01 BNB");
+      toast.error("Minimum contribution is 0.01 MON");
       return;
     }
 
@@ -256,8 +256,8 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       
       toast.success("Transaction submitted! Waiting for confirmation...");
       await tx.wait();
-      
-      toast.success(`Successfully contributed ${amountBNB} BNB to ${token.symbol}!`);
+
+      toast.success(`Successfully contributed ${amountBNB} MON to ${token.symbol}!`);
       
       // Reset form and refresh balance
       setContribution("");
@@ -499,14 +499,14 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
           <div className="flex justify-between text-sm">
             <div>
               <p className="text-xs text-muted-foreground">Raised</p>
-              <p className="font-bold">{bnbRaised.toFixed(4)} BNB</p>
+              <p className="font-bold">{bnbRaised.toFixed(4)} MON</p>
               <p className="text-xs text-muted-foreground">
                 {formatCurrency(projectRaise.raisedAmount)}
               </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Target</p>
-              <p className="font-bold">{bnbTarget.toFixed(4)} BNB</p>
+              <p className="font-bold">{bnbTarget.toFixed(4)} MON</p>
               <p className="text-xs text-muted-foreground">
                 {formatCurrency(projectRaise.targetAmount)}
               </p>
@@ -625,7 +625,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
             {/* Contribution Input */}
             <div className="space-y-2">
-              <Label htmlFor="contribution-amount">Contribution Amount (BNB)</Label>
+              <Label htmlFor="contribution-amount">Contribution Amount (MON)</Label>
               <Input
                 id="contribution-amount"
                 type="number"
@@ -639,10 +639,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
                 min="0.01"
               />
               <p className="text-xs text-muted-foreground">
-                Balance: {formatBalance(bnbBalance, loadingBalance)} BNB
+                Balance: {formatBalance(bnbBalance, loadingBalance)} MON
               </p>
               <p className="text-xs text-muted-foreground">
-                Minimum: 0.01 BNB
+                Minimum: 0.01 MON
               </p>
             </div>
 
@@ -674,7 +674,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Amount</span>
-                <span className="font-bold text-primary">{contribution || "0"} BNB</span>
+                <span className="font-bold text-primary">{contribution || "0"} MON</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Type</span>

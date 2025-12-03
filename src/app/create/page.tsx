@@ -40,7 +40,7 @@ export default function CreatePage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Project Raise</h2>
                 <p className="text-muted-foreground">
-                  Raise 50-500 BNB over 24 hours with structured vesting and
+                  Raise 5m-20m MON over 72 hours with structured vesting and
                   liquidity management
                 </p>
               </div>
@@ -49,7 +49,7 @@ export default function CreatePage() {
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-sm">
-                    24-hour raise window (50-500 BNB target)
+                    72-hour raise window (5m-20m MON target)
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
@@ -62,8 +62,7 @@ export default function CreatePage() {
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-sm">
-                    10% liquidity pool and 50% of raised amount (capped at 100
-                    BNB)
+                    20% of amount raised + 10% total supply paired as initial liquidity
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
@@ -127,7 +126,7 @@ export default function CreatePage() {
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Graduate at 15 BNB</span>
+                  <span className="text-sm">Graduate at 1M MON bonding curve cap</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -170,7 +169,7 @@ export default function CreatePage() {
                   <tr className="border-b border-border">
                     <td className="py-3 pr-4">Fundraising</td>
                     <td className="text-center py-3 px-4 text-primary font-medium">
-                      50-500 BNB
+                      5m-20m MON
                     </td>
                     <td className="text-center py-3 px-4">No fundraising</td>
                   </tr>

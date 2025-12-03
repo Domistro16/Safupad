@@ -273,7 +273,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="initialBuy">Initial Buy (BNB) *</Label>
+            <Label htmlFor="initialBuy">Initial Buy (MON) *</Label>
             <Input
               id="initialBuy"
               type="number"
@@ -285,7 +285,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
               disabled={submitting} />
 
             <p className="text-xs text-muted-foreground">
-              You may buy 0 BNB to start; higher buys can improve initial liquidity.
+              You may buy 0 MON to start; higher buys can improve initial liquidity.
             </p>
           </div>
 
@@ -418,7 +418,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             <h4 className="font-semibold text-sm mb-3">Graduation Criteria</h4>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground !whitespace-pre-line !w-0 !h-0">Graduation T:</span>
-              <span className="font-medium !whitespace-pre-line">15 BNB</span>
+              <span className="font-medium !whitespace-pre-line">15 MON</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">After Graduation:</span>
@@ -454,7 +454,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             <div className="text-sm space-y-1">
               <p><strong>Token:</strong> {formData.name || "---"} ({formData.symbol || "---"})</p>
               <p><strong>Supply:</strong> {TOTAL_SUPPLY.toLocaleString()}</p>
-              <p><strong>Initial Buy:</strong> {formData.initialBuy} BNB</p>
+              <p><strong>Initial Buy:</strong> {formData.initialBuy} MON</p>
               {imagePreview && <p><strong>Image:</strong> Uploaded ✓</p>}
               <p><strong>Status:</strong> <span className="text-primary">Goes live immediately</span></p>
             </div>
