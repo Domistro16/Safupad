@@ -75,7 +75,7 @@ export default function CreatePage() {
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-sm">
-                    1% fees havested with 24h cooldown from Pancakeswap (70% creator and 30% platform)
+                    LP fees with 24h cooldown (70% founder, 20% InfoFi, 10% platform)
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
@@ -121,7 +121,7 @@ export default function CreatePage() {
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-sm">
-                    2% trading fee (0.1% platform, 1% creator, 0.9% InfoFi)
+                    2% trading fee (1% creator, 0.6% InfoFi, 0.3% EduFi, 0.1% platform)
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
