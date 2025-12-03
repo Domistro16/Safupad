@@ -39,7 +39,7 @@ interface TokenInfoProps {
 
 // Generate consistent gradient based on token ID
 function generateGradient(id: string, symbol: string) {
-  const colors = ['#FFB000', '#ff6b00', '#ffd700', '#ff8c00', '#ffaa00'];
+  const colors = ['#836ef9', '#6b5cd9', '#a893ff', '#7d69e8', '#9580f5'];
   const hash = (id + symbol).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const color1 = colors[hash % colors.length];
   const color2 = colors[(hash + 3) % colors.length];

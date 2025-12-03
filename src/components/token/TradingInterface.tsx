@@ -480,7 +480,7 @@ const calculateTokens = async (bnb: string) => {
                     px-3 py-2 text-xs font-black rounded border-2 transition-all
                     ${
                       slippage === val
-                        ? "bg-primary text-primary-foreground border-primary shadow-[0_0_12px_rgba(255,176,0,0.5)]"
+                        ? "bg-primary text-primary-foreground border-primary shadow-[0_0_12px_rgba(131,110,249,0.5)]"
                         : "bg-card/30 text-foreground/70 border-primary/20 hover:border-primary/40 hover:bg-card/50"
                     }
                     ${isBuyDisabled && isSellDisabled ? "opacity-50 cursor-not-allowed" : ""}

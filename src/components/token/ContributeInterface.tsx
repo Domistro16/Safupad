@@ -711,19 +711,19 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Target Range</span>
-              <span className="font-medium">$50k - $500k</span>
+              <span className="font-medium">5m-20m MON</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Raise Window</span>
-              <span className="font-medium">24 hours</span>
+              <span className="font-medium">72 hours</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Owner Allocation</span>
-              <span className="font-medium">20% (10% vested)</span>
+              <span className="text-muted-foreground">Community Allocation</span>
+              <span className="font-medium">20%</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Liquidity Lock</span>
-              <span className="font-medium">10% of supply</span>
+              <span className="text-muted-foreground">Liquidity</span>
+              <span className="font-medium">20% raised + 10% supply</span>
             </div>
           </div>
         </div>

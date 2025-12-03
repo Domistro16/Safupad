@@ -35,12 +35,12 @@ interface TokenCardProps {
 // Generate a consistent gradient based on token ID/name
 function generateGradient(seed: string): string {
   const colors = [
-    ["#FFB000", "#ff6b00"],
-    ["#ffd700", "#FFB000"],
-    ["#ff8c00", "#ff6b00"],
-    ["#FFB000", "#ffaa00"],
-    ["#ff6b00", "#ff0055"],
-    ["#ffd700", "#ff8c00"],
+    ["#836ef9", "#6b5cd9"],
+    ["#a893ff", "#836ef9"],
+    ["#7d69e8", "#6b5cd9"],
+    ["#836ef9", "#9580f5"],
+    ["#6b5cd9", "#ff0055"],
+    ["#a893ff", "#7d69e8"],
   ];
 
   let hash = 0;
