@@ -77,12 +77,12 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
         const reserve = Number(ethers.formatEther(poolInfo.monReserve));
         setBnbReserve(reserve);
 
-        // Convert current market cap to BNB
-        const currentBnb = await sdk.priceOracle.usdToBNB(
+        // Convert current market cap to MON
+        const currentMon = await sdk.priceOracle.usdToMON(
           ethers.parseEther(token.marketCap.toString())
         );
 
-        setMarketCapBnb(Number(ethers.formatEther(currentBnb)));
+        setMarketCapBnb(Number(ethers.formatEther(currentMon)));
       } catch (error) {
         console.error("Error fetching pool info:", error);
       }
@@ -141,7 +141,8 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
     setIsGraduating(true);
     try {
       const signer = await sdk.getSigner();
-      const launchpad = new ethers.Contract(sdk.launchpad.address, ['function graduateToPancakeSwap(address)'], signer)
+      const launchpadAddress = await sdk.launchpad.getAddress();
+      const launchpad = new ethers.Contract(launchpadAddress, ['function graduateToPancakeSwap(address)'], signer)
       const tx = await launchpad.graduateToPancakeSwap(token.contractAddress);
       await tx.wait();
       toast.success("Token graduation completed successfully!");
@@ -179,7 +180,7 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
     if (typeof token.liquidityPool === 'number') return token.liquidityPool;
 
     try {
-      return Number(ethers.formatUnits(token.liquidityPool.toString(), 18));
+      return Number(ethers.formatUnits(String(token.liquidityPool), 18));
     } catch (error) {
       console.error("Error formatting liquidity:", error);
       return 0;

@@ -20,7 +20,7 @@ import { useAccount } from "wagmi";
 import { toast } from "sonner";
 import { getTokenStats, type PancakeSwapStats } from "@/lib/utils/pancakeswap";
 
-export const abi = [
+const abi = [
   {
     inputs: [
       {
@@ -390,14 +390,14 @@ export default function TokenPage({
             // Get total volume
             const totalVolumeData = await sdk.bondingDex.getTotalVolume(id);
             totalVolumeBNB = Number(
-              ethers.formatEther(totalVolumeData.totalVolumeBNB)
+              ethers.formatEther(totalVolumeData.totalVolumeMON)
             );
             transactionCount =
               totalVolumeData.buyCount + totalVolumeData.sellCount;
 
             // Convert total volume to USD
             const totalVolumeUSD = await sdk.priceOracle.monToUSD(
-              totalVolumeData.totalVolumeBNB
+              totalVolumeData.totalVolumeMON
             );
             volume24h = Number(ethers.formatEther(totalVolumeUSD));
 

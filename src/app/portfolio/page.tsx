@@ -68,7 +68,10 @@ export default function PortfolioPage() {
 
             // Check if graduated
             const graduated = Boolean(poolInfo.graduated);
-            const graduatedToPancakeSwap = Boolean(launchInfo.graduatedToPancakeSwap);
+
+            // Get full launch info for graduatedToPancakeSwap
+            const fullLaunchInfo = await sdk.launchpad.getLaunchInfo(addr);
+            const graduatedToPancakeSwap = Boolean(fullLaunchInfo.graduatedToPancakeSwap);
 
             // For graduated tokens, use getTokenStats() for accurate data
             let marketCapUSD;
@@ -168,12 +171,12 @@ export default function PortfolioPage() {
 
             try {
               const volume24hData = await sdk.bondingDex.get24hVolume(addr);
-              const volume24hBNB = volume24hData.volumeBNB;
-              const vol = await sdk.priceOracle.monToUSD(Number(volume24hBNB));
-              volume24h = Number(ethers.formatUnits(Number(vol).toString(), 18));
+              const volume24hMON = volume24hData.volumeMON;
+              const vol = await sdk.priceOracle.monToUSD(volume24hMON);
+              volume24h = Number(ethers.formatUnits(vol.toString(), 18));
 
               const totalVolumeData = await sdk.bondingDex.getTotalVolume(addr);
-              totalVolumeBNB = Number(ethers.formatEther(totalVolumeData.totalVolumeBNB));
+              totalVolumeBNB = Number(ethers.formatEther(totalVolumeData.totalVolumeMON));
               transactionCount = totalVolumeData.buyCount + totalVolumeData.sellCount;
 
               holderCount = await sdk.bondingDex.getEstimatedHolderCount(addr);

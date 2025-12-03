@@ -43,22 +43,22 @@ export function ContributeModal({
 
   const isProjectRaise = token.launchType === "project-raise";
 
-  // Convert USD values to BNB for display
+  // Convert USD values to MON for display
   const loadBnbValues = async () => {
     if (!sdk || !token.projectRaise) return;
 
     try {
-      const raisedBNB = await sdk.priceOracle.usdToBNB(
+      const raisedMON = await sdk.priceOracle.usdToMON(
         ethers.parseEther(token.projectRaise.raisedAmount.toString())
       );
-      const targetBNB = await sdk.priceOracle.usdToBNB(
+      const targetMON = await sdk.priceOracle.usdToMON(
         ethers.parseEther(token.projectRaise.targetAmount.toString())
       );
 
-      setBnbRaised(Number(ethers.formatEther(raisedBNB)));
-      setBnbTarget(Number(ethers.formatEther(targetBNB)));
+      setBnbRaised(Number(ethers.formatEther(raisedMON)));
+      setBnbTarget(Number(ethers.formatEther(targetMON)));
     } catch (error) {
-      console.error("Error converting to BNB:", error);
+      console.error("Error converting to MON:", error);
     }
   };
 
@@ -142,7 +142,7 @@ export function ContributeModal({
 
       // Contribute directly with BNB amount
       await simulateContribution(token.id, amountBNB.toString(), sdk);
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
       const iface = new ethers.Interface([
         "function contribute(address token) payable",

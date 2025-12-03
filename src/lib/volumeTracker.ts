@@ -60,7 +60,7 @@ export async function calculate24hVolume(
     ]);
 
     // Calculate total volume in BNB
-    let totalVolumeBNB = 0n;
+    let totalVolumeBNB = BigInt(0);
     console.log(buyEvents);
     // Sum buy volumes
     buyEvents.forEach((event) => {
@@ -92,15 +92,15 @@ export async function calculate24hVolume(
 
     const volumeBNB = Number(ethers.formatEther(totalVolumeBNB));
 
-    // Get current BNB price for USD conversion
+    // Get current MON price for USD conversion
     let volumeUSD = 0;
     try {
-      const monPriceRaw = await sdk.priceOracle.getBNBPrice();
+      const monPriceRaw = await sdk.priceOracle.getMONPrice();
       const monPriceUSD = Number(monPriceRaw) / 1e8; // Price oracle returns 8 decimals
       volumeUSD = volumeBNB * monPriceUSD;
     } catch (error) {
-      console.warn("Could not fetch BNB price for USD conversion:", error);
-      // Fallback: assume BNB = $600
+      console.warn("Could not fetch MON price for USD conversion:", error);
+      // Fallback: assume MON = $600
       volumeUSD = volumeBNB * 600;
     }
 

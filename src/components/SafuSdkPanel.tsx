@@ -205,7 +205,7 @@ export const SafuSdkPanel = () => {
         <div>
           <p className="text-sm font-semibold tracking-wide text-accent/90">SafuPad SDK</p>
           <p className="text-xs text-accent/80">
-            Network: {network === "bsc" ? "BSC Mainnet" : "BSC Testnet"} (Chain ID: {chainId})
+            Network: {network === "monad" ? "Monad Mainnet" : "Monad Testnet"} (Chain ID: {chainId})
           </p>
           {isInitializing && (
             <p className="text-xs text-muted-foreground">Initializing...</p>
@@ -213,9 +213,9 @@ export const SafuSdkPanel = () => {
           {!isInitializing && sdk && (
             <p className="text-xs text-muted-foreground">Ready</p>
           )}
-          {error && (
-            <p className="text-xs text-destructive">{String((error as any)?.message || error)}</p>
-          )}
+          {error ? (
+            <p className="text-xs text-destructive">{String((error as Error)?.message || String(error))}</p>
+          ) : null}
           {status && (
             <p className="text-xs mt-2 text-accent/80 break-all">{status}</p>
           )}
@@ -283,8 +283,8 @@ export const SafuSdkPanel = () => {
               <Input placeholder="Total Supply" value={prSupply} onChange={(e) => setPrSupply(e.target.value)} />
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <Input placeholder="Target USD" value={prTargetUsd} onChange={(e) => setPrTargetUsd(e.target.value)} />
-              <Input placeholder="Max USD" value={prMaxUsd} onChange={(e) => setPrMaxUsd(e.target.value)} />
+              <Input placeholder="Target MON" value={prTargetMon} onChange={(e) => setPrTargetMon(e.target.value)} />
+              <Input placeholder="Max MON" value={prMaxMon} onChange={(e) => setPrMaxMon(e.target.value)} />
               <Input placeholder="Vesting (days)" value={prVestingDays} onChange={(e) => setPrVestingDays(e.target.value)} />
             </div>
             <label className="flex items-center gap-2 text-xs text-muted-foreground">

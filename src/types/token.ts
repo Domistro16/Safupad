@@ -71,6 +71,13 @@ export interface Token {
     endTime: Date;
     vestingSchedule: VestingSchedule;
     approved: boolean;
+    vestingData?: {
+      startMarketCap: number;
+      vestingDuration: number;
+      vestingStartTime: Date | null;
+      founderTokens: number;
+      founderTokensClaimed: number;
+    };
   };
 
   // Instant Launch specific
@@ -81,6 +88,9 @@ export interface Token {
     lastClaimTime: Date | null;
     claimableAmount: number;
     canClaim: boolean;
+    graduationProgress?: number;
+    priceMultiplier?: number;
+    graduationMarketCap?: number;
   };
 
   // Graduation

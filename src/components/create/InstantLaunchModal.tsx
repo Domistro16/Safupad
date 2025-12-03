@@ -167,7 +167,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           telegram: formData.telegram.trim(),
           discord: ""
         },
-        initialBuyBNB: formData.initialBuy,
+        initialBuyMON: formData.initialBuy,
         burnLP: false
       } as const;
 
@@ -204,13 +204,13 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             </AlertDescription>
           </Alert>
 
-          {sdkError &&
+          {sdkError ? (
             <Alert>
               <AlertDescription>
-                SDK error: {String((sdkError as any)?.message || sdkError)}
+                SDK error: {String((sdkError as Error)?.message || String(sdkError))}
               </AlertDescription>
             </Alert>
-          }
+          ) : null}
 
           {submitError &&
             <Alert>

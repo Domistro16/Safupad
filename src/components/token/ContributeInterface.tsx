@@ -109,27 +109,27 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     };
   }, [sdk, address]);
 
-  // Convert USD values to BNB for display
+  // Convert USD values to MON for display
   useEffect(() => {
-    const loadBnbValues = async () => {
+    const loadMonValues = async () => {
       if (!sdk || !projectRaise) return;
 
       try {
-        const raisedBNB = await sdk.priceOracle.usdToBNB(
+        const raisedMON = await sdk.priceOracle.usdToMON(
           ethers.parseEther(projectRaise.raisedAmount.toString())
         );
-        const targetBNB = await sdk.priceOracle.usdToBNB(
+        const targetMON = await sdk.priceOracle.usdToMON(
           ethers.parseEther(projectRaise.targetAmount.toString())
         );
 
-        setBnbRaised(Number(ethers.formatEther(raisedBNB)));
-        setBnbTarget(Number(ethers.formatEther(targetBNB)));
+        setBnbRaised(Number(ethers.formatEther(raisedMON)));
+        setBnbTarget(Number(ethers.formatEther(targetMON)));
       } catch (error) {
-        console.error("Error converting to BNB:", error);
+        console.error("Error converting to MON:", error);
       }
     };
 
-    void loadBnbValues();
+    void loadMonValues();
   }, [sdk, projectRaise]);
 
   // Calculate time remaining and check for failed raise
@@ -169,18 +169,20 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
   const simulateContribution = async (tokenAddress: string, monAmount: string) => {
     try {
-      const signer = await sdk!.provider.getSigner();
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const signer = await provider.getSigner();
       const signerAddress = await signer.getAddress();
 
       const iface = new ethers.Interface([
         'function contribute(address token) payable'
       ]);
       const data = iface.encodeFunctionData('contribute', [tokenAddress]);
+      const launchpadAddress = await sdk!.launchpad.getAddress();
 
       console.log('🔍 Simulating contribution...');
-      await sdk!.provider.call({
+      await provider.call({
         from: signerAddress,
-        to: sdk!.launchpad.address,
+        to: launchpadAddress,
         data: data,
         value: ethers.parseEther(monAmount)
       });
@@ -236,10 +238,11 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       }
 
       // Execute contribution
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
+      const launchpadAddress = await sdk.launchpad.getAddress();
       const launchpad = new ethers.Contract(
-        sdk.launchpad.address,
+        launchpadAddress,
         [{
           "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
           "name": "contribute",
@@ -355,10 +358,11 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     setIsBurning(true);
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
+      const launchpadAddress = await sdk.launchpad.getAddress();
       const launchpad = new ethers.Contract(
-        sdk.launchpad.address,
+        launchpadAddress,
         [{
           "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
           "name": "burnFailedRaiseTokens",
@@ -400,10 +404,11 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     setIsRefunding(true);
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
+      const launchpadAddress = await sdk.launchpad.getAddress();
       const launchpad = new ethers.Contract(
-        sdk.launchpad.address,
+        launchpadAddress,
         [{
           "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
           "name": "claimRefund",

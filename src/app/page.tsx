@@ -186,16 +186,16 @@ export default function Home() {
               try {
                 // Get 24h volume
                 const volume24hData = await sdk.bondingDex.get24hVolume(addr);
-                const volume24hBNB = volume24hData.volumeBNB;
+                const volume24hMON = volume24hData.volumeMON;
 
-                const vol = await sdk.priceOracle.monToUSD(volume24hBNB);
-                volume24h = ethers.formatUnits(Number(vol).toString(), 18);
+                const vol = await sdk.priceOracle.monToUSD(volume24hMON);
+                volume24h = Number(ethers.formatUnits(vol.toString(), 18));
 
                 // Get total volume
                 const totalVolumeData =
                   await sdk.bondingDex.getTotalVolume(addr);
                 totalVolumeBNB = Number(
-                  ethers.formatEther(totalVolumeData.totalVolumeBNB)
+                  ethers.formatEther(totalVolumeData.totalVolumeMON)
                 );
 
                 transactionCount =

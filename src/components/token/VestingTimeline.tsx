@@ -86,7 +86,7 @@ export function VestingTimeline({ vestingSchedule, tokenAddress, vestingData }: 
     setClaimingTokens(true);
     try {
       console.log('Claiming founder tokens...');
-      await sdk.launchpad.claimFounderToken(tokenAddress);
+      await sdk.launchpad.claimFounderTokens(tokenAddress);
       toast.success('Founder tokens claimed successfully!');
 
       // Refresh claimable amounts after claiming

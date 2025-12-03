@@ -134,23 +134,23 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
     void fetchPoolInfo();
   }, [sdk, token.id, isGraduated]);
 
-  // Convert USD raise values to BNB for Project Raise tokens
+  // Convert USD raise values to MON for Project Raise tokens
   useEffect(() => {
-    const convertToBnb = async () => {
+    const convertToMon = async () => {
       if (!sdk || !isProjectRaise || !token.projectRaise) return;
 
       try {
-        const raisedBNB = await sdk.priceOracle.usdToBNB(
+        const raisedMON = await sdk.priceOracle.usdToMON(
           ethers.parseEther(token.projectRaise.raisedAmount.toString())
         );
-        const targetBNB = await sdk.priceOracle.usdToBNB(
+        const targetMON = await sdk.priceOracle.usdToMON(
           ethers.parseEther(token.projectRaise.targetAmount.toString())
         );
 
-        setBnbRaised(Number(ethers.formatEther(raisedBNB)));
-        setBnbTarget(Number(ethers.formatEther(targetBNB)));
+        setBnbRaised(Number(ethers.formatEther(raisedMON)));
+        setBnbTarget(Number(ethers.formatEther(targetMON)));
       } catch (error) {
-        console.error("Error converting to BNB:", error);
+        console.error("Error converting to MON:", error);
       }
     };
 
@@ -159,14 +159,14 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
       try {
         const mon = await sdk.bondingDex.get24hVolume(token.contractAddress);
-        const usd = await sdk.priceOracle.monToUSD(mon.volumeBNB);
+        const usd = await sdk.priceOracle.monToUSD(mon.volumeMON);
         setVolumeBNB(Number(ethers.formatEther(usd)));
       } catch (error) {
         console.error("Error getting volume:", error);
       }
     };
     void setVolume();
-    void convertToBnb();
+    void convertToMon();
   }, [sdk, isProjectRaise, token.projectRaise]);
 
   // Use PancakeSwap stats if available, otherwise use token stats
@@ -188,7 +188,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
     // If it's a BigInt or string, format it
     try {
-      return Number(ethers.formatEther(token.liquidityPool.toString()));
+      return Number(ethers.formatEther(String(token.liquidityPool)));
     } catch (error) {
       console.error("Error formatting liquidity:", error);
       return 0;
