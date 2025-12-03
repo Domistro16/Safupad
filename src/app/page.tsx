@@ -488,7 +488,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-14 sm:py-16 relative">
           <div className="max-w-3xl mx-auto text-center space-y-5">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-wide md:tracking-wider glow-text break-words">
-              ICM 2.0 on BNB Chain
+              ICM 2.0 on Monad Chain
             </h1>
 
             <div className="flex flex-wrap gap-4 justify-center pt-4">

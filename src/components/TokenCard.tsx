@@ -35,12 +35,12 @@ interface TokenCardProps {
 // Generate a consistent gradient based on token ID/name
 function generateGradient(seed: string): string {
   const colors = [
-    ["#FFB000", "#ff6b00"],
-    ["#ffd700", "#FFB000"],
-    ["#ff8c00", "#ff6b00"],
-    ["#FFB000", "#ffaa00"],
-    ["#ff6b00", "#ff0055"],
-    ["#ffd700", "#ff8c00"],
+    ["#836ef9", "#6b5cd9"],
+    ["#a893ff", "#836ef9"],
+    ["#7d69e8", "#6b5cd9"],
+    ["#836ef9", "#9580f5"],
+    ["#6b5cd9", "#ff0055"],
+    ["#a893ff", "#7d69e8"],
   ];
 
   let hash = 0;
@@ -339,7 +339,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Raise Progress</span>
               <span className="font-medium">
-                {bnbRaised.toFixed(4)} BNB / {bnbTarget.toFixed(4)} BNB
+                {bnbRaised.toFixed(4)} MON / {bnbTarget.toFixed(4)} MON
               </span>
             </div>
             <Progress
@@ -366,7 +366,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Graduation Progress</span>
               <span className="font-medium">
-                {bnbReserve.toFixed(4)} BNB / 15 BNB
+                {bnbReserve.toFixed(4)} MON / 15 MON
               </span>
             </div>
             <Progress
@@ -374,7 +374,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
-              Pool must reach 15 BNB to graduate to PancakeSwap
+              Pool must reach 15 MON to graduate to PancakeSwap
             </p>
           </div>
         )}

@@ -117,38 +117,38 @@
 :root {
   --radius: 0.25rem;
   --background: #0a0a0f;
-  --foreground: #ffd700;
-  --brand: #FFB000;
+  --foreground: #bdb3ff;
+  --brand: #836ef9;
   --brand-foreground: #0a0a0f;
   --card: #1a1520;
-  --card-foreground: #ffd700;
+  --card-foreground: #bdb3ff;
   --popover: #1a1520;
-  --popover-foreground: #ffd700;
-  --primary: #FFB000;
+  --popover-foreground: #bdb3ff;
+  --primary: #836ef9;
   --primary-foreground: #0a0a0f;
-  --secondary: #ff6b00;
+  --secondary: #6b5cd9;
   --secondary-foreground: #ffffff;
   --muted: #2a2530;
-  --muted-foreground: #b8a080;
-  --accent: #ffd700;
+  --muted-foreground: #b8a0c8;
+  --accent: #a893ff;
   --accent-foreground: #0a0a0f;
   --destructive: #ff0055;
-  --border: rgba(255, 176, 0, 0.3);
-  --input: rgba(255, 176, 0, 0.15);
-  --ring: #FFB000;
-  --chart-1: #FFB000;
-  --chart-2: #ff6b00;
-  --chart-3: #ffd700;
-  --chart-4: #ff8c00;
-  --chart-5: #ffaa00;
+  --border: rgba(131, 110, 249, 0.3);
+  --input: rgba(131, 110, 249, 0.15);
+  --ring: #836ef9;
+  --chart-1: #836ef9;
+  --chart-2: #6b5cd9;
+  --chart-3: #a893ff;
+  --chart-4: #9580f5;
+  --chart-5: #7d69e8;
   --sidebar: #1a1520;
-  --sidebar-foreground: #ffd700;
-  --sidebar-primary: #FFB000;
+  --sidebar-foreground: #bdb3ff;
+  --sidebar-primary: #836ef9;
   --sidebar-primary-foreground: #0a0a0f;
   --sidebar-accent: #2a2530;
-  --sidebar-accent-foreground: #ffd700;
-  --sidebar-border: rgba(255, 176, 0, 0.3);
-  --sidebar-ring: #FFB000;
+  --sidebar-accent-foreground: #bdb3ff;
+  --sidebar-border: rgba(131, 110, 249, 0.3);
+  --sidebar-ring: #836ef9;
 }
 
 @layer base {
@@ -157,18 +157,18 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: 
-      radial-gradient(ellipse at top left, rgba(255, 176, 0, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom right, rgba(255, 107, 0, 0.06) 0%, transparent 50%),
-      repeating-linear-gradient(0deg, transparent 0px, rgba(255, 176, 0, 0.02) 1px, transparent 2px, transparent 80px);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(131, 110, 249, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(107, 92, 217, 0.06) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent 0px, rgba(131, 110, 249, 0.02) 1px, transparent 2px, transparent 80px);
     background-attachment: fixed;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-weight: 900;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    text-shadow: 0 0 18px rgba(255, 176, 0, 0.35);
+    text-shadow: 0 0 18px rgba(131, 110, 249, 0.35);
   }
   
   ::-webkit-scrollbar {
@@ -182,38 +182,38 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #FFB000 0%, #ff6b00 100%);
+    background: linear-gradient(180deg, #836ef9 0%, #6b5cd9 100%);
     border-radius: 0;
-    border: 1px solid #FFB000;
-    box-shadow: 0 0 6px rgba(255, 176, 0, 0.35);
+    border: 1px solid #836ef9;
+    box-shadow: 0 0 6px rgba(131, 110, 249, 0.35);
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #ffd700 0%, #FFB000 100%);
-    box-shadow: 0 0 10px rgba(255, 176, 0, 0.6);
+    background: linear-gradient(180deg, #a893ff 0%, #836ef9 100%);
+    box-shadow: 0 0 10px rgba(131, 110, 249, 0.6);
   }
 }
 
 /* Gaming UI Effects */
 .glow-effect {
-  box-shadow: 
-    0 0 10px rgba(255, 176, 0, 0.3),
-    0 0 18px rgba(255, 176, 0, 0.18),
-    inset 0 0 10px rgba(255, 176, 0, 0.08);
+  box-shadow:
+    0 0 10px rgba(131, 110, 249, 0.3),
+    0 0 18px rgba(131, 110, 249, 0.18),
+    inset 0 0 10px rgba(131, 110, 249, 0.08);
   transition: all 0.3s ease;
 }
 
 .glow-effect:hover {
-  box-shadow: 
-    0 0 14px rgba(255, 176, 0, 0.45),
-    0 0 28px rgba(255, 176, 0, 0.25),
-    inset 0 0 14px rgba(255, 176, 0, 0.12);
+  box-shadow:
+    0 0 14px rgba(131, 110, 249, 0.45),
+    0 0 28px rgba(131, 110, 249, 0.25),
+    inset 0 0 14px rgba(131, 110, 249, 0.12);
 }
 
 .glow-text {
-  text-shadow: 
-    0 0 8px rgba(255, 176, 0, 0.7),
-    0 0 16px rgba(255, 176, 0, 0.4),
+  text-shadow:
+    0 0 8px rgba(131, 110, 249, 0.7),
+    0 0 16px rgba(131, 110, 249, 0.4),
     0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
@@ -229,11 +229,11 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(255, 176, 0, 0.9), transparent);
+  background: linear-gradient(90deg, transparent, rgba(131, 110, 249, 0.9), transparent);
   animation: scan 4s linear infinite;
   z-index: 10;
   pointer-events: none;
-  box-shadow: 0 0 20px rgba(255, 176, 0, 0.8);
+  box-shadow: 0 0 20px rgba(131, 110, 249, 0.8);
 }
 
 @keyframes scan {
@@ -255,7 +255,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 176, 0, 0.1) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(131, 110, 249, 0.1) 0%, transparent 100%);
   pointer-events: none;
   clip-path: inherit;
 }
@@ -269,11 +269,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 176, 0, 0.9), rgba(255, 107, 0, 0.7));
-  border: 3px solid rgba(255, 215, 0, 0.6);
-  box-shadow: 
+  background: radial-gradient(circle at 30% 30%, rgba(131, 110, 249, 0.9), rgba(107, 92, 217, 0.7));
+  border: 3px solid rgba(168, 147, 255, 0.6);
+  box-shadow:
     0 4px 0 rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(255, 176, 0, 0.5),
+    0 0 20px rgba(131, 110, 249, 0.5),
     inset 0 2px 4px rgba(255, 255, 255, 0.3),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
   transition: all 0.15s ease;
@@ -283,30 +283,30 @@
 
 .gamepad-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 6px 0 rgba(0, 0, 0, 0.4),
-    0 0 25px rgba(255, 176, 0, 0.7),
+    0 0 25px rgba(131, 110, 249, 0.7),
     inset 0 2px 4px rgba(255, 255, 255, 0.4),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .gamepad-btn:active {
   transform: translateY(2px);
-  box-shadow: 
+  box-shadow:
     0 2px 0 rgba(0, 0, 0, 0.4),
-    0 0 15px rgba(255, 176, 0, 0.4),
+    0 0 15px rgba(131, 110, 249, 0.4),
     inset 0 2px 4px rgba(0, 0, 0, 0.4),
     inset 0 -2px 4px rgba(255, 255, 255, 0.2);
 }
 
 .gamepad-btn-primary {
-  background: radial-gradient(circle at 30% 30%, #FFB000, #ff8c00);
-  border-color: #ffd700;
+  background: radial-gradient(circle at 30% 30%, #836ef9, #7d69e8);
+  border-color: #a893ff;
 }
 
 .gamepad-btn-secondary {
-  background: radial-gradient(circle at 30% 30%, rgba(255, 176, 0, 0.3), rgba(255, 107, 0, 0.2));
-  border-color: rgba(255, 215, 0, 0.4);
+  background: radial-gradient(circle at 30% 30%, rgba(131, 110, 249, 0.3), rgba(107, 92, 217, 0.2));
+  border-color: rgba(168, 147, 255, 0.4);
 }
 
 /* D-Pad Style Navigation */
@@ -318,18 +318,18 @@
   background: rgba(10, 10, 15, 0.8);
   padding: 8px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 176, 0, 0.3);
-  box-shadow: 
-    0 0 20px rgba(255, 176, 0, 0.2),
+  border: 2px solid rgba(131, 110, 249, 0.3);
+  box-shadow:
+    0 0 20px rgba(131, 110, 249, 0.2),
     inset 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .dpad-btn {
   position: relative;
   padding: 10px 16px;
-  background: linear-gradient(180deg, rgba(255, 176, 0, 0.2), rgba(255, 107, 0, 0.1));
-  border: 2px solid rgba(255, 176, 0, 0.4);
-  color: #ffd700;
+  background: linear-gradient(180deg, rgba(131, 110, 249, 0.2), rgba(107, 92, 217, 0.1));
+  border: 2px solid rgba(131, 110, 249, 0.4);
+  color: #a893ff;
   font-weight: 800;
   font-size: 12px;
   text-transform: uppercase;
@@ -337,29 +337,29 @@
   clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
   transition: all 0.2s ease;
   cursor: pointer;
-  text-shadow: 0 0 8px rgba(255, 176, 0, 0.8);
+  text-shadow: 0 0 8px rgba(131, 110, 249, 0.8);
 }
 
 .dpad-btn:hover {
-  background: linear-gradient(180deg, rgba(255, 176, 0, 0.4), rgba(255, 107, 0, 0.3));
-  border-color: rgba(255, 215, 0, 0.7);
+  background: linear-gradient(180deg, rgba(131, 110, 249, 0.4), rgba(107, 92, 217, 0.3));
+  border-color: rgba(168, 147, 255, 0.7);
   transform: translateY(-1px);
-  box-shadow: 
-    0 0 15px rgba(255, 176, 0, 0.5),
-    inset 0 0 10px rgba(255, 176, 0, 0.2);
+  box-shadow:
+    0 0 15px rgba(131, 110, 249, 0.5),
+    inset 0 0 10px rgba(131, 110, 249, 0.2);
 }
 
 .dpad-btn:active {
   transform: translateY(1px);
-  background: linear-gradient(180deg, rgba(255, 107, 0, 0.3), rgba(255, 176, 0, 0.2));
+  background: linear-gradient(180deg, rgba(107, 92, 217, 0.3), rgba(131, 110, 249, 0.2));
 }
 
 .dpad-btn.active {
-  background: linear-gradient(180deg, #FFB000, #ff8c00);
-  border-color: #ffd700;
+  background: linear-gradient(180deg, #836ef9, #7d69e8);
+  border-color: #a893ff;
   color: #0a0a0f;
-  box-shadow: 
-    0 0 20px rgba(255, 176, 0, 0.8),
+  box-shadow:
+    0 0 20px rgba(131, 110, 249, 0.8),
     inset 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
@@ -367,9 +367,9 @@
 .controller-btn {
   position: relative;
   padding: 14px 32px;
-  background: 
-    linear-gradient(180deg, rgba(255, 176, 0, 0.9) 0%, rgba(255, 107, 0, 0.7) 100%);
-  border: 3px solid #ffd700;
+  background:
+    linear-gradient(180deg, rgba(131, 110, 249, 0.9) 0%, rgba(107, 92, 217, 0.7) 100%);
+  border: 3px solid #a893ff;
   border-radius: 28px;
   color: #0a0a0f;
   font-weight: 900;
@@ -378,9 +378,9 @@
   letter-spacing: 0.15em;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 
+  box-shadow:
     0 6px 0 rgba(0, 0, 0, 0.3),
-    0 0 25px rgba(255, 176, 0, 0.5),
+    0 0 25px rgba(131, 110, 249, 0.5),
     inset 0 3px 8px rgba(255, 255, 255, 0.3),
     inset 0 -3px 8px rgba(0, 0, 0, 0.3);
   transform-style: preserve-3d;
@@ -397,35 +397,35 @@
 
 .controller-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 
+  box-shadow:
     0 9px 0 rgba(0, 0, 0, 0.3),
-    0 0 35px rgba(255, 176, 0, 0.7),
+    0 0 35px rgba(131, 110, 249, 0.7),
     inset 0 3px 8px rgba(255, 255, 255, 0.4),
     inset 0 -3px 8px rgba(0, 0, 0, 0.3);
 }
 
 .controller-btn:active {
   transform: translateY(3px);
-  box-shadow: 
+  box-shadow:
     0 3px 0 rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(255, 176, 0, 0.4),
+    0 0 20px rgba(131, 110, 249, 0.4),
     inset 0 3px 8px rgba(0, 0, 0, 0.4),
     inset 0 -3px 8px rgba(255, 255, 255, 0.2);
 }
 
 .controller-btn-outline {
-  background: linear-gradient(180deg, rgba(255, 176, 0, 0.15), rgba(255, 107, 0, 0.1));
-  color: #ffd700;
-  border: 3px solid rgba(255, 215, 0, 0.5);
-  box-shadow: 
+  background: linear-gradient(180deg, rgba(131, 110, 249, 0.15), rgba(107, 92, 217, 0.1));
+  color: #a893ff;
+  border: 3px solid rgba(168, 147, 255, 0.5);
+  box-shadow:
     0 4px 0 rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(255, 176, 0, 0.3),
-    inset 0 2px 6px rgba(255, 176, 0, 0.2);
+    0 0 20px rgba(131, 110, 249, 0.3),
+    inset 0 2px 6px rgba(131, 110, 249, 0.2);
 }
 
 .controller-btn-outline:hover {
-  background: linear-gradient(180deg, rgba(255, 176, 0, 0.3), rgba(255, 107, 0, 0.2));
-  border-color: rgba(255, 215, 0, 0.8);
+  background: linear-gradient(180deg, rgba(131, 110, 249, 0.3), rgba(107, 92, 217, 0.2));
+  border-color: rgba(168, 147, 255, 0.8);
 }
 
 /* Arcade Button Effect */
@@ -447,7 +447,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(255, 176, 0, 0.3) 0%, transparent 50%);
+  background: linear-gradient(180deg, rgba(131, 110, 249, 0.3) 0%, transparent 50%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -459,11 +459,11 @@
 
 /* Energy Bar Animation */
 @keyframes energy-pulse {
-  0%, 100% { 
-    box-shadow: 0 0 10px rgba(255, 176, 0, 0.4);
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(131, 110, 249, 0.4);
   }
-  50% { 
-    box-shadow: 0 0 25px rgba(255, 176, 0, 0.8);
+  50% {
+    box-shadow: 0 0 25px rgba(131, 110, 249, 0.8);
   }
 }
 
@@ -473,21 +473,21 @@
 
 /* HUD Grid Overlay */
 .hud-grid {
-  background-image: 
-    repeating-linear-gradient(0deg, rgba(255, 176, 0, 0.05) 0px, transparent 1px, transparent 2px, rgba(255, 176, 0, 0.05) 3px),
-    repeating-linear-gradient(90deg, rgba(255, 176, 0, 0.05) 0px, transparent 1px, transparent 2px, rgba(255, 176, 0, 0.05) 3px);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(131, 110, 249, 0.05) 0px, transparent 1px, transparent 2px, rgba(131, 110, 249, 0.05) 3px),
+    repeating-linear-gradient(90deg, rgba(131, 110, 249, 0.05) 0px, transparent 1px, transparent 2px, rgba(131, 110, 249, 0.05) 3px);
   background-size: 60px 60px;
 }
 
 /* Score Counter Animation */
 @keyframes score-flash {
-  0%, 100% { 
-    color: #FFB000;
-    text-shadow: 0 0 10px rgba(255, 176, 0, 0.8);
+  0%, 100% {
+    color: #836ef9;
+    text-shadow: 0 0 10px rgba(131, 110, 249, 0.8);
   }
-  50% { 
-    color: #ffd700;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 1);
+  50% {
+    color: #a893ff;
+    text-shadow: 0 0 20px rgba(168, 147, 255, 1);
   }
 }
 
@@ -497,12 +497,12 @@
 
 /* Level Badge */
 .level-badge {
-  background: linear-gradient(135deg, #FFB000 0%, #ff6b00 100%);
-  box-shadow: 
-    0 0 15px rgba(255, 176, 0, 0.5),
+  background: linear-gradient(135deg, #836ef9 0%, #6b5cd9 100%);
+  box-shadow:
+    0 0 15px rgba(131, 110, 249, 0.5),
     inset 0 2px 4px rgba(255, 255, 255, 0.3),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(255, 215, 0, 0.5);
+  border: 2px solid rgba(168, 147, 255, 0.5);
   position: relative;
   overflow: hidden;
 }
@@ -525,12 +525,12 @@
 
 /* Holographic Effect */
 .holographic {
-  background: linear-gradient(135deg, 
-    rgba(255, 176, 0, 0.2) 0%, 
-    rgba(255, 215, 0, 0.3) 25%,
-    rgba(255, 176, 0, 0.2) 50%,
-    rgba(255, 107, 0, 0.3) 75%,
-    rgba(255, 176, 0, 0.2) 100%
+  background: linear-gradient(135deg,
+    rgba(131, 110, 249, 0.2) 0%,
+    rgba(168, 147, 255, 0.3) 25%,
+    rgba(131, 110, 249, 0.2) 50%,
+    rgba(107, 92, 217, 0.3) 75%,
+    rgba(131, 110, 249, 0.2) 100%
   );
   background-size: 200% 200%;
   animation: hologram 4s ease-in-out infinite;

@@ -273,7 +273,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="initialBuy">Initial Buy (BNB) *</Label>
+            <Label htmlFor="initialBuy">Initial Buy (MON) *</Label>
             <Input
               id="initialBuy"
               type="number"
@@ -285,7 +285,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
               disabled={submitting} />
 
             <p className="text-xs text-muted-foreground">
-              You may buy 0 BNB to start; higher buys can improve initial liquidity.
+              You may buy 0 MON to start; higher buys can improve initial liquidity.
             </p>
           </div>
 
@@ -399,26 +399,50 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           </div>
 
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-            <h4 className="font-semibold text-sm mb-3">Fee Structure (2% total)</h4>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Platform:</span>
-              <span className="font-medium">0.1%</span>
-            </div>
+            <h4 className="font-semibold text-sm mb-3">Trading Fee Structure (2% total)</h4>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Creator (You):</span>
               <span className="font-medium">1.0%</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">InfoFi (Platform):</span>
-              <span className="font-medium">0.9%</span>
+              <span className="text-muted-foreground">InfoFi:</span>
+              <span className="font-medium">0.6%</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">EduFi Incentives:</span>
+              <span className="font-medium">0.3%</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Platform:</span>
+              <span className="font-medium">0.1%</span>
             </div>
           </div>
 
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-            <h4 className="font-semibold text-sm mb-3">Graduation Criteria</h4>
+            <h4 className="font-semibold text-sm mb-3">Bonding Distribution</h4>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground !whitespace-pre-line !w-0 !h-0">Graduation T:</span>
-              <span className="font-medium !whitespace-pre-line">15 BNB</span>
+              <span className="text-muted-foreground">Creator (You):</span>
+              <span className="font-medium">70%</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">InfoFi:</span>
+              <span className="font-medium">20%</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Platform:</span>
+              <span className="font-medium">10%</span>
+            </div>
+          </div>
+
+          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+            <h4 className="font-semibold text-sm mb-3">Graduation</h4>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Bonding Curve Cap:</span>
+              <span className="font-medium">1M MON</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Graduation Fee:</span>
+              <span className="font-medium">1% pool (50/50 creator/platform)</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">After Graduation:</span>
@@ -454,7 +478,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             <div className="text-sm space-y-1">
               <p><strong>Token:</strong> {formData.name || "---"} ({formData.symbol || "---"})</p>
               <p><strong>Supply:</strong> {TOTAL_SUPPLY.toLocaleString()}</p>
-              <p><strong>Initial Buy:</strong> {formData.initialBuy} BNB</p>
+              <p><strong>Initial Buy:</strong> {formData.initialBuy} MON</p>
               {imagePreview && <p><strong>Image:</strong> Uploaded ✓</p>}
               <p><strong>Status:</strong> <span className="text-primary">Goes live immediately</span></p>
             </div>

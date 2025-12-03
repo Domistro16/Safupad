@@ -1,6 +1,6 @@
 # InfoFi Token Launchpad
 
-A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript, and Tailwind CSS. Launch tokens on BSC with two powerful models: Project Raise and Instant Launch.
+A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript, and Tailwind CSS. Launch tokens on Monad Chain with two powerful models: Project Raise and Instant Launch.
 
 ![InfoFi Launch](https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&h=400&fit=crop)
 
@@ -9,20 +9,22 @@ A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript
 ### Two Launch Models
 
 #### **Project Raise**
-- Raise $50k-$500k over 24 hours
-- 20% owner allocation (10% immediate, 10% vested over 6 months)
-- 10% liquidity pool (capped at $100k)
-- 1% trading fee split: 0.1% platform, 0.3% academy, 0.6% InfoFi
-- Graduate to PancakeSwap at $500k market cap
-- Anti-dump mechanism: tokens burned if release would drop market cap
+- Raise 5m-20m MON over 72 hours
+- 20% community allocation
+- 20% of raised + 10% total supply paired as initial liquidity
+- 60% released at raise end, rest monthly over 6 months (if token stays above starting market cap)
+- LP fee distribution: 70% Founder, 20% InfoFi, 10% Platform
+- Max contribution: 50,000 MON per user
+- Emergency withdrawal timelock: 48 hours
 - Requires admin approval
 
 #### **Instant Launch**
 - Deploy and trade immediately
-- 2% trading fee split: 0.1% platform, 1.0% creator, 0.9% InfoFi
-- Graduate at 15 BNB cumulative buys
+- 1M MON bonding curve cap
+- 2% trading fee split: 1% creator, 0.6% InfoFi, 0.3% EduFi, 0.1% platform
+- Bonding distribution: 70% creator, 20% InfoFi, 10% platform
+- Graduation fee: 1% of pool (50/50 creator/platform)
 - Creator claims fees every 24h (if market cap maintained)
-- Tweet-bot integration for auto-creation
 - No approval required
 
 ### Platform Features
@@ -33,14 +35,14 @@ A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript
 - **Creator Claims**: Easy fee claiming with cooldown management
 - **Admin Panel**: Review and approve Project Raise submissions
 - **Portfolio Tracking**: Monitor holdings and P&L
-- **Responsive Design**: Mobile-first dark theme with #FFB000 branding
+- **Responsive Design**: Mobile-first dark theme with #836ef9 branding
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 15 (App Router), React, TypeScript
 - **Styling**: Tailwind CSS, Shadcn/UI components
 - **Wallet**: RainbowKit, wagmi, viem
-- **Blockchain**: BSC (Binance Smart Chain)
+- **Blockchain**: Monad Chain
 - **Smart Contracts**: Solidity 0.8.20, OpenZeppelin
 - **Charts**: Recharts
 - **Date**: date-fns
@@ -129,10 +131,10 @@ infofi-launch/
 ## 🎨 Design System
 
 ### Brand Colors
-- **Primary**: `#FFB000` (Gold/Orange)
-- **Background**: `#000000` (Black)
-- **Card**: `#0a0a0a` (Near Black)
-- **Border**: `rgba(255, 176, 0, 0.2)`
+- **Primary**: `#836ef9` (Monad Purple)
+- **Background**: `#0a0a0f` (Dark Purple-Black)
+- **Card**: `#1a1520` (Dark Card)
+- **Border**: `rgba(131, 110, 249, 0.3)`
 
 ### Typography
 - **Headings**: Bold, -0.02em letter spacing
