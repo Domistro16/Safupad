@@ -30,8 +30,8 @@ export const SafuPadSdkPanel = () => {
   const [prName, setPrName] = useState("MyToken");
   const [prSymbol, setPrSymbol] = useState("MTK");
   const [prSupply, setPrSupply] = useState("1000000000");
-  const [prTargetBnb, setPrTargetMon] = useState("5000000");
-  const [prMaxBnb, setPrMaxMon] = useState("20000000");
+  const [prTargetBnb, setPrTargetBnb] = useState("5");
+  const [prMaxBnb, setPrMaxBnb] = useState("20");
   const [prVestingDays, setPrVestingDays] = useState("180");
   const [prBurnLP, setPrBurnLP] = useState(false);
 
@@ -283,8 +283,8 @@ export const SafuPadSdkPanel = () => {
               <Input placeholder="Total Supply" value={prSupply} onChange={(e) => setPrSupply(e.target.value)} />
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <Input placeholder="Target USD" value={prTargetUsd} onChange={(e) => setPrTargetUsd(e.target.value)} />
-              <Input placeholder="Max USD" value={prMaxUsd} onChange={(e) => setPrMaxUsd(e.target.value)} />
+              <Input placeholder="Target BNB" value={prTargetBnb} onChange={(e) => setPrTargetBnb(e.target.value)} />
+              <Input placeholder="Max BNB" value={prMaxBnb} onChange={(e) => setPrMaxBnb(e.target.value)} />
               <Input placeholder="Vesting (days)" value={prVestingDays} onChange={(e) => setPrVestingDays(e.target.value)} />
             </div>
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
