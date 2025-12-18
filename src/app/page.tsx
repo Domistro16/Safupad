@@ -104,18 +104,18 @@ export default function Home() {
 
               // Parse numeric values (handle BigNumber if needed)
               // ✅ CORRECT: Convert BigNumbers from wei (18 decimals) to regular numbers
-              const totalRaisedMON = Number(
-                ethers.formatEther(launchInfo.totalRaisedMON)
+              const totalRaisedBNB = Number(
+                ethers.formatEther(launchInfo.totalRaisedBNB)
               );
-              const raiseMaxMON = Number(
-                ethers.formatEther(launchInfo.raiseTargetMON)
+              const raiseMaxBNB = Number(
+                ethers.formatEther(launchInfo.raiseTargetBNB)
               );
               const marketCapUSD = Number(
                 ethers.formatEther(poolInfo.marketCapUSD)
               );
               const currentPrice = Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.monToUSD(poolInfo.currentPrice)
+                  await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
                 )
               );
               const graduationProgress = Number(poolInfo.graduationProgress);
@@ -150,7 +150,7 @@ export default function Home() {
               const accumulatedFees = creatorFeeInfo
                 ? Number(
                   ethers.formatEther(
-                    await sdk.priceOracle.monToUSD(
+                    await sdk.priceOracle.bnbToUSD(
                       creatorFeeInfo.accumulatedFees
                     )
                   )
@@ -165,9 +165,9 @@ export default function Home() {
               const currentMarketCapFromFee = creatorFeeInfo
                 ? Number(ethers.formatEther(creatorFeeInfo.currentMarketCap))
                 : marketCapUSD;
-              const monInPool = creatorFeeInfo
-                ? Number(ethers.formatEther(creatorFeeInfo.monInPool))
-                : Number(poolInfo.monReserve);
+              const bnbInPool = creatorFeeInfo
+                ? Number(ethers.formatEther(creatorFeeInfo.bnbInPool))
+                : Number(poolInfo.bnbReserve);
               const canClaim = creatorFeeInfo?.canClaim ?? false;
 
               // Parse deadline
@@ -188,7 +188,7 @@ export default function Home() {
                 const volume24hData = await sdk.bondingDex.get24hVolume(addr);
                 const volume24hBNB = volume24hData.volumeBNB;
 
-                const vol = await sdk.priceOracle.monToUSD(volume24hBNB);
+                const vol = await sdk.priceOracle.bnbToUSD(volume24hBNB);
                 volume24h = ethers.formatUnits(Number(vol).toString(), 18);
 
                 // Get total volume
@@ -264,7 +264,7 @@ export default function Home() {
                 totalSupply: Number(tokenInfo.totalSupply),
                 currentPrice,
                 marketCap: marketCapUSD,
-                liquidityPool: Number(poolInfo.monReserve),
+                liquidityPool: Number(poolInfo.bnbReserve),
                 volume24h,
                 priceChange24h: priceChange24h,
 
@@ -273,7 +273,7 @@ export default function Home() {
                   ? {
                     config: {
                       type: "project-raise",
-                      targetAmount: raiseMaxMON || 0,
+                      targetAmount: raiseMaxBNB || 0,
                       raiseWindow: 24 * 60 * 60 * 1000,
                       ownerAllocation: 20,
                       immediateUnlock: 10,
@@ -287,8 +287,8 @@ export default function Home() {
                         infofiPlatform: 0.6,
                       },
                     },
-                    raisedAmount: totalRaisedMON,
-                    targetAmount: raiseMaxMON || 0,
+                    raisedAmount: totalRaisedBNB,
+                    targetAmount: raiseMaxBNB || 0,
                     startTime: new Date(Date.now() - 60_000),
                     endTime: raiseDeadline,
                     vestingSchedule: {
@@ -325,7 +325,7 @@ export default function Home() {
                       marketCapRequirement: true,
                       accrualPeriod: 604_800_000,
                     },
-                    cumulativeBuys: monInPool,
+                    cumulativeBuys: bnbInPool,
                     creatorFees: accumulatedFees,
                     lastClaimTime: lastClaimTime,
                     claimableAmount: canClaim ? accumulatedFees : 0,
@@ -488,7 +488,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-14 sm:py-16 relative">
           <div className="max-w-3xl mx-auto text-center space-y-5">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-wide md:tracking-wider glow-text break-words">
-              ICM 2.0 on Monad Chain
+              ICM 2.0 on BSC Chain
             </h1>
 
             <div className="flex flex-wrap gap-4 justify-center pt-4">

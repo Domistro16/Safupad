@@ -76,7 +76,7 @@ export default function PortfolioPage() {
 
             if (graduated) {
               try {
-                const provider = new ethers.JsonRpcProvider("https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
+                const provider = new ethers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
                 const tokenStats = await getTokenStats(addr, provider, sdk);
                 marketCapUSD = tokenStats.marketCapUSD;
                 currentPrice = tokenStats.priceInUSD;
@@ -87,12 +87,12 @@ export default function PortfolioPage() {
               } catch (err) {
                 console.warn(`Could not fetch token stats for ${addr}, falling back to pool info:`, err);
                 marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-                currentPrice = Number(ethers.formatEther(await sdk.priceOracle.monToUSD(poolInfo.currentPrice)));
+                currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
               }
             } else {
               // Non-graduated tokens use pool info
               marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-              currentPrice = Number(ethers.formatEther(await sdk.priceOracle.monToUSD(poolInfo.currentPrice)));
+              currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
             }
 
             // Get vesting info
@@ -116,8 +116,8 @@ export default function PortfolioPage() {
             const isProjectRaise = launchTypeNum === 0;
 
             // Parse numeric values
-            const totalRaisedMON = Number(ethers.formatEther(launchInfo.totalRaisedMON));
-            const raiseMaxMON = Number(ethers.formatEther(launchInfo.raiseTargetMON));
+            const totalRaisedBNB = Number(ethers.formatEther(launchInfo.totalRaisedBNB));
+            const raiseMaxBNB = Number(ethers.formatEther(launchInfo.raiseTargetBNB));
             const graduationProgress = Number(poolInfo.graduationProgress);
             const priceMultiplier = Number(poolInfo.priceMultiplier);
             const raiseCompleted = Boolean(launchInfo.raiseCompleted);
@@ -149,9 +149,9 @@ export default function PortfolioPage() {
             const graduationMarketCap = creatorFeeInfo
               ? Number(ethers.formatEther(creatorFeeInfo.graduationMarketCap))
               : 0;
-            const monInPool = creatorFeeInfo
-              ? Number(ethers.formatEther(creatorFeeInfo.monInPool))
-              : Number(poolInfo.monReserve);
+            const bnbInPool = creatorFeeInfo
+              ? Number(ethers.formatEther(creatorFeeInfo.bnbInPool))
+              : Number(poolInfo.bnbReserve);
             const canClaim = creatorFeeInfo?.canClaim ?? false;
 
             // Parse deadline
@@ -169,7 +169,7 @@ export default function PortfolioPage() {
             try {
               const volume24hData = await sdk.bondingDex.get24hVolume(addr);
               const volume24hBNB = volume24hData.volumeBNB;
-              const vol = await sdk.priceOracle.monToUSD(Number(volume24hBNB));
+              const vol = await sdk.priceOracle.bnbToUSD(Number(volume24hBNB));
               volume24h = Number(ethers.formatUnits(Number(vol).toString(), 18));
 
               const totalVolumeData = await sdk.bondingDex.getTotalVolume(addr);
@@ -210,14 +210,14 @@ export default function PortfolioPage() {
               totalSupply: Number(tokenInfo.totalSupply),
               currentPrice,
               marketCap: marketCapUSD,
-              liquidityPool: Number(poolInfo.monReserve),
+              liquidityPool: Number(poolInfo.bnbReserve),
               volume24h,
               priceChange24h,
 
               projectRaise: isProjectRaise ? {
                 config: {
                   type: "project-raise",
-                  targetAmount: raiseMaxMON || 0,
+                  targetAmount: raiseMaxBNB || 0,
                   raiseWindow: 24 * 60 * 60 * 1000,
                   ownerAllocation: 20,
                   immediateUnlock: 10,
@@ -227,8 +227,8 @@ export default function PortfolioPage() {
                   graduationThreshold: 500000,
                   tradingFee: { platform: 0.1, liquidity: 0.3, infofiPlatform: 0.6 },
                 },
-                raisedAmount: totalRaisedMON,
-                targetAmount: raiseMaxMON || 0,
+                raisedAmount: totalRaisedBNB,
+                targetAmount: raiseMaxBNB || 0,
                 startTime: new Date(Date.now() - 60_000),
                 endTime: raiseDeadline,
                 vestingSchedule: {
@@ -255,7 +255,7 @@ export default function PortfolioPage() {
                   marketCapRequirement: true,
                   accrualPeriod: 604_800_000,
                 },
-                cumulativeBuys: monInPool,
+                cumulativeBuys: bnbInPool,
                 creatorFees: accumulatedFees,
                 lastClaimTime: lastClaimTime,
                 claimableAmount: canClaim ? accumulatedFees : 0,

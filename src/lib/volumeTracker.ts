@@ -95,9 +95,9 @@ export async function calculate24hVolume(
     // Get current BNB price for USD conversion
     let volumeUSD = 0;
     try {
-      const monPriceRaw = await sdk.priceOracle.getBNBPrice();
-      const monPriceUSD = Number(monPriceRaw) / 1e8; // Price oracle returns 8 decimals
-      volumeUSD = volumeBNB * monPriceUSD;
+      const bnbPriceRaw = await sdk.priceOracle.getBNBPrice();
+      const bnbPriceUSD = Number(bnbPriceRaw) / 1e8; // Price oracle returns 8 decimals
+      volumeUSD = volumeBNB * bnbPriceUSD;
     } catch (error) {
       console.warn("Could not fetch BNB price for USD conversion:", error);
       // Fallback: assume BNB = $600

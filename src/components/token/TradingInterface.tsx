@@ -62,9 +62,9 @@ export function TradingInterface({
   const { sdk } = useSafuPadSDK();
   const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
   const [amount, setAmount] = useState("");
-  const [monAmount, setBnbAmount] = useState("");
+  const [bnbAmount, setBnbAmount] = useState("");
   const [isTrading, setIsTrading] = useState(false);
-  const [monBalance, setBnbBalance] = useState<string | null>(null);
+  const [bnbBalance, setBnbBalance] = useState<string | null>(null);
   const [tokenBalance, setTokenBalance] = useState<string | null>(null);
   const [loadingBalances, setLoadingBalances] = useState(true);
   const [slippage, setSlippage] = useState("0.5");
@@ -110,9 +110,9 @@ export function TradingInterface({
         // Get connected wallet address
 
         // Fetch BNB balance
-        const monBal = await provider.getBalance(address!);
+        const bnbBal = await provider.getBalance(address!);
         if (!cancelled) {
-          setBnbBalance(ethers.formatEther(monBal));
+          setBnbBalance(ethers.formatEther(bnbBal));
         }
 
         // Fetch token balance
@@ -210,7 +210,7 @@ export function TradingInterface({
           await approve.wait();
           const tx = await sdk.launchpad.handlePostGraduationBuy(
             token.contractAddress,
-            monAmount,
+            bnbAmount,
             minTokenOut
           );
 
@@ -227,7 +227,7 @@ export function TradingInterface({
           ).toFixed(18);
           const tx = await sdk.bondingDex.buyTokens(
             token.contractAddress,
-            monAmount,
+            bnbAmount,
             Number(minTokenOut)
           );
 
@@ -239,7 +239,7 @@ export function TradingInterface({
         // Use post-graduation sell for project-raise tokens that graduated to PancakeSwap
         if (graduatedToPancakeSwap && isProjectRaise) {
           // Calculate minimum BNB out with slippage protection
-          const expectedBnb = parseFloat(monAmount);
+          const expectedBnb = parseFloat(bnbAmount);
           const slippagePercent = parseFloat(slippage);
           const minBNBOut = (expectedBnb * (1 - slippagePercent / 100)).toFixed(
             18
@@ -306,8 +306,8 @@ export function TradingInterface({
 
       // Refresh balances after trade
       const address = await sdk.getAddress();
-      const monBal = await sdk.getBalance(address);
-      setBnbBalance(ethers.formatEther(monBal));
+      const bnbBal = await sdk.getBalance(address);
+      setBnbBalance(ethers.formatEther(bnbBal));
       const tokenBal = await tokenCon.balanceOf(address);
       setTokenBalance(ethers.formatEther(tokenBal));
     } catch (error: any) {
@@ -541,17 +541,17 @@ export function TradingInterface({
 
         <TabsContent value="buy" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="mon-buy">You Pay (MON)</Label>
+            <Label htmlFor="mon-buy">You Pay (BNB)</Label>
             <Input
               id="mon-buy"
               type="number"
               placeholder="0.0"
-              value={monAmount}
+              value={bnbAmount}
               onChange={(e) => handleBnbChange(e.target.value)}
               disabled={isTrading || isBuyDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(monBalance, loadingBalances)} MON
+              Balance: {formatBalance(bnbBalance, loadingBalances)} BNB
             </p>
           </div>
 
@@ -590,13 +590,13 @@ export function TradingInterface({
                 {token.launchType === "project-raise" ? "2%" : "2%"})
               </span>
               <span className="font-medium">
-                {monAmount
+                {bnbAmount
                   ? (
-                    parseFloat(monAmount) *
+                    parseFloat(bnbAmount) *
                     (token.launchType === "project-raise" ? 0.01 : 0.02)
                   ).toFixed(4)
                   : "0.0000"}{" "}
-                MON
+                BNB
               </span>
             </div>
             <div className="flex justify-between">
@@ -611,8 +611,8 @@ export function TradingInterface({
             size="lg"
             disabled={
               isTrading ||
-              !monAmount ||
-              parseFloat(monAmount) <= 0 ||
+              !bnbAmount ||
+              parseFloat(bnbAmount) <= 0 ||
               isBuyDisabled
             }
           >
@@ -656,17 +656,17 @@ export function TradingInterface({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mon-sell">You Receive (MON)</Label>
+            <Label htmlFor="mon-sell">You Receive (BNB)</Label>
             <Input
               id="mon-sell"
               type="number"
               placeholder="0.0"
-              value={monAmount}
+              value={bnbAmount}
               onChange={(e) => handleBnbChange(e.target.value)}
               disabled={isTrading || isSellDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(monBalance, loadingBalances)} MON
+              Balance: {formatBalance(bnbBalance, loadingBalances)} BNB
             </p>
           </div>
 
@@ -683,13 +683,13 @@ export function TradingInterface({
                 {token.launchType === "project-raise" ? "2%" : "2%"})
               </span>
               <span className="font-medium">
-                {monAmount
+                {bnbAmount
                   ? (
-                    parseFloat(monAmount) *
+                    parseFloat(bnbAmount) *
                     (token.launchType === "project-raise" ? 0.02 : 0.02)
                   ).toFixed(4)
                   : "0.0000"}{" "}
-                MON
+                BNB
               </span>
             </div>
             <div className="flex justify-between">
@@ -743,7 +743,7 @@ export function TradingInterface({
                   }}
                   disabled={isTrading || isBuyDisabled}
                 >
-                  {val} MON
+                  {val} BNB
                 </Button>
               ))}
             </div>

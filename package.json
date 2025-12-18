@@ -50,7 +50,7 @@
     "@reown/appkit": "^1.8.14",
     "@safe-global/safe-apps-provider": "^0.18.6",
     "@safe-global/safe-apps-sdk": "^9.1.0",
-    "@safupad/sdk": "^3.0.3",
+    "@safupad/sdk": "^3.0.4",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.90.5",

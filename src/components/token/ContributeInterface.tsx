@@ -28,10 +28,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
   const [isClaiming, setIsClaiming] = useState(false);
   const [isBurning, setIsBurning] = useState(false);
   const [isRefunding, setIsRefunding] = useState(false);
-  const [monBalance, setBnbBalance] = useState<string | null>(null);
+  const [bnbBalance, setBnbBalance] = useState<string | null>(null);
   const [loadingBalance, setLoadingBalance] = useState(true);
-  const [monRaised, setBnbRaised] = useState<number>(0);
-  const [monTarget, setBnbTarget] = useState<number>(0);
+  const [bnbRaised, setBnbRaised] = useState<number>(0);
+  const [bnbTarget, setBnbTarget] = useState<number>(0);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
   const [raiseCompleted, setRaiseCompleted] = useState(false);
   const [raiseFailed, setRaiseFailed] = useState(false);
@@ -81,10 +81,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
       try {
         setLoadingBalance(true);
-        const provider = new ethers.JsonRpcProvider("https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv");
-        const monBal = await provider.getBalance(address);
+        const provider = new ethers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+        const bnbBal = await provider.getBalance(address);
         if (!cancelled) {
-          setBnbBalance(ethers.formatEther(monBal));
+          setBnbBalance(ethers.formatEther(bnbBal));
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
@@ -167,7 +167,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     ? getProgressPercentage(projectRaise.raisedAmount, projectRaise.targetAmount)
     : 0;
 
-  const simulateContribution = async (tokenAddress: string, monAmount: string) => {
+  const simulateContribution = async (tokenAddress: string, bnbAmount: string) => {
     try {
       const signer = await sdk!.provider.getSigner();
       const signerAddress = await signer.getAddress();
@@ -182,7 +182,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
         from: signerAddress,
         to: sdk!.launchpad.address,
         data: data,
-        value: ethers.parseEther(monAmount)
+        value: ethers.parseEther(bnbAmount)
       });
 
       console.log('✅ Simulation successful!');
@@ -210,7 +210,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
     }
 
     if (amountBNB < 0.01) {
-      toast.error("Minimum contribution is 0.01 MON");
+      toast.error("Minimum contribution is 0.01 BNB");
       return;
     }
 
@@ -257,12 +257,12 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
       toast.success("Transaction submitted! Waiting for confirmation...");
       await tx.wait();
 
-      toast.success(`Successfully contributed ${amountBNB} MON to ${token.symbol}!`);
+      toast.success(`Successfully contributed ${amountBNB} BNB to ${token.symbol}!`);
 
       // Reset form and refresh balance
       setContribution("");
-      const monBal = await provider.getBalance(address);
-      setBnbBalance(ethers.formatEther(monBal));
+      const bnbBal = await provider.getBalance(address);
+      setBnbBalance(ethers.formatEther(bnbBal));
 
       // Refresh page to show updated raise amounts
       setTimeout(() => window.location.reload(), 2000);
@@ -499,14 +499,14 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
           <div className="flex justify-between text-sm">
             <div>
               <p className="text-xs text-muted-foreground">Raised</p>
-              <p className="font-bold">{monRaised.toFixed(4)} MON</p>
+              <p className="font-bold">{bnbRaised.toFixed(4)} BNB</p>
               <p className="text-xs text-muted-foreground">
                 {formatCurrency(projectRaise.raisedAmount)}
               </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Target</p>
-              <p className="font-bold">{monTarget.toFixed(4)} MON</p>
+              <p className="font-bold">{bnbTarget.toFixed(4)} BNB</p>
               <p className="text-xs text-muted-foreground">
                 {formatCurrency(projectRaise.targetAmount)}
               </p>
@@ -625,7 +625,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
 
             {/* Contribution Input */}
             <div className="space-y-2">
-              <Label htmlFor="contribution-amount">Contribution Amount (MON)</Label>
+              <Label htmlFor="contribution-amount">Contribution Amount (BNB)</Label>
               <Input
                 id="contribution-amount"
                 type="number"
@@ -639,10 +639,10 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
                 min="0.01"
               />
               <p className="text-xs text-muted-foreground">
-                Balance: {formatBalance(monBalance, loadingBalance)} MON
+                Balance: {formatBalance(bnbBalance, loadingBalance)} BNB
               </p>
               <p className="text-xs text-muted-foreground">
-                Minimum: 0.01 MON
+                Minimum: 0.01 BNB
               </p>
             </div>
 
@@ -674,7 +674,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Amount</span>
-                <span className="font-bold text-primary">{contribution || "0"} MON</span>
+                <span className="font-bold text-primary">{contribution || "0"} BNB</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Type</span>
@@ -711,7 +711,7 @@ export function ContributeInterface({ token }: ContributeInterfaceProps) {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Target Range</span>
-              <span className="font-medium">5m-20m MON</span>
+              <span className="font-medium">5-20 BNB</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Raise Window</span>

@@ -21,7 +21,7 @@ export const SafuPadSdkPanel = () => {
   const [tokenAddress, setTokenAddress] = useState("");
 
   // Trading inputs
-  const [monAmount, setBnbAmount] = useState("0.01");
+  const [bnbAmount, setBnbAmount] = useState("0.01");
   const [tokenAmount, setTokenAmount] = useState("1000");
 
 
@@ -30,8 +30,8 @@ export const SafuPadSdkPanel = () => {
   const [prName, setPrName] = useState("MyToken");
   const [prSymbol, setPrSymbol] = useState("MTK");
   const [prSupply, setPrSupply] = useState("1000000000");
-  const [prTargetMon, setPrTargetMon] = useState("5000000");
-  const [prMaxMon, setPrMaxMon] = useState("20000000");
+  const [prTargetBnb, setPrTargetMon] = useState("5000000");
+  const [prMaxBnb, setPrMaxMon] = useState("20000000");
   const [prVestingDays, setPrVestingDays] = useState("180");
   const [prBurnLP, setPrBurnLP] = useState(false);
 
@@ -68,8 +68,8 @@ export const SafuPadSdkPanel = () => {
     if (!guard()) return;
     try {
       setStatus("Fetching BNB price...");
-      const price = await sdk!.priceOracle.getMONPriceFormatted();
-      setStatus(`MON Price: ${price} USD`);
+      const price = await sdk!.priceOracle.getBNBPriceFormatted();
+      setStatus(`BNB Price: ${price} USD`);
     } catch (e: any) {
       setStatus(e?.message || String(e));
     }
@@ -79,7 +79,7 @@ export const SafuPadSdkPanel = () => {
     if (!guard()) return;
     try {
       setStatus("Buying tokens...");
-      const tx = await sdk!.bondingDex.buyTokens(tokenAddress, monAmount);
+      const tx = await sdk!.bondingDex.buyTokens(tokenAddress, bnbAmount);
       setStatus(`Tx submitted: ${tx.hash}`);
       await tx.wait();
       setStatus(`Buy confirmed: ${tx.hash}`);
@@ -149,8 +149,8 @@ export const SafuPadSdkPanel = () => {
         name: prName,
         symbol: prSymbol,
         totalSupply: Number(prSupply),
-        raiseTargetMON: prTargetMon,
-        raiseMaxMON: prMaxMon,
+        raiseTargetBNB: prTargetBnb,
+        raiseMaxBNB: prMaxBnb,
         vestingDuration: Number(prVestingDays),
         metadata: {
           logoURI: "",
@@ -187,7 +187,7 @@ export const SafuPadSdkPanel = () => {
           telegram: "",
           discord: "",
         },
-        initialBuyMON: ilInitialBNB,
+        initialBuyBNB: ilInitialBNB,
         burnLP: ilBurnLP,
         vanitySalt: undefined,
       });
@@ -256,7 +256,7 @@ export const SafuPadSdkPanel = () => {
           <div className="space-y-2">
             <Input placeholder="Token address" value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value)} />
             <div className="grid grid-cols-2 gap-2">
-              <Input placeholder="BNB amount (buy)" value={monAmount} onChange={(e) => setBnbAmount(e.target.value)} />
+              <Input placeholder="BNB amount (buy)" value={bnbAmount} onChange={(e) => setBnbAmount(e.target.value)} />
               <Input placeholder="Token amount (sell)" value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
             </div>
             <div className="flex gap-2 flex-wrap">

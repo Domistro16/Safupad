@@ -35,8 +35,8 @@ export function ContributeModal({
   const [isContributing, setIsContributing] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [monRaised, setBnbRaised] = useState<number>(0);
-  const [monTarget, setBnbTarget] = useState<number>(0);
+  const [bnbRaised, setBnbRaised] = useState<number>(0);
+  const [bnbTarget, setBnbTarget] = useState<number>(0);
 
   // Early return if no token
   if (!token) return null;
@@ -63,7 +63,7 @@ export function ContributeModal({
   };
 
   // Load BNB values when modal opens
-  if (isOpen && sdk && monTarget === 0) {
+  if (isOpen && sdk && bnbTarget === 0) {
     void loadBnbValues();
   }
 
@@ -77,7 +77,7 @@ export function ContributeModal({
       : 0;
   async function simulateContribution(
     tokenAddress: string,
-    monAmount: string,
+    bnbAmount: string,
     sdk: any
   ) {
     try {
@@ -96,7 +96,7 @@ export function ContributeModal({
         from: signerAddress,
         to: sdk.launchpad.address,
         data: data,
-        value: ethers.parseEther(monAmount),
+        value: ethers.parseEther(bnbAmount),
       });
 
       console.log("✅ Simulation successful!", result);
@@ -236,12 +236,12 @@ export function ContributeModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contribution">Contribution Amount (MON)</Label>
+            <Label htmlFor="contribution">Contribution Amount (BNB)</Label>
             <Input
               id="contribution"
               type="number"
               inputMode="decimal"
-              placeholder="Enter MON amount"
+              placeholder="Enter BNB amount"
               value={contribution}
               onChange={(e) => setContribution(e.target.value)}
               className="bg-card/60 border-primary/30"
@@ -250,7 +250,7 @@ export function ContributeModal({
               min="0.01"
             />
             <p className="text-xs text-muted-foreground">
-              Minimum contribution: 0.01 MON
+              Minimum contribution: 0.01 BNB
             </p>
           </div>
 
@@ -265,13 +265,13 @@ export function ContributeModal({
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Current:</span>
                   <span className="font-medium">
-                    {monRaised.toFixed(4)} MON
+                    {bnbRaised.toFixed(4)} BNB
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Target:</span>
                   <span className="font-medium">
-                    {monTarget.toFixed(4)} MON
+                    {bnbTarget.toFixed(4)} BNB
                   </span>
                 </div>
                 <Progress
@@ -295,7 +295,7 @@ export function ContributeModal({
                 <strong>Token:</strong> {token.name} ({token.symbol})
               </p>
               <p>
-                <strong>Amount:</strong> {contribution || "0"} MON
+                <strong>Amount:</strong> {contribution || "0"} BNB
               </p>
               <p>
                 <strong>Type:</strong>{" "}

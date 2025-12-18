@@ -1,6 +1,6 @@
 # InfoFi Token Launchpad
 
-A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript, and Tailwind CSS. Launch tokens on Monad Chain with two powerful models: Project Raise and Instant Launch.
+A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript, and Tailwind CSS. Launch tokens on BSC Chain with two powerful models: Project Raise and Instant Launch.
 
 ![InfoFi Launch](https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&h=400&fit=crop)
 
@@ -9,18 +9,18 @@ A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript
 ### Two Launch Models
 
 #### **Project Raise**
-- Raise 5m-20m MON over 72 hours
+- Raise 5m-20m BNB over 72 hours
 - 20% community allocation
 - 20% of raised + 10% total supply paired as initial liquidity
 - 60% released at raise end, rest monthly over 6 months (if token stays above starting market cap)
 - LP fee distribution: 70% Founder, 20% InfoFi, 10% Platform
-- Max contribution: 50,000 MON per user
+- Max contribution: 50,000 BNB per user
 - Emergency withdrawal timelock: 48 hours
 - Requires admin approval
 
 #### **Instant Launch**
 - Deploy and trade immediately
-- 1M MON bonding curve cap
+- 1M BNB bonding curve cap
 - 2% trading fee split: 1% creator, 0.6% InfoFi, 0.3% EduFi, 0.1% platform
 - Bonding distribution: 70% creator, 20% InfoFi, 10% platform
 - Graduation fee: 1% of pool (50/50 creator/platform)
@@ -42,7 +42,7 @@ A modern, dark-themed token launchpad platform built with Next.js 15, TypeScript
 - **Frontend**: Next.js 15 (App Router), React, TypeScript
 - **Styling**: Tailwind CSS, Shadcn/UI components
 - **Wallet**: RainbowKit, wagmi, viem
-- **Blockchain**: Monad Chain
+- **Blockchain**: BSC Chain
 - **Smart Contracts**: Solidity 0.8.20, OpenZeppelin
 - **Charts**: Recharts
 - **Date**: date-fns
@@ -131,7 +131,7 @@ infofi-launch/
 ## 🎨 Design System
 
 ### Brand Colors
-- **Primary**: `#836ef9` (Monad Purple)
+- **Primary**: `#836ef9` (BSC Purple)
 - **Background**: `#0a0a0f` (Dark Purple-Black)
 - **Card**: `#1a1520` (Dark Card)
 - **Border**: `rgba(131, 110, 249, 0.3)`

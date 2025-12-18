@@ -22,7 +22,7 @@ export type UseSafuPadSDKResult = {
   isInitializing: boolean;
   error: unknown | null;
   connect: () => Promise<string | null>;
-  network: "monad";
+  network: "bsc";
   chainId: number;
 };
 
@@ -61,8 +61,8 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
 /**
  * useSafuPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Only supports Monad Mainnet (143)
- * - Defaults to Monad Mainnet when wallet is not connected
+ * - Only supports BSC Mainnet (56)
+ * - Defaults to BSC Mainnet when wallet is not connected
  */
 export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [sdk, setSdk] = useState<SafuPadSDK | null>(null);
@@ -73,9 +73,9 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
   const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  // Only support Monad Mainnet (143)
-  const chainId = chain?.id ?? 143;
-  const network: "monad" = "monad";
+  // Only support BSC Mainnet (56)
+  const chainId = chain?.id ?? 56;
+  const network: "bsc" = "bsc";
 
   const { data: client } = useConnectorClient<Config>({ chainId });
   const provClient = useClient<Config>({ chainId });
@@ -91,7 +91,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
       }
 
       console.log(
-        `🔧 SafuPad SDK: Initializing for Monad Mainnet (Chain ID: ${chainId})...`
+        `🔧 SafuPad SDK: Initializing for BSC Mainnet (Chain ID: ${chainId})...`
       );
 
       setIsInitializing(true);
@@ -99,7 +99,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
 
       try {
         console.log(
-          `🔧 SafuPad SDK: Getting Monad Mainnet provider...`
+          `🔧 SafuPad SDK: Getting BSC Mainnet provider...`
         );
 
         const provider = clientToProvider(provClient);
@@ -130,7 +130,7 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
           return;
         }
 
-        console.log(`✅ SafuPad SDK: Successfully initialized on Monad Mainnet!`);
+        console.log(`✅ SafuPad SDK: Successfully initialized on BSC Mainnet!`);
         setSdk(instance);
       } catch (e: any) {
         if (cancelled) return;
