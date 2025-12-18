@@ -7,7 +7,7 @@ import { Coins, Trophy, Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import type { Token } from "@/types/token";
 import { ethers } from "ethers";
 import { ContributeModal } from "@/components/ContributeModal";
@@ -21,7 +21,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [contributeToken, setContributeToken] = useState<Token | null>(null);
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [liveTokens, setLiveTokens] = useState<Token[] | null>(null);
 
   const handleContribute = (token: Token) => {
@@ -245,7 +245,7 @@ export default function Home() {
                 name: tokenName, // ✅ Correct: never shows address
                 symbol: tokenSymbol,
                 description:
-                  tokenMeta.description || "Launched token on BaldPad",
+                  tokenMeta.description || "Launched token on SafuPad",
                 image: logoURI,
                 contractAddress: addr,
                 creatorAddress: launchInfo.founder,

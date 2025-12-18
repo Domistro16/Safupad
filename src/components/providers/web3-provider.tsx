@@ -16,7 +16,7 @@ const walletConnectProjectId =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID";
 
 const config = getDefaultConfig({
-  appName: "Baldpad",
+  appName: "Safupad",
   projectId: walletConnectProjectId,
   chains: [monad],
   ssr: true,

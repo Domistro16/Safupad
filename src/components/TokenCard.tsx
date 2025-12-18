@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
@@ -56,7 +56,7 @@ function generateGradient(seed: string): string {
 }
 
 export function TokenCard({ token, onContribute }: TokenCardProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const { address: userAddress } = useAccount();
   const [monReserve, setBnbReserve] = useState<number>(0);
   const [volumeBNB, setVolumeBNB] = useState<number>(0);

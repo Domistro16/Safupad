@@ -23,7 +23,7 @@ export function Header() {
                 <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-sm sm:text-lg leading-tight font-black tracking-wider glow-text uppercase truncate max-w-[60vw] sm:max-w-none">Baldpad</h1>
+                <h1 className="text-sm sm:text-lg leading-tight font-black tracking-wider glow-text uppercase truncate max-w-[60vw] sm:max-w-none">Safupad</h1>
                 <p className="hidden sm:block text-[10px] text-accent font-bold uppercase tracking-widest">🎮 Game Mode Active</p>
               </div>
             </Link>

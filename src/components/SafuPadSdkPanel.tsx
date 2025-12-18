@@ -1,17 +1,17 @@
 "use client";
 
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export const BaldPadSdkPanel = () => {
-  const { sdk, isInitializing, error, connect, network, chainId } = useBaldPadSDK();
+export const SafuPadSdkPanel = () => {
+  const { sdk, isInitializing, error, connect, network, chainId } = useSafuPadSDK();
 
   useEffect(() => {
     if (sdk) {
       // eslint-disable-next-line no-console
-      console.log("BaldPad SDK initialized", sdk);
+      console.log("SafuPad SDK initialized", sdk);
     }
   }, [sdk]);
 
@@ -203,7 +203,7 @@ export const BaldPadSdkPanel = () => {
     <div className="mt-6 rounded-lg border border-border/60 bg-card/40 p-4 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold tracking-wide text-accent/90">BaldPad SDK</p>
+          <p className="text-sm font-semibold tracking-wide text-accent/90">SafuPad SDK</p>
           <p className="text-xs text-accent/80">
             Network: {network === "bsc" ? "BSC Mainnet" : "BSC Testnet"} (Chain ID: {chainId})
           </p>

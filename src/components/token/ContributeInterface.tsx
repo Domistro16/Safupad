@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Zap, TrendingUp, Info, Loader2, Clock, Trophy, Coins, Flame, DollarSign, XCircle } from "lucide-react";
 import { formatCurrency, getProgressPercentage } from "@/lib/utils/format";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { ethers } from "ethers";
 import { toast } from "sonner";
 import { useAccount } from 'wagmi';
@@ -20,7 +20,7 @@ interface ContributeInterfaceProps {
 }
 
 export function ContributeInterface({ token }: ContributeInterfaceProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const { address } = useAccount();
   const [contribution, setContribution] = useState("");
   const [isContributing, setIsContributing] = useState(false);

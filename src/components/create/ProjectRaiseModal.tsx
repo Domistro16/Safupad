@@ -47,8 +47,8 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
   const [imageUploadError, setImageUploadError] = useState<string | null>(null);
 
   // lazy import to avoid tree-shake issues
-  const { useBaldPadSDK } = require("@/lib/baldpad-sdk");
-  const { sdk, isInitializing } = useBaldPadSDK();
+  const { useSafuPadSDK } = require("@/lib/safupad-sdk");
+  const { sdk, isInitializing } = useSafuPadSDK();
 
   const TOTAL_SUPPLY = 1000000000; // 1 billion constant
 

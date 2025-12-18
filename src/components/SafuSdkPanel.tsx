@@ -1,12 +1,12 @@
 "use client";
 
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export const SafuSdkPanel = () => {
-  const { sdk, isInitializing, error, connect, network, chainId } = useBaldPadSDK();
+  const { sdk, isInitializing, error, connect, network, chainId } = useSafuPadSDK();
 
   useEffect(() => {
     if (sdk) {

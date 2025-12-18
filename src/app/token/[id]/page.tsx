@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils/format";
 import { Wallet, Coins, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import type { Token, Trade } from "@/types/token";
 import { ethers } from "ethers";
 import { useAccount } from "wagmi";
@@ -128,7 +128,7 @@ export default function TokenPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [token, setToken] = useState<Token | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -484,7 +484,7 @@ export default function TokenPage({
           id,
           name: tokenName,
           symbol: tokenSymbol,
-          description: tokenMeta.description || "Launched token on BaldPad",
+          description: tokenMeta.description || "Launched token on SafuPad",
           image: logoURI,
           contractAddress: id,
           creatorAddress: launchInfo.founder,

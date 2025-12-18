@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { ethers } from "ethers";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { toast } from "sonner";
@@ -48,7 +48,7 @@ function generateGradient(id: string, symbol: string) {
 }
 
 export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwapProp }: TokenInfoProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const { address } = useAccount();
   const [marketCapBnb, setMarketCapBnb] = useState<number>(0);
   const [targetCapBnb, setTargetCapBnb] = useState<number>(0);

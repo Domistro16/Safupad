@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info, Zap, CheckCircle2, XCircle, Loader2, Upload, X } from "lucide-react";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 
 interface InstantLaunchModalProps {
   isOpen: boolean;
@@ -35,7 +35,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
 
   const TOTAL_SUPPLY = 1000000000; // 1 billion constant
 
-  const { sdk, isInitializing, error: sdkError, connect } = useBaldPadSDK();
+  const { sdk, isInitializing, error: sdkError, connect } = useSafuPadSDK();
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);

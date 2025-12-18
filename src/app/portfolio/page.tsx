@@ -9,7 +9,7 @@ import { Coins, TrendingUp, DollarSign } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useAccount } from "wagmi";
 import type { Token } from "@/types/token";
 import { ethers } from "ethers";
@@ -18,7 +18,7 @@ import { TokensLoadingAnimation } from "@/components/TokensLoadingAnimation";
 
 export default function PortfolioPage() {
   const { address } = useAccount();
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [loading, setLoading] = useState(false);
   const [userTokens, setUserTokens] = useState<Token[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -192,7 +192,7 @@ export default function PortfolioPage() {
               id: addr,
               name: tokenName,
               symbol: tokenSymbol,
-              description: tokenMeta.description || "Launched token on BaldPad",
+              description: tokenMeta.description || "Launched token on SafuPad",
               image: logoURI,
               contractAddress: addr,
               creatorAddress: launchInfo.founder,

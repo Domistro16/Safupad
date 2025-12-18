@@ -17,7 +17,7 @@ import {
   Lock,
 } from "lucide-react";
 import { formatCurrency, formatPrice } from "@/lib/utils/format";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { ethers, parseEther } from "ethers";
 import { toast } from "sonner";
 import { useBalance, useAccount } from "wagmi";
@@ -59,7 +59,7 @@ export function TradingInterface({
   pancakeSwapPriceInBNB,
   graduatedToPancakeSwap = false,
 }: TradingInterfaceProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
   const [amount, setAmount] = useState("");
   const [monAmount, setBnbAmount] = useState("");

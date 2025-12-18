@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getProgressPercentage } from "@/lib/utils/format";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { Zap, TrendingUp, Info } from "lucide-react";
 import { ethers } from "ethers";
 
@@ -30,7 +30,7 @@ export function ContributeModal({
   isOpen,
   onClose,
 }: ContributeModalProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [contribution, setContribution] = useState<string>("");
   const [isContributing, setIsContributing] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
