@@ -359,9 +359,9 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
           <div className="space-y-4">
             <div>
               <div className="flex flex-wrap justify-between text-sm mb-2 gap-2">
-                <span className="text-muted-foreground">To 15 MON</span>
+                <span className="text-muted-foreground">To 15 BNB</span>
                 <span className="font-bold break-words">
-                  {monReserve.toFixed(7)} MON / 15 MON
+                  {monReserve.toFixed(7)} BNB / 15 BNB
                 </span>
               </div>
               <Progress
@@ -371,7 +371,7 @@ export function TokenInfo({ token, graduatedToPancakeSwap: graduatedToPancakeSwa
             </div>
             <div className="p-3 bg-muted/50 rounded-lg text-sm">
               <p className="text-muted-foreground break-words">
-                For this token to graduate, the pool must reach 15 MON.
+                For this token to graduate, the pool must reach 15 BNB.
               </p>
             </div>
           </div>

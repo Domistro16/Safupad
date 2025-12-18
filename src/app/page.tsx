@@ -115,7 +115,7 @@ export default function Home() {
               );
               const currentPrice = Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.monToUSD(poolInfo.currentPrice)
+                  await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
                 )
               );
               const graduationProgress = Number(poolInfo.graduationProgress);
@@ -150,7 +150,7 @@ export default function Home() {
               const accumulatedFees = creatorFeeInfo
                 ? Number(
                   ethers.formatEther(
-                    await sdk.priceOracle.monToUSD(
+                    await sdk.priceOracle.bnbToUSD(
                       creatorFeeInfo.accumulatedFees
                     )
                   )
@@ -188,7 +188,7 @@ export default function Home() {
                 const volume24hData = await sdk.bondingDex.get24hVolume(addr);
                 const volume24hBNB = volume24hData.volumeBNB;
 
-                const vol = await sdk.priceOracle.monToUSD(volume24hBNB);
+                const vol = await sdk.priceOracle.bnbToUSD(volume24hBNB);
                 volume24h = ethers.formatUnits(Number(vol).toString(), 18);
 
                 // Get total volume

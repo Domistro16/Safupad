@@ -541,7 +541,7 @@ export function TradingInterface({
 
         <TabsContent value="buy" className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="mon-buy">You Pay (MON)</Label>
+            <Label htmlFor="mon-buy">You Pay (BNB)</Label>
             <Input
               id="mon-buy"
               type="number"
@@ -551,7 +551,7 @@ export function TradingInterface({
               disabled={isTrading || isBuyDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(monBalance, loadingBalances)} MON
+              Balance: {formatBalance(monBalance, loadingBalances)} BNB
             </p>
           </div>
 
@@ -596,7 +596,7 @@ export function TradingInterface({
                     (token.launchType === "project-raise" ? 0.01 : 0.02)
                   ).toFixed(4)
                   : "0.0000"}{" "}
-                MON
+                BNB
               </span>
             </div>
             <div className="flex justify-between">
@@ -656,7 +656,7 @@ export function TradingInterface({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mon-sell">You Receive (MON)</Label>
+            <Label htmlFor="mon-sell">You Receive (BNB)</Label>
             <Input
               id="mon-sell"
               type="number"
@@ -666,7 +666,7 @@ export function TradingInterface({
               disabled={isTrading || isSellDisabled}
             />
             <p className="text-xs text-muted-foreground">
-              Balance: {formatBalance(monBalance, loadingBalances)} MON
+              Balance: {formatBalance(monBalance, loadingBalances)} BNB
             </p>
           </div>
 
@@ -689,7 +689,7 @@ export function TradingInterface({
                     (token.launchType === "project-raise" ? 0.02 : 0.02)
                   ).toFixed(4)
                   : "0.0000"}{" "}
-                MON
+                BNB
               </span>
             </div>
             <div className="flex justify-between">
@@ -743,7 +743,7 @@ export function TradingInterface({
                   }}
                   disabled={isTrading || isBuyDisabled}
                 >
-                  {val} MON
+                  {val} BNB
                 </Button>
               ))}
             </div>

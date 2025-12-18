@@ -184,7 +184,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
         vestingDuration: formData.vestingDuration * 30,
         metadata,
         burnLP: formData.burnLP,
-        maxContribution: '50000', // 50k MON max per contributor
+        maxContribution: '50000', // 50k BNB max per contributor
       };
 
       const tx = await sdk.launchpad.createLaunch(params);
@@ -388,7 +388,7 @@ export function ProjectRaiseModal({ isOpen, onClose }: ProjectRaiseModalProps) {
             </Alert>
 
             <div className="space-y-2">
-              <Label htmlFor="targetAmount">Target Amount (MON) *</Label>
+              <Label htmlFor="targetAmount">Target Amount (BNB) *</Label>
               <Input
                 id="targetAmount"
                 type="number"

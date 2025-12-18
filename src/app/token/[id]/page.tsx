@@ -235,7 +235,7 @@ export default function TokenPage({
             // Convert BNB to USD using price oracle
             const totalBnbWei =
               BigInt(pool.monReserve) + BigInt(pool.virtualBnbReserve);
-            const usdValue = await sdk.priceOracle.monToUSD(totalBnbWei);
+            const usdValue = await sdk.priceOracle.bnbToUSD(totalBnbWei);
             setVirtualLiquidityUSD(Number(ethers.formatEther(usdValue)));
 
             // Convert graduation BNB threshold to USD
@@ -286,7 +286,7 @@ export default function TokenPage({
             const parsedFeeInfo = {
               accumulatedFees: Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.monToUSD(feeInfo.accumulatedFees)
+                  await sdk.priceOracle.bnbToUSD(feeInfo.accumulatedFees)
                 )
               ),
               lastClaimTime:
@@ -298,7 +298,7 @@ export default function TokenPage({
               ),
               currentMarketCap: Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.monToUSD(feeInfo.currentMarketCap)
+                  await sdk.priceOracle.bnbToUSD(feeInfo.currentMarketCap)
                 )
               ),
               monInPool: Number(ethers.formatEther(feeInfo.monInPool)),
@@ -334,7 +334,7 @@ export default function TokenPage({
         const marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
         const currentPrice = Number(
           ethers.formatEther(
-            await sdk.priceOracle.monToUSD(poolInfo.currentPrice)
+            await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
           )
         );
         const graduationProgress = Number(poolInfo.graduationProgress);
@@ -346,11 +346,11 @@ export default function TokenPage({
         let liquidityPool: any;
         if (isInstant && pool) {
           const virtual = pool.virtualBnbReserve;
-          liquidityPool = await sdk.priceOracle.monToUSD(
+          liquidityPool = await sdk.priceOracle.bnbToUSD(
             BigInt(poolInfo.monReserve) + BigInt(virtual)
           );
         } else {
-          liquidityPool = await sdk.priceOracle.monToUSD(
+          liquidityPool = await sdk.priceOracle.bnbToUSD(
             BigInt(poolInfo.monReserve)
           );
         }
@@ -396,7 +396,7 @@ export default function TokenPage({
               totalVolumeData.buyCount + totalVolumeData.sellCount;
 
             // Convert total volume to USD
-            const totalVolumeUSD = await sdk.priceOracle.monToUSD(
+            const totalVolumeUSD = await sdk.priceOracle.bnbToUSD(
               totalVolumeData.totalVolumeBNB
             );
             volume24h = Number(ethers.formatEther(totalVolumeUSD));
@@ -423,10 +423,10 @@ export default function TokenPage({
             // Convert SDK TradeData format to Trade format
             const convertedTrades: Trade[] = await Promise.all(
               tradesData.map(async (tradeData: any, index: number) => {
-                const usdPrice = await sdk.priceOracle.monToUSD(
+                const usdPrice = await sdk.priceOracle.bnbToUSD(
                   tradeData.price
                 );
-                const usdValue = await sdk.priceOracle.monToUSD(
+                const usdValue = await sdk.priceOracle.bnbToUSD(
                   tradeData.monAmount
                 );
                 const priceInBnbHexOrBN = tradeData.price;
@@ -681,7 +681,7 @@ export default function TokenPage({
         const parsedData = {
           totalFeesHarvested: Number(
             ethers.formatEther(
-              await sdk.priceOracle.monToUSD(lockInfo.totalFeesHarvested)
+              await sdk.priceOracle.bnbToUSD(lockInfo.totalFeesHarvested)
             )
           ),
           canHarvest: Boolean(harvestStatus.ready),

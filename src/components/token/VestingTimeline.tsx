@@ -273,7 +273,7 @@ export function VestingTimeline({ vestingSchedule, tokenAddress, vestingData }: 
             {/* Claimable Funds */}
             {claimableFunds > 0 && (
               <div className="p-3 bg-background/60 rounded-lg border border-primary/20">
-                <div className="text-xs text-muted-foreground mb-1">Claimable Funds (MON)</div>
+                <div className="text-xs text-muted-foreground mb-1">Claimable Funds (BNB)</div>
                 <div className="text-lg sm:text-xl font-black text-primary mb-3">{formatCurrency(claimableFunds)}</div>
                 <Button
                   className="controller-btn w-full text-xs sm:text-sm"

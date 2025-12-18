@@ -159,7 +159,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
       try {
         const mon = await sdk.bondingDex.get24hVolume(token.contractAddress);
-        const usd = await sdk.priceOracle.monToUSD(mon.volumeBNB);
+        const usd = await sdk.priceOracle.bnbToUSD(mon.volumeBNB);
         setVolumeBNB(Number(ethers.formatEther(usd)));
       } catch (error) {
         console.error("Error getting volume:", error);
@@ -339,7 +339,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Raise Progress</span>
               <span className="font-medium">
-                {monRaised.toFixed(4)} MON / {monTarget.toFixed(4)} MON
+                {monRaised.toFixed(4)} BNB / {monTarget.toFixed(4)} BNB
               </span>
             </div>
             <Progress
@@ -366,7 +366,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Graduation Progress</span>
               <span className="font-medium">
-                {monReserve.toFixed(4)} MON / 15 MON
+                {monReserve.toFixed(4)} BNB / 15 BNB
               </span>
             </div>
             <Progress
@@ -374,7 +374,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
-              Pool must reach 15 MON to graduate to PancakeSwap
+              Pool must reach 15 BNB to graduate to PancakeSwap
             </p>
           </div>
         )}

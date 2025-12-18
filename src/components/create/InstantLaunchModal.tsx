@@ -274,7 +274,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="initialBuy">Initial Buy (MON) *</Label>
+            <Label htmlFor="initialBuy">Initial Buy (BNB) *</Label>
             <Input
               id="initialBuy"
               type="number"
@@ -286,7 +286,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
               disabled={submitting} />
 
             <p className="text-xs text-muted-foreground">
-              You may buy 0 MON to start; higher buys can improve initial liquidity.
+              You may buy 0 BNB to start; higher buys can improve initial liquidity.
             </p>
           </div>
 
@@ -439,7 +439,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             <h4 className="font-semibold text-sm mb-3">Graduation</h4>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Bonding Curve Cap:</span>
-              <span className="font-medium">1M MON</span>
+              <span className="font-medium">1M BNB</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Graduation Fee:</span>
@@ -479,7 +479,7 @@ export function InstantLaunchModal({ isOpen, onClose }: InstantLaunchModalProps)
             <div className="text-sm space-y-1">
               <p><strong>Token:</strong> {formData.name || "---"} ({formData.symbol || "---"})</p>
               <p><strong>Supply:</strong> {TOTAL_SUPPLY.toLocaleString()}</p>
-              <p><strong>Initial Buy:</strong> {formData.initialBuy} MON</p>
+              <p><strong>Initial Buy:</strong> {formData.initialBuy} BNB</p>
               {imagePreview && <p><strong>Image:</strong> Uploaded ✓</p>}
               <p><strong>Status:</strong> <span className="text-primary">Goes live immediately</span></p>
             </div>

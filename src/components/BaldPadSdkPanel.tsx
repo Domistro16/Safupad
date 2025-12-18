@@ -30,8 +30,8 @@ export const BaldPadSdkPanel = () => {
   const [prName, setPrName] = useState("MyToken");
   const [prSymbol, setPrSymbol] = useState("MTK");
   const [prSupply, setPrSupply] = useState("1000000000");
-  const [prTargetMon, setPrTargetMon] = useState("5000000");
-  const [prMaxMon, setPrMaxMon] = useState("20000000");
+  const [prTargetBnb, setPrTargetBnb] = useState("5000000");
+  const [prMaxBnb, setPrMaxBnb] = useState("20000000");
   const [prVestingDays, setPrVestingDays] = useState("180");
   const [prBurnLP, setPrBurnLP] = useState(false);
 
@@ -68,8 +68,8 @@ export const BaldPadSdkPanel = () => {
     if (!guard()) return;
     try {
       setStatus("Fetching BNB price...");
-      const price = await sdk!.priceOracle.getMONPriceFormatted();
-      setStatus(`MON Price: ${price} USD`);
+      const price = await sdk!.priceOracle.getBNBPriceFormatted();
+      setStatus(`BNB Price: ${price} USD`);
     } catch (e: any) {
       setStatus(e?.message || String(e));
     }
@@ -149,8 +149,8 @@ export const BaldPadSdkPanel = () => {
         name: prName,
         symbol: prSymbol,
         totalSupply: Number(prSupply),
-        raiseTargetMON: prTargetMon,
-        raiseMaxMON: prMaxMon,
+        raiseTargetBNB: prTargetBnb,
+        raiseMaxBNB: prMaxBnb,
         vestingDuration: Number(prVestingDays),
         metadata: {
           logoURI: "",
@@ -187,7 +187,7 @@ export const BaldPadSdkPanel = () => {
           telegram: "",
           discord: "",
         },
-        initialBuyMON: ilInitialBNB,
+        initialBuyBNB: ilInitialBNB,
         burnLP: ilBurnLP,
         vanitySalt: undefined,
       });
@@ -283,8 +283,8 @@ export const BaldPadSdkPanel = () => {
               <Input placeholder="Total Supply" value={prSupply} onChange={(e) => setPrSupply(e.target.value)} />
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <Input placeholder="Target USD" value={prTargetUsd} onChange={(e) => setPrTargetUsd(e.target.value)} />
-              <Input placeholder="Max USD" value={prMaxUsd} onChange={(e) => setPrMaxUsd(e.target.value)} />
+              <Input placeholder="Target BNB" value={prTargetBnb} onChange={(e) => setPrTargetBnb(e.target.value)} />
+              <Input placeholder="Max BNB" value={prMaxBnb} onChange={(e) => setPrMaxBnb(e.target.value)} />
               <Input placeholder="Vesting (days)" value={prVestingDays} onChange={(e) => setPrVestingDays(e.target.value)} />
             </div>
             <label className="flex items-center gap-2 text-xs text-muted-foreground">

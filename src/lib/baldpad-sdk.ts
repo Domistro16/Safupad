@@ -22,7 +22,7 @@ export type UseBaldPadSDKResult = {
   isInitializing: boolean;
   error: unknown | null;
   connect: () => Promise<string | null>;
-  network: "monad";
+  network: "bsc" | "bscTestnet";
   chainId: number;
 };
 
@@ -61,8 +61,8 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
 /**
  * useBaldPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Only supports Monad Mainnet (143)
- * - Defaults to Monad Mainnet when wallet is not connected
+ * - Supports BSC Mainnet (56) and BSC Testnet (97)
+ * - Defaults to BSC Testnet when wallet is not connected
  */
 export function useBaldPadSDK(): UseBaldPadSDKResult {
   const [sdk, setSdk] = useState<SafuPadSDK | null>(null);
@@ -73,9 +73,9 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
   const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  // Only support Monad Mainnet (143)
-  const chainId = chain?.id ?? 143;
-  const network: "monad" = "monad";
+  // Support BSC Mainnet (56) and BSC Testnet (97)
+  const chainId = chain?.id ?? 97;
+  const network: "bsc" | "bscTestnet" = chainId === 56 ? "bsc" : "bscTestnet";
 
   const { data: client } = useConnectorClient<Config>({ chainId });
   const provClient = useClient<Config>({ chainId });
@@ -91,7 +91,7 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
       }
 
       console.log(
-        `🔧 BaldPad SDK: Initializing for Monad Mainnet (Chain ID: ${chainId})...`
+        `🔧 BaldPad SDK: Initializing for BSC (Chain ID: ${chainId})...`
       );
 
       setIsInitializing(true);
@@ -99,7 +99,7 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
 
       try {
         console.log(
-          `🔧 BaldPad SDK: Getting Monad Mainnet provider...`
+          `🔧 BaldPad SDK: Getting BSC provider...`
         );
 
         const provider = clientToProvider(provClient);
@@ -130,7 +130,7 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
           return;
         }
 
-        console.log(`✅ BaldPad SDK: Successfully initialized on Monad Mainnet!`);
+        console.log(`✅ BaldPad SDK: Successfully initialized on BSC (${network})!`);
         setSdk(instance);
       } catch (e: any) {
         if (cancelled) return;

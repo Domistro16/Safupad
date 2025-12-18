@@ -64,7 +64,7 @@ export async function getTokenStats(
     try {
       // Get USD value for 1 BNB
       const oneBNB = ethers.parseEther("1");
-      const monPriceWei = await sdk.priceOracle.monToUSD(oneBNB);
+      const monPriceWei = await sdk.priceOracle.bnbToUSD(oneBNB);
       monPrice = Number(ethers.formatEther(monPriceWei));
     } catch (error) {
       console.warn(

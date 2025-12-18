@@ -236,12 +236,12 @@ export function ContributeModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contribution">Contribution Amount (MON)</Label>
+            <Label htmlFor="contribution">Contribution Amount (BNB)</Label>
             <Input
               id="contribution"
               type="number"
               inputMode="decimal"
-              placeholder="Enter MON amount"
+              placeholder="Enter BNB amount"
               value={contribution}
               onChange={(e) => setContribution(e.target.value)}
               className="bg-card/60 border-primary/30"
@@ -250,7 +250,7 @@ export function ContributeModal({
               min="0.01"
             />
             <p className="text-xs text-muted-foreground">
-              Minimum contribution: 0.01 MON
+              Minimum contribution: 0.01 BNB
             </p>
           </div>
 
@@ -265,13 +265,13 @@ export function ContributeModal({
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Current:</span>
                   <span className="font-medium">
-                    {monRaised.toFixed(4)} MON
+                    {monRaised.toFixed(4)} BNB
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Target:</span>
                   <span className="font-medium">
-                    {monTarget.toFixed(4)} MON
+                    {monTarget.toFixed(4)} BNB
                   </span>
                 </div>
                 <Progress
@@ -295,7 +295,7 @@ export function ContributeModal({
                 <strong>Token:</strong> {token.name} ({token.symbol})
               </p>
               <p>
-                <strong>Amount:</strong> {contribution || "0"} MON
+                <strong>Amount:</strong> {contribution || "0"} BNB
               </p>
               <p>
                 <strong>Type:</strong>{" "}

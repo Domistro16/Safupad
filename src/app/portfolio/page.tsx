@@ -87,12 +87,12 @@ export default function PortfolioPage() {
               } catch (err) {
                 console.warn(`Could not fetch token stats for ${addr}, falling back to pool info:`, err);
                 marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-                currentPrice = Number(ethers.formatEther(await sdk.priceOracle.monToUSD(poolInfo.currentPrice)));
+                currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
               }
             } else {
               // Non-graduated tokens use pool info
               marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
-              currentPrice = Number(ethers.formatEther(await sdk.priceOracle.monToUSD(poolInfo.currentPrice)));
+              currentPrice = Number(ethers.formatEther(await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)));
             }
 
             // Get vesting info
@@ -169,7 +169,7 @@ export default function PortfolioPage() {
             try {
               const volume24hData = await sdk.bondingDex.get24hVolume(addr);
               const volume24hBNB = volume24hData.volumeBNB;
-              const vol = await sdk.priceOracle.monToUSD(Number(volume24hBNB));
+              const vol = await sdk.priceOracle.bnbToUSD(Number(volume24hBNB));
               volume24h = Number(ethers.formatUnits(Number(vol).toString(), 18));
 
               const totalVolumeData = await sdk.bondingDex.getTotalVolume(addr);
