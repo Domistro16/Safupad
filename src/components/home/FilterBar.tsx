@@ -30,16 +30,15 @@ export default function FilterBar({ activeFilter, onFilterChange }: FilterBarPro
           </div>
         </div>
 
-        <div className="flex gap-2 text-xs justify-end flex-nowrap overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex gap-2 text-xs justify-end flex-nowrap overflow-x-auto whitespace-nowrap">
           {filters.map(({ type, label }) => (
             <button
               key={type}
               onClick={() => onFilterChange(type)}
-              className={`filter-btn px-3 py-1.5 rounded-full border border-[var(--border-soft)] transition ${
-                activeFilter === type
+              className={`filter-btn px-3 py-1.5 rounded-full border border-[var(--border-soft)] transition ${activeFilter === type
                   ? "active-filter bg-[#111] text-[#fef3c7]"
                   : "bg-[var(--surface)]"
-              }`}
+                }`}
               data-type={type}
               type="button"
             >
