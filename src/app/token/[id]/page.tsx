@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils/format";
 import { Wallet, Coins, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import type { Token, Trade } from "@/types/token";
 import { ethers } from "ethers";
 import { useAccount } from "wagmi";
@@ -38,7 +38,7 @@ export const abi = [
       },
       {
         internalType: "uint256",
-        name: "monReserve",
+        name: "bnbReserve",
         type: "uint256",
       },
       {
@@ -128,7 +128,7 @@ export default function TokenPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [token, setToken] = useState<Token | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -138,7 +138,7 @@ export default function TokenPage({
     lastClaimTime: Date | null;
     graduationMarketCap: number;
     currentMarketCap: number;
-    monInPool: number;
+    bnbInPool: number;
     canClaim: boolean;
   } | null>(null);
   const { address } = useAccount();
@@ -216,7 +216,7 @@ export default function TokenPage({
         if (isInstant) {
           const bond = sdk.bondingDex.getContract();
           const provider = new ethers.JsonRpcProvider(
-            "https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
+            "https://bsc-dataseed.binance.org/"
           );
           const bonding = new ethers.Contract(
             await bond.getAddress(),
@@ -227,15 +227,15 @@ export default function TokenPage({
           console.log(pool)
           // Store actual BNB in pool from contract for instant-launch
           const totalBnb =
-            Number(ethers.formatEther(pool.monReserve)) +
+            Number(ethers.formatEther(pool.bnbReserve)) +
             Number(ethers.formatEther(pool.virtualBnbReserve));
           if (!cancelled) {
             setActualBnbInPool(totalBnb);
 
             // Convert BNB to USD using price oracle
             const totalBnbWei =
-              BigInt(pool.monReserve) + BigInt(pool.virtualBnbReserve);
-            const usdValue = await sdk.priceOracle.monToUSD(totalBnbWei);
+              BigInt(pool.bnbReserve) + BigInt(pool.virtualBnbReserve);
+            const usdValue = await sdk.priceOracle.bnbToUSD(totalBnbWei);
             setVirtualLiquidityUSD(Number(ethers.formatEther(usdValue)));
 
             // Convert graduation BNB threshold to USD
@@ -286,7 +286,7 @@ export default function TokenPage({
             const parsedFeeInfo = {
               accumulatedFees: Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.monToUSD(feeInfo.accumulatedFees)
+                  await sdk.priceOracle.bnbToUSD(feeInfo.accumulatedFees)
                 )
               ),
               lastClaimTime:
@@ -298,10 +298,10 @@ export default function TokenPage({
               ),
               currentMarketCap: Number(
                 ethers.formatEther(
-                  await sdk.priceOracle.monToUSD(feeInfo.currentMarketCap)
+                  await sdk.priceOracle.bnbToUSD(feeInfo.currentMarketCap)
                 )
               ),
-              monInPool: Number(ethers.formatEther(feeInfo.monInPool)),
+              bnbInPool: Number(ethers.formatEther(feeInfo.bnbInPool)),
               canClaim: Boolean(feeInfo.canClaim),
             };
 
@@ -317,7 +317,7 @@ export default function TokenPage({
                 lastClaimTime: null,
                 graduationMarketCap: 0,
                 currentMarketCap: 0,
-                monInPool: 0,
+                bnbInPool: 0,
                 canClaim: false,
               });
             }
@@ -334,7 +334,7 @@ export default function TokenPage({
         const marketCapUSD = Number(ethers.formatEther(poolInfo.marketCapUSD));
         const currentPrice = Number(
           ethers.formatEther(
-            await sdk.priceOracle.monToUSD(poolInfo.currentPrice)
+            await sdk.priceOracle.bnbToUSD(poolInfo.currentPrice)
           )
         );
         const graduationProgress = Number(poolInfo.graduationProgress);
@@ -346,12 +346,12 @@ export default function TokenPage({
         let liquidityPool: any;
         if (isInstant && pool) {
           const virtual = pool.virtualBnbReserve;
-          liquidityPool = await sdk.priceOracle.monToUSD(
-            BigInt(poolInfo.monReserve) + BigInt(virtual)
+          liquidityPool = await sdk.priceOracle.bnbToUSD(
+            BigInt(poolInfo.bnbReserve) + BigInt(virtual)
           );
         } else {
-          liquidityPool = await sdk.priceOracle.monToUSD(
-            BigInt(poolInfo.monReserve)
+          liquidityPool = await sdk.priceOracle.bnbToUSD(
+            BigInt(poolInfo.bnbReserve)
           );
         }
 
@@ -396,7 +396,7 @@ export default function TokenPage({
               totalVolumeData.buyCount + totalVolumeData.sellCount;
 
             // Convert total volume to USD
-            const totalVolumeUSD = await sdk.priceOracle.monToUSD(
+            const totalVolumeUSD = await sdk.priceOracle.bnbToUSD(
               totalVolumeData.totalVolumeBNB
             );
             volume24h = Number(ethers.formatEther(totalVolumeUSD));
@@ -423,11 +423,11 @@ export default function TokenPage({
             // Convert SDK TradeData format to Trade format
             const convertedTrades: Trade[] = await Promise.all(
               tradesData.map(async (tradeData: any, index: number) => {
-                const usdPrice = await sdk.priceOracle.monToUSD(
+                const usdPrice = await sdk.priceOracle.bnbToUSD(
                   tradeData.price
                 );
-                const usdValue = await sdk.priceOracle.monToUSD(
-                  tradeData.monAmount
+                const usdValue = await sdk.priceOracle.bnbToUSD(
+                  tradeData.bnbAmount
                 );
                 const priceInBnbHexOrBN = tradeData.price;
 
@@ -484,7 +484,7 @@ export default function TokenPage({
           id,
           name: tokenName,
           symbol: tokenSymbol,
-          description: tokenMeta.description || "Launched token on BaldPad",
+          description: tokenMeta.description || "Launched token on SafuPad",
           image: logoURI,
           contractAddress: id,
           creatorAddress: launchInfo.founder,
@@ -566,7 +566,7 @@ export default function TokenPage({
                 marketCapRequirement: true,
                 accrualPeriod: 604_800_000,
               },
-              cumulativeBuys: Number(poolInfo.monReserve),
+              cumulativeBuys: Number(poolInfo.bnbReserve),
               creatorFees: 0,
               lastClaimTime: null,
               claimableAmount: 0,
@@ -621,7 +621,7 @@ export default function TokenPage({
 
       try {
         const provider = new ethers.JsonRpcProvider(
-          "https://mon-testnet.g.alchemy.com/v2/tTuJSEMHVlxyDXueE8Hjv"
+          "https://bsc-dataseed.binance.org/"
         );
         const stats = await getTokenStats(token.id, provider, sdk);
 
@@ -681,7 +681,7 @@ export default function TokenPage({
         const parsedData = {
           totalFeesHarvested: Number(
             ethers.formatEther(
-              await sdk.priceOracle.monToUSD(lockInfo.totalFeesHarvested)
+              await sdk.priceOracle.bnbToUSD(lockInfo.totalFeesHarvested)
             )
           ),
           canHarvest: Boolean(harvestStatus.ready),
@@ -939,10 +939,10 @@ export default function TokenPage({
                     {!graduatedToPancakeSwap && (
                       <div>
                         <p className="text-xs text-muted-foreground">
-                          Graduation MON
+                          Graduation BNB
                         </p>
                         <p className="text-xl font-black tracking-wide">
-                          {graduationBnb} MON
+                          {graduationBnb} BNB
                         </p>
                       </div>
                     )}
@@ -1052,10 +1052,10 @@ export default function TokenPage({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="border border-primary/30 p-4 pixel-corners bg-background/50">
                       <p className="text-xs text-muted-foreground mb-2">
-                        Claimable Funds (MON)
+                        Claimable Funds (BNB)
                       </p>
                       <p className="text-2xl font-black tracking-wide text-primary">
-                        {claimableAmounts.claimableFunds.toFixed(4)} MON
+                        {claimableAmounts.claimableFunds.toFixed(4)} BNB
                       </p>
                       {hasClaimableFunds && (
                         <Button

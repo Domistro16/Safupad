@@ -17,12 +17,12 @@ import {
 } from "wagmi";
 import { SafuPadSDK } from "@safupad/sdk";
 
-export type UseBaldPadSDKResult = {
+export type UseSafuPadSDKResult = {
   sdk: SafuPadSDK | null;
   isInitializing: boolean;
   error: unknown | null;
   connect: () => Promise<string | null>;
-  network: "monad";
+  network: "bsc";
   chainId: number;
 };
 
@@ -59,12 +59,12 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
 }
 
 /**
- * useBaldPadSDK
+ * useSafuPadSDK
  * - Initializes SafuPadSDK instance synchronized with RainbowKit wallet connection
- * - Only supports Monad Mainnet (143)
- * - Defaults to Monad Mainnet when wallet is not connected
+ * - Only supports BSC Mainnet (56)
+ * - Defaults to BSC Mainnet when wallet is not connected
  */
-export function useBaldPadSDK(): UseBaldPadSDKResult {
+export function useSafuPadSDK(): UseSafuPadSDKResult {
   const [sdk, setSdk] = useState<SafuPadSDK | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [error, setError] = useState<unknown | null>(null);
@@ -73,9 +73,9 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
   const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  // Only support Monad Mainnet (143)
-  const chainId = chain?.id ?? 143;
-  const network: "monad" = "monad";
+  // Only support BSC Mainnet (56)
+  const chainId = chain?.id ?? 56;
+  const network: "bsc" = "bsc";
 
   const { data: client } = useConnectorClient<Config>({ chainId });
   const provClient = useClient<Config>({ chainId });
@@ -91,7 +91,7 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
       }
 
       console.log(
-        `🔧 BaldPad SDK: Initializing for Monad Mainnet (Chain ID: ${chainId})...`
+        `🔧 SafuPad SDK: Initializing for BSC Mainnet (Chain ID: ${chainId})...`
       );
 
       setIsInitializing(true);
@@ -99,13 +99,13 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
 
       try {
         console.log(
-          `🔧 BaldPad SDK: Getting Monad Mainnet provider...`
+          `🔧 SafuPad SDK: Getting BSC Mainnet provider...`
         );
 
         const provider = clientToProvider(provClient);
 
         console.log(
-          `🔧 BaldPad SDK: Creating SDK instance with network: ${network}...`
+          `🔧 SafuPad SDK: Creating SDK instance with network: ${network}...`
         );
         console.log(await provider.getNetwork())
         const instance = new SafuPadSDK({
@@ -116,26 +116,26 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
             "https://api.studio.thegraph.com/query/112443/safupad-subgraph/v0.0.11",
         });
 
-        console.log("🔧 BaldPad SDK: Calling initialize()...");
+        console.log("🔧 SafuPad SDK: Calling initialize()...");
         await instance.initialize();
 
         // UPDATE THE SIGNER AFTER INITIALIZATION
-        console.log("🔧 BaldPad SDK: Updating signer...");
+        console.log("🔧 SafuPad SDK: Updating signer...");
         if (client) {
           const signer = clientToSigner(client);
           instance.updateSigner(signer);
         }
         if (cancelled) {
-          console.log("⚠️ BaldPad SDK: Initialization cancelled");
+          console.log("⚠️ SafuPad SDK: Initialization cancelled");
           return;
         }
 
-        console.log(`✅ BaldPad SDK: Successfully initialized on Monad Mainnet!`);
+        console.log(`✅ SafuPad SDK: Successfully initialized on BSC Mainnet!`);
         setSdk(instance);
       } catch (e: any) {
         if (cancelled) return;
 
-        console.error("❌ BaldPad SDK: Initialization failed:", e);
+        console.error("❌ SafuPad SDK: Initialization failed:", e);
         console.error("Error details:", {
           message: e?.message,
           code: e?.code,
@@ -159,27 +159,27 @@ export function useBaldPadSDK(): UseBaldPadSDKResult {
     };
   }, [chainId, network, client, provClient]);
   const connect = async () => {
-    console.log("🔗 BaldPad SDK: Connect called");
+    console.log("🔗 SafuPad SDK: Connect called");
 
     if (!walletClient) {
       console.warn(
-        "⚠️ BaldPad SDK: No wallet connected. Please connect via RainbowKit first."
+        "⚠️ SafuPad SDK: No wallet connected. Please connect via RainbowKit first."
       );
       return null;
     }
 
     if (!sdk) {
-      console.error("❌ BaldPad SDK: Cannot connect - SDK not initialized");
+      console.error("❌ SafuPad SDK: Cannot connect - SDK not initialized");
       return null;
     }
 
     try {
       // SDK should already be connected via walletClient
       const address = walletClient.account?.address;
-      console.log("✅ BaldPad SDK: Using connected address:", address);
+      console.log("✅ SafuPad SDK: Using connected address:", address);
       return address ?? null;
     } catch (e: any) {
-      console.error("❌ BaldPad SDK: Connection failed:", e);
+      console.error("❌ SafuPad SDK: Connection failed:", e);
       setError(e);
       return null;
     }

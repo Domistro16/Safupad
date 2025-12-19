@@ -1,13 +1,13 @@
 /**
- * Project Raise Configuration for Monad
+ * Project Raise Configuration for BSC
  * Based on official tokenomics and platform specifications
  */
 
 export const PROJECT_RAISE_CONFIG = {
     // Raise Parameters
-    minRaiseMON: 5_000_000, // 5M MON minimum
-    maxRaiseMON: 20_000_000, // 20M MON maximum
-    maxContributionMON: 50_000, // Max 50k MON per contributor
+    minRaiseBNB: 5, // 5 BNB minimum
+    maxRaiseBNB: 20, // 20 BNB maximum
+    maxContributionBNB: 5, // Max 5 BNB per contributor
 
     // Liquidity & Release
     liquidityPercent: 20, // 20% of amount raised
@@ -34,7 +34,7 @@ export const PROJECT_RAISE_CONFIG = {
 } as const;
 
 export const BONDING_CURVE_CONFIG = {
-    maxMarketCapMOM: 1_000_000, // 1M MOM cap for bonding curve
+    maxMarketCapBNB: 50, // 50 BNB cap for bonding curve
 
     // Trading Fees (2% total)
     tradingFees: {

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Circle, Clock, Lock, Loader2, TrendingUp, Wallet, Coins } from "lucide-react";
 import { formatNumber, formatCurrency } from "@/lib/utils/format";
 import { format } from "date-fns";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { toast } from "sonner";
@@ -25,7 +25,7 @@ interface VestingTimelineProps {
 }
 
 export function VestingTimeline({ vestingSchedule, tokenAddress, vestingData }: VestingTimelineProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const [timeBasedProgress, setTimeBasedProgress] = useState<number>(0);
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -273,7 +273,7 @@ export function VestingTimeline({ vestingSchedule, tokenAddress, vestingData }: 
             {/* Claimable Funds */}
             {claimableFunds > 0 && (
               <div className="p-3 bg-background/60 rounded-lg border border-primary/20">
-                <div className="text-xs text-muted-foreground mb-1">Claimable Funds (MON)</div>
+                <div className="text-xs text-muted-foreground mb-1">Claimable Funds (BNB)</div>
                 <div className="text-lg sm:text-xl font-black text-primary mb-3">{formatCurrency(claimableFunds)}</div>
                 <Button
                   className="controller-btn w-full text-xs sm:text-sm"

@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
@@ -56,14 +56,14 @@ function generateGradient(seed: string): string {
 }
 
 export function TokenCard({ token, onContribute }: TokenCardProps) {
-  const { sdk } = useBaldPadSDK();
+  const { sdk } = useSafuPadSDK();
   const { address: userAddress } = useAccount();
-  const [monReserve, setBnbReserve] = useState<number>(0);
+  const [bnbReserve, setBnbReserve] = useState<number>(0);
   const [volumeBNB, setVolumeBNB] = useState<number>(0);
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
-  const [monRaised, setBnbRaised] = useState<number>(0);
-  const [monTarget, setBnbTarget] = useState<number>(0);
+  const [bnbRaised, setBnbRaised] = useState<number>(0);
+  const [bnbTarget, setBnbTarget] = useState<number>(0);
   const [pancakeSwapStats, setPancakeSwapStats] =
     useState<PancakeSwapStats | null>(null);
   const [graduatedToPancakeSwap, setGraduatedToPancakeSwap] = useState(false);
@@ -124,7 +124,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
       try {
         const poolInfo = await sdk.bondingDex.getPoolInfo(token.id);
-        const reserve = Number(ethers.formatEther(poolInfo.monReserve));
+        const reserve = Number(ethers.formatEther(poolInfo.bnbReserve));
         setBnbReserve(reserve);
       } catch (error) {
         console.error("Error fetching pool info:", error);
@@ -159,7 +159,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
 
       try {
         const mon = await sdk.bondingDex.get24hVolume(token.contractAddress);
-        const usd = await sdk.priceOracle.monToUSD(mon.volumeBNB);
+        const usd = await sdk.priceOracle.bnbToUSD(mon.volumeBNB);
         setVolumeBNB(Number(ethers.formatEther(usd)));
       } catch (error) {
         console.error("Error getting volume:", error);
@@ -339,7 +339,7 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Raise Progress</span>
               <span className="font-medium">
-                {monRaised.toFixed(4)} MON / {monTarget.toFixed(4)} MON
+                {bnbRaised.toFixed(4)} BNB / {bnbTarget.toFixed(4)} BNB
               </span>
             </div>
             <Progress
@@ -366,15 +366,15 @@ export function TokenCard({ token, onContribute }: TokenCardProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Graduation Progress</span>
               <span className="font-medium">
-                {monReserve.toFixed(4)} MON / 15 MON
+                {bnbReserve.toFixed(4)} BNB / 15 BNB
               </span>
             </div>
             <Progress
-              value={getProgressPercentage(monReserve, 15)}
+              value={getProgressPercentage(bnbReserve, 15)}
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
-              Pool must reach 15 MON to graduate to PancakeSwap
+              Pool must reach 15 BNB to graduate to PancakeSwap
             </p>
           </div>
         )}

@@ -40,7 +40,7 @@ export default function CreatePage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Project Raise</h2>
                 <p className="text-muted-foreground">
-                  Raise 5m-20m MON over 72 hours with structured vesting and
+                  Raise 5-20 BNB over 72 hours with structured vesting and
                   liquidity management
                 </p>
               </div>
@@ -49,7 +49,7 @@ export default function CreatePage() {
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-sm">
-                    72-hour raise window (5m-20m MON target)
+                    72-hour raise window (5-20 BNB target)
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
@@ -126,7 +126,7 @@ export default function CreatePage() {
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Graduate at 1M MON bonding curve cap</span>
+                  <span className="text-sm">Graduate at 50 BNB bonding curve cap</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -169,7 +169,7 @@ export default function CreatePage() {
                   <tr className="border-b border-border">
                     <td className="py-3 pr-4">Fundraising</td>
                     <td className="text-center py-3 px-4 text-primary font-medium">
-                      5m-20m MON
+                      5-20 BNB
                     </td>
                     <td className="text-center py-3 px-4">No fundraising</td>
                   </tr>

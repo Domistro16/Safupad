@@ -1,17 +1,17 @@
 "use client";
 
-import { useBaldPadSDK } from "@/lib/baldpad-sdk";
+import { useSafuPadSDK } from "@/lib/safupad-sdk";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export const BaldPadSdkPanel = () => {
-  const { sdk, isInitializing, error, connect, network, chainId } = useBaldPadSDK();
+export const SafuPadSdkPanel = () => {
+  const { sdk, isInitializing, error, connect, network, chainId } = useSafuPadSDK();
 
   useEffect(() => {
     if (sdk) {
       // eslint-disable-next-line no-console
-      console.log("BaldPad SDK initialized", sdk);
+      console.log("SafuPad SDK initialized", sdk);
     }
   }, [sdk]);
 
@@ -21,7 +21,7 @@ export const BaldPadSdkPanel = () => {
   const [tokenAddress, setTokenAddress] = useState("");
 
   // Trading inputs
-  const [monAmount, setBnbAmount] = useState("0.01");
+  const [bnbAmount, setBnbAmount] = useState("0.01");
   const [tokenAmount, setTokenAmount] = useState("1000");
 
 
@@ -30,8 +30,8 @@ export const BaldPadSdkPanel = () => {
   const [prName, setPrName] = useState("MyToken");
   const [prSymbol, setPrSymbol] = useState("MTK");
   const [prSupply, setPrSupply] = useState("1000000000");
-  const [prTargetMon, setPrTargetMon] = useState("5000000");
-  const [prMaxMon, setPrMaxMon] = useState("20000000");
+  const [prTargetBnb, setPrTargetBnb] = useState("5");
+  const [prMaxBnb, setPrMaxBnb] = useState("20");
   const [prVestingDays, setPrVestingDays] = useState("180");
   const [prBurnLP, setPrBurnLP] = useState(false);
 
@@ -68,8 +68,8 @@ export const BaldPadSdkPanel = () => {
     if (!guard()) return;
     try {
       setStatus("Fetching BNB price...");
-      const price = await sdk!.priceOracle.getMONPriceFormatted();
-      setStatus(`MON Price: ${price} USD`);
+      const price = await sdk!.priceOracle.getBNBPriceFormatted();
+      setStatus(`BNB Price: ${price} USD`);
     } catch (e: any) {
       setStatus(e?.message || String(e));
     }
@@ -79,7 +79,7 @@ export const BaldPadSdkPanel = () => {
     if (!guard()) return;
     try {
       setStatus("Buying tokens...");
-      const tx = await sdk!.bondingDex.buyTokens(tokenAddress, monAmount);
+      const tx = await sdk!.bondingDex.buyTokens(tokenAddress, bnbAmount);
       setStatus(`Tx submitted: ${tx.hash}`);
       await tx.wait();
       setStatus(`Buy confirmed: ${tx.hash}`);
@@ -149,8 +149,8 @@ export const BaldPadSdkPanel = () => {
         name: prName,
         symbol: prSymbol,
         totalSupply: Number(prSupply),
-        raiseTargetMON: prTargetMon,
-        raiseMaxMON: prMaxMon,
+        raiseTargetBNB: prTargetBnb,
+        raiseMaxBNB: prMaxBnb,
         vestingDuration: Number(prVestingDays),
         metadata: {
           logoURI: "",
@@ -187,7 +187,7 @@ export const BaldPadSdkPanel = () => {
           telegram: "",
           discord: "",
         },
-        initialBuyMON: ilInitialBNB,
+        initialBuyBNB: ilInitialBNB,
         burnLP: ilBurnLP,
         vanitySalt: undefined,
       });
@@ -203,7 +203,7 @@ export const BaldPadSdkPanel = () => {
     <div className="mt-6 rounded-lg border border-border/60 bg-card/40 p-4 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold tracking-wide text-accent/90">BaldPad SDK</p>
+          <p className="text-sm font-semibold tracking-wide text-accent/90">SafuPad SDK</p>
           <p className="text-xs text-accent/80">
             Network: {network === "bsc" ? "BSC Mainnet" : "BSC Testnet"} (Chain ID: {chainId})
           </p>
@@ -256,7 +256,7 @@ export const BaldPadSdkPanel = () => {
           <div className="space-y-2">
             <Input placeholder="Token address" value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value)} />
             <div className="grid grid-cols-2 gap-2">
-              <Input placeholder="BNB amount (buy)" value={monAmount} onChange={(e) => setBnbAmount(e.target.value)} />
+              <Input placeholder="BNB amount (buy)" value={bnbAmount} onChange={(e) => setBnbAmount(e.target.value)} />
               <Input placeholder="Token amount (sell)" value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
             </div>
             <div className="flex gap-2 flex-wrap">
@@ -283,8 +283,8 @@ export const BaldPadSdkPanel = () => {
               <Input placeholder="Total Supply" value={prSupply} onChange={(e) => setPrSupply(e.target.value)} />
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <Input placeholder="Target USD" value={prTargetUsd} onChange={(e) => setPrTargetUsd(e.target.value)} />
-              <Input placeholder="Max USD" value={prMaxUsd} onChange={(e) => setPrMaxUsd(e.target.value)} />
+              <Input placeholder="Target BNB" value={prTargetBnb} onChange={(e) => setPrTargetBnb(e.target.value)} />
+              <Input placeholder="Max BNB" value={prMaxBnb} onChange={(e) => setPrMaxBnb(e.target.value)} />
               <Input placeholder="Vesting (days)" value={prVestingDays} onChange={(e) => setPrVestingDays(e.target.value)} />
             </div>
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
