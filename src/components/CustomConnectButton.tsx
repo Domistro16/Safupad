@@ -41,10 +41,9 @@ export function CustomConnectButton() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="relative px-6 py-3 bg-gradient-to-b from-[#836ef9] to-[#6b5cd9] border-2 border-[#a893ff] rounded-2xl text-[#0a0a0f] font-bold text-sm uppercase tracking-wider transition-all duration-200 shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(131,110,249,0.4)] hover:shadow-[0_6px_0_rgba(0,0,0,0.3),0_0_30px_rgba(131,110,249,0.6)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_rgba(0,0,0,0.3),0_0_15px_rgba(131,110,249,0.3)]"
+                    className="login-btn"
                   >
-                    <span className="relative z-10">Connect Wallet</span>
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none" />
+                    Login
                   </button>
                 );
               }
@@ -63,39 +62,11 @@ export function CustomConnectButton() {
               }
 
               return (
-                <div className="flex gap-2">
-                  {chain && (
-                    <button
-                      onClick={openChainModal}
-                      type="button"
-                      className="relative px-3 py-2.5 bg-gradient-to-b from-[rgba(131,110,249,0.25)] to-[rgba(107,92,217,0.15)] border-2 border-[rgba(168,147,255,0.4)] rounded-xl text-[#a893ff] font-bold text-sm uppercase tracking-wide transition-all duration-200 shadow-[0_3px_0_rgba(0,0,0,0.3),0_0_15px_rgba(131,110,249,0.25)] hover:shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(131,110,249,0.4)] hover:-translate-y-0.5 active:translate-y-0.5 flex items-center gap-2"
-                    >
-                      {chain.hasIcon && (
-                        <div
-                          className="w-5 h-5 rounded-full overflow-hidden border border-[rgba(168,147,255,0.3)]"
-                          style={{
-                            background: chain.iconBackground,
-                          }}
-                        >
-                          {chain.iconUrl && (
-                            <img
-                              alt={chain.name ?? "Chain icon"}
-                              src={chain.iconUrl}
-                              className="w-5 h-5"
-                            />
-                          )}
-                        </div>
-                      )}
-                      <span className="relative z-10">{chain.name}</span>
-                    </button>
-                  )}
-
-                  <AccountButton
-                    address={account.address}
-                    displayName={account.displayName}
-                    onClick={openAccountModal}
-                  />
-                </div>
+                <AccountButton
+                  address={account.address}
+                  displayName={account.displayName}
+                  onClick={openAccountModal}
+                />
               );
             })()}
           </div>
@@ -114,18 +85,17 @@ interface AccountButtonProps {
 function AccountButton({ address, displayName, onClick }: AccountButtonProps) {
   const { name, loading } = useENSName({ owner: address as `0x${string}` });
 
-  // Use .safu name if available, otherwise fall back to displayName
+  // Use .safu name if available, otherwise show wallet address
+  // Show wallet address immediately while loading, then update if .safu name is found
   const finalDisplayName = name || displayName;
 
   return (
     <button
       onClick={onClick}
       type="button"
-      className="relative px-4 py-2.5 bg-gradient-to-b from-[rgba(131,110,249,0.25)] to-[rgba(107,92,217,0.15)] border-2 border-[rgba(168,147,255,0.4)] rounded-xl text-[#a893ff] font-bold text-sm uppercase tracking-wide transition-all duration-200 shadow-[0_3px_0_rgba(0,0,0,0.3),0_0_15px_rgba(131,110,249,0.25)] hover:shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_20px_rgba(131,110,249,0.4)] hover:-translate-y-0.5 active:translate-y-0.5"
+      className="login-btn"
     >
-      <span className="relative z-10">
-        {loading ? "Loading..." : finalDisplayName}
-      </span>
+      {finalDisplayName}
     </button>
   );
 }

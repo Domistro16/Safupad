@@ -1,31 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 
-export default function MobileSticky() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    let hideTimer: NodeJS.Timeout | null = null;
-
-    function handleScroll() {
-      const isMobile = window.innerWidth < 768;
-      if (!isMobile) return;
-
-      setVisible(true);
-      if (hideTimer) clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => setVisible(false), 2000);
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (hideTimer) clearTimeout(hideTimer);
-    };
-  }, []);
-
+export default function MobileSticky({ visible }: { visible: boolean }) {
   return (
     <div
       id="mobileSticky"

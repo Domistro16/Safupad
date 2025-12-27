@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from 'react'
+import { ImageUploader } from '@/components/create/ImageUploader'
 
 type Tab = 'token' | 'creator' | 'links' | 'review'
 
 export default function InstantLaunchCreationPage() {
   const [tab, setTab] = useState<Tab>('token')
-  const [iconName, setIconName] = useState('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
 
   const fixed = useMemo(() => ({
     cap: '50 BNB',
@@ -170,30 +171,16 @@ export default function InstantLaunchCreationPage() {
             </div>
 
             <div className="mt-4 grid gap-2">
-              <button className={'btn-ghost w-full text-left ' + (tab==='token'?'bg-[var(--text)] text-[var(--bg)]':'')} onClick={()=>setTab('token')} type="button">Token info</button>
-              <button className={'btn-ghost w-full text-left ' + (tab==='creator'?'bg-[var(--text)] text-[var(--bg)]':'')} onClick={()=>setTab('creator')} type="button">Creator</button>
-              <button className={'btn-ghost w-full text-left ' + (tab==='links'?'bg-[var(--text)] text-[var(--bg)]':'')} onClick={()=>setTab('links')} type="button">Links</button>
-              <button className={'btn-ghost w-full text-left ' + (tab==='review'?'bg-[var(--text)] text-[var(--bg)]':'')} onClick={()=>setTab('review')} type="button">Review & launch</button>
+              <button className={'btn-ghost w-full text-left ' + (tab === 'token' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('token')} type="button">Token info</button>
+              <button className={'btn-ghost w-full text-left ' + (tab === 'creator' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('creator')} type="button">Creator</button>
+              <button className={'btn-ghost w-full text-left ' + (tab === 'links' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('links')} type="button">Links</button>
+              <button className={'btn-ghost w-full text-left ' + (tab === 'review' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('review')} type="button">Review & launch</button>
             </div>
           </div>
 
-          <div className="safu-section">
-            <div className="text-sm font-semibold">Token icon</div>
-            <div className="mt-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-soft)] p-5">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] flex items-center justify-center font-semibold">
-                  {iconName ? iconName.slice(0,2).toUpperCase() : '⚡'}
-                </div>
-                <div className="flex-1">
-                  <div className="text-xs text-[var(--subtext)]">Upload (placeholder)</div>
-                  <input className="field mt-2" value={iconName} onChange={(e)=>setIconName(e.target.value)} placeholder="Type icon label e.g. NX" />
-                </div>
-              </div>
-              <div className="mt-3 text-xs text-[var(--subtext)]">
-                In production, this becomes a file uploader with validation.
-              </div>
-            </div>
-          </div>
+          <ImageUploader
+            onFileChange={(file) => setImageFile(file)}
+          />
 
           <div className="safu-section">
             <div className="text-sm font-semibold">Quick info</div>

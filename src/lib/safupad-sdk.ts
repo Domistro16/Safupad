@@ -84,12 +84,6 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
     let cancelled = false;
 
     async function init() {
-      // Wait for both clients to be available
-
-      if (!provClient) {
-        return;
-      }
-
       console.log(
         `🔧 SafuPad SDK: Initializing for BSC Mainnet (Chain ID: ${chainId})...`
       );
@@ -98,11 +92,18 @@ export function useSafuPadSDK(): UseSafuPadSDKResult {
       setError(null);
 
       try {
-        console.log(
-          `🔧 SafuPad SDK: Getting BSC Mainnet provider...`
-        );
-
-        const provider = clientToProvider(provClient);
+        // Use wagmi's provider if available, otherwise fall back to public BSC RPC
+        let provider;
+        if (provClient) {
+          console.log(`🔧 SafuPad SDK: Using wagmi provider...`);
+          provider = clientToProvider(provClient);
+        } else {
+          console.log(`🔧 SafuPad SDK: Using fallback BSC RPC provider (no wallet connected)...`);
+          provider = new JsonRpcProvider("https://bsc-dataseed.binance.org/", {
+            chainId: 56,
+            name: "bsc",
+          });
+        }
 
         console.log(
           `🔧 SafuPad SDK: Creating SDK instance with network: ${network}...`

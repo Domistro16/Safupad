@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { CustomConnectButton } from "@/components/CustomConnectButton";
 
 export default function Navbar() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [launchDropdownOpen, setLaunchDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("safu-theme");
@@ -14,6 +16,17 @@ export default function Navbar() {
     const initial = (stored as "light" | "dark") || (prefersDark ? "dark" : "light");
     setTheme(initial);
     applyTheme(initial);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setLaunchDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   function applyTheme(t: "light" | "dark") {
@@ -42,9 +55,43 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-          <Link href="/create" className="text-[var(--subtext)] hover:text-[var(--text)] transition">
-            Launch
-          </Link>
+          {/* Launch Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setLaunchDropdownOpen(!launchDropdownOpen)}
+              className="text-[var(--subtext)] hover:text-[var(--text)] transition flex items-center gap-1"
+            >
+              Launch
+              <svg
+                className={`w-4 h-4 transition-transform ${launchDropdownOpen ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {launchDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] backdrop-blur-xl shadow-xl overflow-hidden">
+                <Link
+                  href="/create/project"
+                  onClick={() => setLaunchDropdownOpen(false)}
+                  className="block px-4 py-3 text-[var(--text)] hover:bg-[var(--surface-soft)] transition border-b border-[var(--border-soft)]"
+                >
+                  <div className="font-semibold">🚀 Project Raise</div>
+                  <div className="text-xs text-[var(--subtext)]">Fundraise with vesting</div>
+                </Link>
+                <Link
+                  href="/create/instant"
+                  onClick={() => setLaunchDropdownOpen(false)}
+                  className="block px-4 py-3 text-[var(--text)] hover:bg-[var(--surface-soft)] transition"
+                >
+                  <div className="font-semibold">⚡ Instant Token</div>
+                  <div className="text-xs text-[var(--subtext)]">Bonding curve launch</div>
+                </Link>
+              </div>
+            )}
+          </div>
           <Link href="/" className="text-[var(--subtext)] hover:text-[var(--text)] transition">
             Explore
           </Link>
@@ -84,20 +131,26 @@ export default function Navbar() {
 
       {/* Mobile Menu Panel */}
       <div
-        className={`md:hidden fixed top-[72px] left-4 right-4 z-50 transition-all duration-300 ${
-          mobileMenuOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 pointer-events-none translate-y-[-6px]"
-        }`}
+        className={`md:hidden fixed top-[72px] left-4 right-4 z-50 transition-all duration-300 ${mobileMenuOpen
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 pointer-events-none translate-y-[-6px]"
+          }`}
       >
         <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)]/92 backdrop-blur-xl shadow-2xl p-3">
           <div className="grid gap-2">
             <Link
-              href="/create"
+              href="/create/project"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-left px-4 py-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-soft)] hover:bg-[var(--surface)] transition text-[var(--text)] font-semibold"
             >
-              Launch
+              🚀 Project Raise
+            </Link>
+            <Link
+              href="/create/instant"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full text-left px-4 py-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-soft)] hover:bg-[var(--surface)] transition text-[var(--text)] font-semibold"
+            >
+              ⚡ Instant Token
             </Link>
             <Link
               href="/"

@@ -1,6 +1,6 @@
 "use client";
 
-import SafuCard from "./SafuCard";
+import {SafuCard} from "./SafuCard";
 import type { CardData } from "@/data/cards";
 
 interface CardGridProps {
