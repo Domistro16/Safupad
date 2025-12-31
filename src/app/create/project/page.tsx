@@ -5,8 +5,24 @@ import { ImageUploader } from '@/components/create/ImageUploader'
 
 type Tab = 'project' | 'founder' | 'links' | 'team' | 'review'
 
+const TAB_ORDER: Tab[] = ['project', 'founder', 'links', 'team', 'review']
+
 export default function ProjectRaiseApplicationPage() {
   const [tab, setTab] = useState<Tab>('project')
+
+  const goToNextTab = () => {
+    const currentIndex = TAB_ORDER.indexOf(tab)
+    if (currentIndex < TAB_ORDER.length - 1) {
+      setTab(TAB_ORDER[currentIndex + 1])
+    }
+  }
+
+  const goToPrevTab = () => {
+    const currentIndex = TAB_ORDER.indexOf(tab)
+    if (currentIndex > 0) {
+      setTab(TAB_ORDER[currentIndex - 1])
+    }
+  }
   const [imageFile, setImageFile] = useState<File | null>(null)
   const fixed = useMemo(() => ({
     window: '72 hours',
@@ -59,6 +75,11 @@ export default function ProjectRaiseApplicationPage() {
                   </div>
                 </div>
               </div>
+              <div className="mt-6 flex justify-end">
+                <button type="button" onClick={goToNextTab} className="btn-primary">
+                  Next: Founder
+                </button>
+              </div>
             </div>
           )}
 
@@ -79,6 +100,14 @@ export default function ProjectRaiseApplicationPage() {
                   <textarea className="field mt-2" rows={4} placeholder="Short founder bio and credibility."></textarea>
                 </div>
               </div>
+              <div className="mt-6 flex justify-between">
+                <button type="button" onClick={goToPrevTab} className="btn-ghost">
+                  Back
+                </button>
+                <button type="button" onClick={goToNextTab} className="btn-primary">
+                  Next: Links
+                </button>
+              </div>
             </div>
           )}
 
@@ -90,6 +119,14 @@ export default function ProjectRaiseApplicationPage() {
                 <input className="field" placeholder="X (Twitter)" />
                 <input className="field" placeholder="Telegram" />
                 <input className="field" placeholder="Docs / Whitepaper" />
+              </div>
+              <div className="mt-6 flex justify-between">
+                <button type="button" onClick={goToPrevTab} className="btn-ghost">
+                  Back
+                </button>
+                <button type="button" onClick={goToNextTab} className="btn-primary">
+                  Next: Team
+                </button>
               </div>
             </div>
           )}
@@ -111,6 +148,14 @@ export default function ProjectRaiseApplicationPage() {
                   <input className="field mt-2" placeholder="X / LinkedIn" />
                 </div>
               </div>
+              <div className="mt-6 flex justify-between">
+                <button type="button" onClick={goToPrevTab} className="btn-ghost">
+                  Back
+                </button>
+                <button type="button" onClick={goToNextTab} className="btn-primary">
+                  Next: Review
+                </button>
+              </div>
             </div>
           )}
 
@@ -120,7 +165,12 @@ export default function ProjectRaiseApplicationPage() {
               <div className="mt-3 text-sm text-[var(--subtext)]">
                 Confirm details before submitting. After submit, the raise goes to admin review.
               </div>
-              <button className="btn-primary mt-5">Submit application</button>
+              <div className="mt-6 flex justify-between items-center">
+                <button type="button" onClick={goToPrevTab} className="btn-ghost">
+                  Back
+                </button>
+                <button className="btn-primary">Submit application</button>
+              </div>
               <div className="mt-3 text-xs text-[var(--subtext)] text-center">
                 By submitting, you agree to Raise Terms and the platform&apos;s review policy.
               </div>
