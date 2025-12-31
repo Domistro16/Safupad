@@ -207,7 +207,7 @@ export default function InstantLaunchTokenPage({ params }: { params: Promise<{ i
           <div className="safu-card p-0 overflow-hidden min-h-[400px] flex flex-col">
             <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold tracking-tight">{priceDisplay}</div>
+                <div className="text-2xl font-semibold tracking-tight">{priceDisplay}</div>
                 <div className="text-xs text-[var(--subtext)]">Last price</div>
               </div>
               <div className="flex gap-1">
@@ -286,7 +286,7 @@ export default function InstantLaunchTokenPage({ params }: { params: Promise<{ i
 
               {activeTab === 'about' && (
                 <div className="p-6">
-                  <h3 className="font-semibold mb-2">{token.name} ({token.symbol})</h3>
+                  <h3 className="font-medium mb-2">{token.name} ({token.symbol})</h3>
                   <p className="text-[var(--subtext)]">{token.description}</p>
                   <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                     <div className="p-3 bg-[var(--surface-soft)] rounded-lg">
@@ -311,7 +311,7 @@ export default function InstantLaunchTokenPage({ params }: { params: Promise<{ i
           {/* Bonding Curve */}
           <div className="safu-card p-5">
             <div className="flex justify-between items-end mb-2">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--subtext)]">Bonding Curve</h3>
+              <h3 className="text-sm font-medium uppercase tracking-wider text-[var(--subtext)]">Bonding Curve</h3>
               <span className="text-xs text-[var(--accent)] font-medium">{progress.toFixed(1)}%</span>
             </div>
             <div className="h-4 bg-[var(--surface-soft)] rounded-full overflow-hidden border border-[var(--border-soft)]">
@@ -329,10 +329,10 @@ export default function InstantLaunchTokenPage({ params }: { params: Promise<{ i
           {/* Trade Panel */}
           <div className="safu-card p-5">
             <div className="flex p-1 bg-[var(--surface-soft)] rounded-xl mb-4">
-              <button onClick={() => setIsBuy(true)} className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${isBuy ? 'bg-emerald-500 text-white shadow-lg' : 'text-[var(--subtext)] hover:text-[var(--text)]'}`}>
+              <button onClick={() => setIsBuy(true)} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${isBuy ? 'bg-emerald-500 text-white shadow-lg' : 'text-[var(--subtext)] hover:text-[var(--text)]'}`}>
                 Buy
               </button>
-              <button onClick={() => setIsBuy(false)} className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${!isBuy ? 'bg-rose-500 text-white shadow-lg' : 'text-[var(--subtext)] hover:text-[var(--text)]'}`}>
+              <button onClick={() => setIsBuy(false)} className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${!isBuy ? 'bg-rose-500 text-white shadow-lg' : 'text-[var(--subtext)] hover:text-[var(--text)]'}`}>
                 Sell
               </button>
             </div>
@@ -351,7 +351,7 @@ export default function InstantLaunchTokenPage({ params }: { params: Promise<{ i
                     value={amountIn}
                     onChange={e => setAmountIn(e.target.value)}
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--subtext)]">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[var(--subtext)]">
                     {isBuy ? 'BNB' : token.symbol}
                   </div>
                 </div>
@@ -360,7 +360,7 @@ export default function InstantLaunchTokenPage({ params }: { params: Promise<{ i
               <button
                 onClick={handleTrade}
                 disabled={tradeLoading || !amountIn}
-                className={`w-full py-3 rounded-xl font-bold text-white shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isBuy ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-rose-500 hover:bg-rose-600'}`}>
+                className={`w-full py-3 rounded-xl font-semibold text-white shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isBuy ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-rose-500 hover:bg-rose-600'}`}>
                 {tradeLoading ? <Loader2 className="animate-spin w-5 h-5 mx-auto" /> : (isBuy ? 'Place Buy Order' : 'Place Sell Order')}
               </button>
             </div>

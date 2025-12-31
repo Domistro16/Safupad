@@ -1,4 +1,4 @@
-import { SafuPadSDK } from "@safupad/sdk";
+import { SafuPadSDK } from "@/safupad/sdk";
 import { Token, Trade } from "@/types/token";
 import type { CardData } from "@/data/cards";
 import { ethers } from "ethers";

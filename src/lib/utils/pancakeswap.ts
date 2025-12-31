@@ -1,4 +1,4 @@
-import SafuPadSDK from "@safupad/sdk";
+import SafuPadSDK from "@/safupad/sdk";
 import { ethers, BigNumberish } from "ethers";
 
 export interface PancakeSwapStats {

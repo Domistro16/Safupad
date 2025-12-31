@@ -1,6 +1,6 @@
 // lib/volumeTracker.ts
 import { ethers } from "ethers";
-import type { SafuPadSDK } from "@safupad/sdk";
+import type { SafuPadSDK } from "@/safupad/sdk";
 
 interface VolumeCache {
   volume: number;

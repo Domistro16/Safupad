@@ -15,7 +15,7 @@ import {
   useAccount,
   useConnectorClient,
 } from "wagmi";
-import { SafuPadSDK } from "@safupad/sdk";
+import { SafuPadSDK } from "@/safupad/sdk";
 
 export type UseSafuPadSDKResult = {
   sdk: SafuPadSDK | null;
