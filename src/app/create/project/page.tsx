@@ -42,6 +42,9 @@ export default function ProjectRaiseApplicationPage() {
   const [member2Role, setMember2Role] = useState('')
   const [member2Social, setMember2Social] = useState('')
 
+  // Form state - Options
+  const [burnLP, setBurnLP] = useState(true)
+
   const goToNextTab = () => {
     const currentIndex = TAB_ORDER.indexOf(tab)
     if (currentIndex < TAB_ORDER.length - 1) {
@@ -101,7 +104,7 @@ export default function ProjectRaiseApplicationPage() {
           discord: '',
           docs,
         },
-        burnLP: true,
+        burnLP,
         teamInfo: {
           founder: {
             name: founderName,
@@ -353,6 +356,26 @@ export default function ProjectRaiseApplicationPage() {
               <div className="text-sm font-semibold">Review & Submit</div>
               <div className="mt-3 text-sm text-[var(--subtext)]">
                 Confirm details before submitting. After submit, the raise goes to admin review.
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-soft)] p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">Burn LP Tokens</div>
+                    <div className="text-xs text-[var(--subtext)] mt-1">If enabled, LP tokens will be burned instead of locked</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setBurnLP(!burnLP)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${burnLP ? 'bg-[var(--accent-safu)]' : 'bg-[var(--border-soft)]'
+                      }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${burnLP ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                    />
+                  </button>
+                </div>
               </div>
 
               {submitError && (

@@ -9,7 +9,7 @@ type Tab = 'token' | 'creator' | 'links' | 'review'
 
 export default function InstantLaunchCreationPage() {
   const router = useRouter()
-  const { sdk, isInitializing, error: sdkError } = useSafuPadSDK()
+  const { sdk, isInitializing } = useSafuPadSDK()
 
   const [tab, setTab] = useState<Tab>('token')
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -27,6 +27,9 @@ export default function InstantLaunchCreationPage() {
   const [twitter, setTwitter] = useState('')
   const [telegram, setTelegram] = useState('')
   const [discord, setDiscord] = useState('')
+
+  // Options
+  const [burnLP, setBurnLP] = useState(true)
   const [initialBuyBNB, setInitialBuyBNB] = useState('0.1')
 
   const fixed = useMemo(() => ({
@@ -37,7 +40,7 @@ export default function InstantLaunchCreationPage() {
 
   const handleLaunch = async () => {
     if (!sdk) {
-      setSubmitError('SDK not initialized. Please connect your wallet.')
+      setSubmitError('Please connect your wallet first.')
       return
     }
 
@@ -50,13 +53,12 @@ export default function InstantLaunchCreationPage() {
     setSubmitError(null)
 
     try {
-      // TODO: Upload image to IPFS and get logoURI
-      const logoURI = '' // Placeholder - would be replaced with actual IPFS upload
+      const logoURI = '' // TODO: Upload image to IPFS
 
       const result = await sdk.launchpad.createInstantLaunch({
         name: tokenName,
         symbol: ticker,
-        totalSupply: 1_000_000_000, // Fixed 1B supply
+        totalSupply: 1_000_000_000,
         metadata: {
           logoURI,
           description,
@@ -67,17 +69,14 @@ export default function InstantLaunchCreationPage() {
           docs: '',
         },
         initialBuyBNB,
-        burnLP: true,
+        burnLP,
       })
 
-      // Wait for transaction confirmation
       await result.wait()
-
-      // Redirect to the token page (would need to extract token address from events)
       router.push('/portfolio')
     } catch (err: any) {
       console.error('Launch failed:', err)
-      setSubmitError(err?.message || 'Failed to launch token. Please try again.')
+      setSubmitError(err?.message || 'Failed to launch token.')
     } finally {
       setIsSubmitting(false)
     }
@@ -171,12 +170,6 @@ export default function InstantLaunchCreationPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="mt-6 flex justify-end">
-                <button type="button" onClick={() => setTab('creator')} className="btn-primary">
-                  Next: Creator
-                </button>
-              </div>
             </div>
           )}
 
@@ -213,15 +206,6 @@ export default function InstantLaunchCreationPage() {
                   ></textarea>
                 </div>
               </div>
-
-              <div className="mt-6 flex justify-between">
-                <button type="button" onClick={() => setTab('token')} className="btn-ghost">
-                  Back
-                </button>
-                <button type="button" onClick={() => setTab('links')} className="btn-primary">
-                  Next: Links
-                </button>
-              </div>
             </div>
           )}
 
@@ -257,15 +241,6 @@ export default function InstantLaunchCreationPage() {
               <div className="mt-3 text-xs text-[var(--subtext)]">
                 Links will be displayed on your token page. All fields are optional.
               </div>
-
-              <div className="mt-6 flex justify-between">
-                <button type="button" onClick={() => setTab('creator')} className="btn-ghost">
-                  Back
-                </button>
-                <button type="button" onClick={() => setTab('review')} className="btn-primary">
-                  Next: Review
-                </button>
-              </div>
             </div>
           )}
 
@@ -279,14 +254,6 @@ export default function InstantLaunchCreationPage() {
               <div className="mt-5 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-soft)] p-5">
                 <div className="text-xs tracking-[0.18em] uppercase text-[var(--accent-safu)] font-semibold mb-4">Launch summary</div>
                 <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--subtext)]">Token name</span>
-                    <span className="font-medium">{tokenName || '—'}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--subtext)]">Ticker</span>
-                    <span className="font-medium">{ticker || '—'}</span>
-                  </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[var(--subtext)]">Launch type</span>
                     <span className="font-medium">Instant</span>
@@ -306,10 +273,30 @@ export default function InstantLaunchCreationPage() {
                 </div>
               </div>
 
-              <div className="mt-5">
-                <div className="text-xs text-[var(--subtext)] mb-2">Initial buy (BNB)</div>
+              <div className="mt-5 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-soft)] p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">Burn LP Tokens</div>
+                    <div className="text-xs text-[var(--subtext)] mt-1">If enabled, LP tokens will be burned instead of locked</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setBurnLP(!burnLP)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${burnLP ? 'bg-[var(--accent-safu)]' : 'bg-[var(--border-soft)]'
+                      }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${burnLP ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <div className="text-xs text-[var(--subtext)]">Initial buy (BNB)</div>
                 <input
-                  className="field"
+                  className="field mt-2"
                   type="number"
                   step="0.01"
                   min="0"
@@ -318,7 +305,7 @@ export default function InstantLaunchCreationPage() {
                   onChange={(e) => setInitialBuyBNB(e.target.value)}
                 />
                 <div className="mt-1 text-xs text-[var(--subtext)]">
-                  Amount of BNB to spend on initial token purchase (optional, set to 0 to skip).
+                  Amount of BNB to spend on initial token purchase (set to 0 to skip).
                 </div>
               </div>
 
@@ -328,24 +315,13 @@ export default function InstantLaunchCreationPage() {
                 </div>
               )}
 
-              {sdkError!! && (
-                <div className="mt-4 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm">
-                  SDK Error: Please connect your wallet to launch.
-                </div>
-              )}
-
-              <div className="mt-6 flex justify-between">
-                <button type="button" onClick={() => setTab('links')} className="btn-ghost">
-                  Back
-                </button>
-                <button
-                  className="btn-primary"
-                  onClick={handleLaunch}
-                  disabled={isSubmitting || isInitializing || !sdk}
-                >
-                  {isSubmitting ? 'Launching...' : isInitializing ? 'Initializing SDK...' : 'Launch Token'}
-                </button>
-              </div>
+              <button
+                className="btn-primary mt-5"
+                onClick={handleLaunch}
+                disabled={isSubmitting || isInitializing || !sdk}
+              >
+                {isSubmitting ? 'Launching...' : isInitializing ? 'Connecting...' : 'Launch Token'}
+              </button>
               <div className="mt-3 text-xs text-[var(--subtext)] text-center">
                 By launching, you agree to SafuPad&apos;s terms of service and instant launch mechanics.
               </div>
