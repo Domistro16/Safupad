@@ -58,6 +58,7 @@ interface TokenMetadata {
     twitter: string;
     telegram: string;
     discord: string;
+    docs: string;
 }
 /**
  * Launch creation parameters

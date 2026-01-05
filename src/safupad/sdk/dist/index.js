@@ -59,11 +59,11 @@ const NETWORKS = {
             decimals: 18,
         },
         contracts: {
-            launchpadManager: '0xcCfcfeB17609f0C5aE604bC71c4907B90B94a3e9', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
-            bondingCurveDEX: '0xE96baB0D0661Fbfc710d79d58Cdb32bcD7bB8815', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
-            tokenFactory: '0x15E2ccAeb4D1eeA1A7b8d839FFA30D63519D1c50', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
-            priceOracle: '0x3De1d0D44c9609b99D05BA14Ff48c691fF6059Ff', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
-            lpFeeHarvester: '0x8b4499143ac1CDb7bDB25a2FEc1786F8BD9772F9', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
+            launchpadManager: '0xb18d99980c58d280f74F336a62534d9bBC5203A3', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
+            bondingCurveDEX: '0x4647a56f1B1624443fC084aE4A54208889495874', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
+            tokenFactory: '0xFd66bB7a03F911302f807d0CEFdEfb7eE88b385a', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
+            priceOracle: '0x0f452bE1BE3cefE23Bfe2D1f1831b83073471699', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
+            lpFeeHarvester: '0x7BB32E2b05f4A5f8e459192a509C07bA481017c3', // TODO: UPDATE AFTER MAINNET DEPLOYMENT
             pancakeRouter: '0x10ED43C718714eb63d5aA57B78B54704E256024E', // PancakeSwap router
             pancakeFactory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', // PancakeSwap factory
         },
@@ -81,11 +81,11 @@ const NETWORKS = {
             decimals: 18,
         },
         contracts: {
-            launchpadManager: '0x4c797EbaA64Cc7f1bD2a82A36bEE5Cf335D1830c',
-            bondingCurveDEX: '0x14eB3B6C297ff6fefc25c0E0d289Bf8348e864f6',
-            tokenFactory: '0xcb7526b9598240A737237C52f852705e6A449cD0',
-            priceOracle: '0x56f0b1f80F8cc37f875Be42e2f4D09810514F346',
-            lpFeeHarvester: '0xa886B8897814193f99A88701d70b31b4a8E27a1E',
+            launchpadManager: '0xA76c8cE529649564177d704F09a744b7f83C7E92',
+            bondingCurveDEX: '0x1776999bA9056E3051A8C8111e8C7736F52f4007',
+            tokenFactory: '0x323D1905E02c22C76a267f70bE5a51965e55eB66',
+            priceOracle: '0x03565e6488A962057F60eEfCD8f9024f0c97C501',
+            lpFeeHarvester: '0x3560731F2e0081d50A6112C85bD9623e1F2d3129',
             pancakeRouter: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1', // BSC testnet DEX router
             pancakeFactory: '0x6725F303b657a9451d8BA641348b6761A6CC7a17', // BSC testnet DEX factory
         },
@@ -485,10 +485,10 @@ class BaseContract {
  */
 const LaunchpadManagerABI = [
     // Create functions - ✅ UPDATED: Removed address parameter for projectInfoFiWallet
-    'function createLaunch(string,string,uint256,uint256,uint256,uint256,tuple(string,string,string,string,string,string),bool) returns (address)',
-    'function createLaunchWithVanity(string,string,uint256,uint256,uint256,uint256,tuple(string,string,string,string,string,string),bytes32,bool) returns (address)',
-    'function createInstantLaunch(string,string,uint256,tuple(string,string,string,string,string,string),uint256,bool) payable returns (address)',
-    'function createInstantLaunchWithVanity(string,string,uint256,tuple(string,string,string,string,string,string),uint256,bytes32,bool) payable returns (address)',
+    'function createLaunch(string,string,uint256,uint256,uint256,uint256,tuple(string,string,string,string,string,string,string),bool) returns (address)',
+    'function createLaunchWithVanity(string,string,uint256,uint256,uint256,uint256,tuple(string,string,string,string,string,string,string),bytes32,bool) returns (address)',
+    'function createInstantLaunch(string,string,uint256,tuple(string,string,string,string,string,string,string),uint256,bool) payable returns (address)',
+    'function createInstantLaunchWithVanity(string,string,uint256,tuple(string,string,string,string,string,string,string),uint256,bytes32,bool) payable returns (address)',
     // Core functions
     'function contribute(address) payable',
     'function claimFounderTokens(address)',
@@ -596,7 +596,7 @@ const TokenFactoryABI = [
     'function getTotalTokens() view returns (uint256)',
     'function getTokenAtIndex(uint256) view returns (address)',
     'function getCreatorTokens(address) view returns (address[])',
-    'function computeAddress(string,string,uint256,uint8,address,tuple(string,string,string,string,string,string),bytes32) view returns (address)',
+    'function computeAddress(string,string,uint256,uint8,address,tuple(string,string,string,string,string,string,string),bytes32) view returns (address)',
 ];
 const PriceOracleABI = [
     'function getBNBPrice() view returns (uint256)', // Returns BNB price in USD
@@ -678,6 +678,7 @@ class LaunchpadManager extends BaseContract {
             params.metadata.twitter,
             params.metadata.telegram,
             params.metadata.discord,
+            params.metadata.docs,
         ];
         // Prepare team info struct for contract
         const teamInfo = [
@@ -740,6 +741,7 @@ class LaunchpadManager extends BaseContract {
             params.metadata.twitter,
             params.metadata.telegram,
             params.metadata.discord,
+            params.metadata.docs,
         ];
         // Must send BNB with transaction
         const txOptions = this.buildTxOptions(options, GAS_LIMITS.CREATE_INSTANT_LAUNCH);
@@ -1731,7 +1733,7 @@ class BondingCurveDEX extends BaseContract {
         return {
             marketCapBNB: info[0],
             marketCapUSD: info[1],
-            BNBReserve: info[2],
+            bnbReserve: info[2],
             tokenReserve: info[3],
             reservedTokens: info[4],
             currentPrice: info[5],
@@ -1772,7 +1774,7 @@ class BondingCurveDEX extends BaseContract {
             lastClaimTime: info[1],
             graduationMarketCap: info[2],
             currentMarketCap: info[3],
-            BNBInPool: info[4],
+            bnbInPool: info[4],
             canClaim: info[5],
         };
     }
@@ -2190,12 +2192,12 @@ class BondingCurveDEX extends BaseContract {
                     netTokens: 0n,
                 };
                 if (trade.isBuy) {
-                    existing.buyVolumeBNB += BigInt(trade.BNBAmount);
+                    existing.buyVolumeBNB += BigInt(trade.bnbAmount);
                     existing.buyCount++;
                     existing.netTokens += BigInt(trade.tokenAmount);
                 }
                 else {
-                    existing.sellVolumeBNB += BigInt(trade.BNBAmount);
+                    existing.sellVolumeBNB += BigInt(trade.bnbAmount);
                     existing.sellCount++;
                     existing.netTokens -= BigInt(trade.tokenAmount);
                 }
@@ -2557,6 +2559,7 @@ class TokenFactory extends BaseContract {
                 twitter: metadata[3],
                 telegram: metadata[4],
                 discord: metadata[5],
+                docs: metadata[6],
             },
         };
     }
