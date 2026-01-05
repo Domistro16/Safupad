@@ -160,23 +160,41 @@ export function ImageUploader({
 }
 
 /**
- * Helper function to upload image to R2
+ * Helper function to upload image to R2 with retry logic
  * Call this at token creation time
+ * Retries up to 5 times before failing
  */
-export async function uploadImageToR2(file: File): Promise<string> {
-    const formData = new FormData();
-    formData.append("file", file);
+export async function uploadImageToR2(file: File, maxRetries: number = 5): Promise<string> {
+    let lastError: Error | null = null;
 
-    const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-    });
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
 
-    const data = await response.json();
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
 
-    if (!response.ok) {
-        throw new Error(data.error || "Upload failed");
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Upload failed");
+            }
+
+            return data.url;
+        } catch (error) {
+            lastError = error instanceof Error ? error : new Error("Upload failed");
+            console.warn(`Image upload attempt ${attempt}/${maxRetries} failed:`, lastError.message);
+
+            // Wait before retrying (exponential backoff: 1s, 2s, 4s, 8s, 16s)
+            if (attempt < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt - 1) * 1000));
+            }
+        }
     }
 
-    return data.url;
+    throw lastError || new Error("Image upload failed after 5 attempts");
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from 'react'
-import { ImageUploader } from '@/components/create/ImageUploader'
+import { ImageUploader, uploadImageToR2 } from '@/components/create/ImageUploader'
 import { useSafuPadSDK } from '@/lib/safupad-sdk'
 import { useRouter } from 'next/navigation'
 
@@ -33,7 +33,7 @@ export default function InstantLaunchCreationPage() {
   const [initialBuyBNB, setInitialBuyBNB] = useState('0.1')
 
   const fixed = useMemo(() => ({
-    cap: '50 BNB',
+    cap: '15 BNB',
     supply: '1,000,000,000',
     tradingFee: '2%',
   }), [])
@@ -53,7 +53,18 @@ export default function InstantLaunchCreationPage() {
     setSubmitError(null)
 
     try {
-      const logoURI = '' // TODO: Upload image to IPFS
+      // Upload image first with 5 retries
+      let logoURI = ''
+      if (imageFile) {
+        try {
+          logoURI = await uploadImageToR2(imageFile)
+        } catch (uploadErr: any) {
+          console.error('Image upload failed after 5 attempts:', uploadErr)
+          setSubmitError('Image upload failed after 5 attempts. Please try again.')
+          setIsSubmitting(false)
+          return
+        }
+      }
 
       const result = await sdk.launchpad.createInstantLaunch({
         name: tokenName,

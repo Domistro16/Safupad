@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from 'react'
-import { ImageUploader } from '@/components/create/ImageUploader'
+import { ImageUploader, uploadImageToR2 } from '@/components/create/ImageUploader'
 import { useSafuPadSDK } from '@/lib/safupad-sdk'
 import { useRouter } from 'next/navigation'
 
@@ -80,8 +80,18 @@ export default function ProjectRaiseApplicationPage() {
     setSubmitError(null)
 
     try {
-      // TODO: Upload image to IPFS and get logoURI
-      const logoURI = '' // Placeholder - would be replaced with actual IPFS upload
+      // Upload image first with 5 retries
+      let logoURI = ''
+      if (imageFile) {
+        try {
+          logoURI = await uploadImageToR2(imageFile)
+        } catch (uploadErr: any) {
+          console.error('Image upload failed after 5 attempts:', uploadErr)
+          setSubmitError('Image upload failed after 5 attempts. Please try again.')
+          setIsSubmitting(false)
+          return
+        }
+      }
 
       // Count team members
       let teamMemberCount = 0
