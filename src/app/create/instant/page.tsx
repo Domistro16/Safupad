@@ -5,7 +5,7 @@ import { ImageUploader, uploadImageToR2 } from '@/components/create/ImageUploade
 import { useSafuPadSDK } from '@/lib/safupad-sdk'
 import { useRouter } from 'next/navigation'
 
-type Tab = 'token' | 'creator' | 'links' | 'review'
+type Tab = 'token' | 'links' | 'review'
 
 export default function InstantLaunchCreationPage() {
   const router = useRouter()
@@ -20,9 +20,6 @@ export default function InstantLaunchCreationPage() {
   const [tokenName, setTokenName] = useState('')
   const [ticker, setTicker] = useState('')
   const [description, setDescription] = useState('')
-  const [displayName, setDisplayName] = useState('')
-  const [creatorWallet, setCreatorWallet] = useState('')
-  const [bio, setBio] = useState('')
   const [website, setWebsite] = useState('')
   const [twitter, setTwitter] = useState('')
   const [telegram, setTelegram] = useState('')
@@ -184,41 +181,7 @@ export default function InstantLaunchCreationPage() {
             </div>
           )}
 
-          {tab === 'creator' && (
-            <div className="safu-section">
-              <div className="text-sm font-semibold">Creator info</div>
-              <div className="mt-4 grid md:grid-cols-2 gap-4">
-                <div>
-                  <div className="text-xs text-[var(--subtext)]">Display name (optional)</div>
-                  <input
-                    className="field mt-2"
-                    placeholder="e.g. nexa.safu"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--subtext)]">Wallet</div>
-                  <input
-                    className="field mt-2"
-                    placeholder="0x…"
-                    value={creatorWallet}
-                    onChange={(e) => setCreatorWallet(e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <div className="text-xs text-[var(--subtext)]">Bio (optional)</div>
-                  <textarea
-                    className="field mt-2"
-                    rows={3}
-                    placeholder="A brief intro about yourself or your project."
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                  ></textarea>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {tab === 'links' && (
             <div className="safu-section">
@@ -350,7 +313,6 @@ export default function InstantLaunchCreationPage() {
 
             <div className="mt-4 grid gap-2">
               <button className={'btn-ghost w-full text-left ' + (tab === 'token' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('token')} type="button">Token info</button>
-              <button className={'btn-ghost w-full text-left ' + (tab === 'creator' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('creator')} type="button">Creator</button>
               <button className={'btn-ghost w-full text-left ' + (tab === 'links' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('links')} type="button">Links</button>
               <button className={'btn-ghost w-full text-left ' + (tab === 'review' ? 'bg-[var(--text)] text-[var(--bg)]' : '')} onClick={() => setTab('review')} type="button">Review & launch</button>
             </div>
