@@ -178,6 +178,15 @@ export default function InstantLaunchCreationPage() {
                   </div>
                 </div>
               </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="btn-primary px-8"
+                  onClick={() => setTab('links')}
+                >
+                  Next step
+                </button>
+              </div>
             </div>
           )}
 
@@ -214,6 +223,20 @@ export default function InstantLaunchCreationPage() {
               </div>
               <div className="mt-3 text-xs text-[var(--subtext)]">
                 Links will be displayed on your token page. All fields are optional.
+              </div>
+              <div className="mt-8 flex items-center justify-between gap-4">
+                <button
+                  className="btn-ghost"
+                  onClick={() => setTab('token')}
+                >
+                  Back
+                </button>
+                <button
+                  className="btn-primary px-8"
+                  onClick={() => setTab('review')}
+                >
+                  Next step
+                </button>
               </div>
             </div>
           )}
@@ -289,13 +312,21 @@ export default function InstantLaunchCreationPage() {
                 </div>
               )}
 
-              <button
-                className="btn-primary mt-5"
-                onClick={handleLaunch}
-                disabled={isSubmitting || isInitializing || !sdk}
-              >
-                {isSubmitting ? 'Launching...' : isInitializing ? 'Connecting...' : 'Launch Token'}
-              </button>
+              <div className="mt-8 flex items-center gap-4">
+                <button
+                  className="btn-ghost"
+                  onClick={() => setTab('links')}
+                >
+                  Back
+                </button>
+                <button
+                  className="btn-primary flex-1"
+                  onClick={handleLaunch}
+                  disabled={isSubmitting || isInitializing || !sdk}
+                >
+                  {isSubmitting ? 'Launching...' : isInitializing ? 'Connecting...' : 'Launch Token'}
+                </button>
+              </div>
               <div className="mt-3 text-xs text-[var(--subtext)] text-center">
                 By launching, you agree to SafuPad&apos;s terms of service and instant launch mechanics.
               </div>
@@ -333,6 +364,6 @@ export default function InstantLaunchCreationPage() {
           </div>
         </aside>
       </div>
-    </section>
+    </section >
   )
 }
